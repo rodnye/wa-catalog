@@ -1,0 +1,108 @@
+---
+import type { Product } from '../types';
+import { formatPrice } from '../utils/helpers';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+const slug = product.id;
+---
+
+<article
+  class="product-card card group cursor-pointer"
+  data-product-id={product.id}
+>
+  <a href={`/producto/${slug}`} class="block">
+    <!-- Image -->
+    <div class="relative overflow-hidden aspect-square bg-gray-50">
+      <img
+        src={product.imagenes[0] || '/images/placeholder.jpg'}
+        alt={product.nombre}
+        class="product-img w-full h-full object-cover"
+        loading="lazy"
+        onerror="this.src='/images/placeholder.jpg'"
+      />
+      {
+        product.destacado && (
+          <span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+            ⭐ Destacado
+          </span>
+        )
+      }
+      {
+        !product.disponible && (
+          <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <span class="bg-white text-gray-800 font-bold px-4 py-2 rounded-xl">
+              Agotado
+            </span>
+          </div>
+        )
+      }
+    </div>
+
+    <!-- Info -->
+    <div class="p-4">
+      <div class="flex flex-wrap gap-1.5 mb-2">
+        {
+          product.categorias
+            .slice(0, 2)
+            .map((cat) => <span class="badge">{cat}</span>)
+        }
+      </div>
+      <h3
+        class="font-semibold text-gray-800 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors"
+      >
+        {product.nombre}
+      </h3>
+      <p class="text-xs text-gray-500 line-clamp-2 mb-3">
+        {product.descripcion}
+      </p>
+      <div class="flex items-center justify-between">
+        <span class="font-display font-bold text-primary-600 text-lg"
+          >{formatPrice(product.precio)}</span
+        >
+      </div>
+    </div>
+  </a>
+
+  <!-- Add to cart button -->
+  {
+    product.disponible && (
+      <div class="px-4 pb-4">
+        <button
+          class="add-to-cart-btn w-full btn-primary text-sm flex items-center justify-center gap-2"
+          data-product-id={product.id}
+          data-product-name={product.nombre}
+          data-product-price={product.precio}
+          data-product-image={product.imagenes[0] || ''}
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+          Agregar
+        </button>
+      </div>
+    )
+  }
+</article>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

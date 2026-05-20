@@ -1,0 +1,313 @@
+<!-- Cart Overlay -->
+<div
+  id="cart-overlay"
+  class="cart-overlay fixed inset-0 bg-black/50 z-[60] hidden opacity-0"
+>
+</div>
+
+<!-- Cart Panel -->
+<aside
+  id="cart-panel"
+  class="cart-panel fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-[70] shadow-2xl translate-x-full flex flex-col"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between p-4 border-b border-gray-100">
+    <h2
+      class="font-display font-bold text-lg text-gray-800 flex items-center gap-2"
+    >
+      <svg
+        class="w-5 h-5 text-primary-500"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
+        ></path>
+      </svg>
+      Mi Carrito
+    </h2>
+    <button
+      id="cart-close"
+      class="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+      aria-label="Cerrar carrito"
+    >
+      <svg
+        class="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Cart Items -->
+  <div id="cart-items" class="flex-1 overflow-y-auto p-4">
+    <!-- Empty state -->
+    <div
+      id="cart-empty"
+      class="flex flex-col items-center justify-center h-full text-center"
+    >
+      <span class="text-6xl mb-4">🛒</span>
+      <p class="text-gray-500 font-medium mb-1">Tu carrito está vacío</p>
+      <p class="text-sm text-gray-400">Agrega productos para comenzar</p>
+    </div>
+
+    <!-- Items container -->
+    <div id="cart-items-list" class="space-y-3 hidden"></div>
+  </div>
+
+  <!-- Cart Footer -->
+  <div id="cart-footer" class="border-t border-gray-100 p-4 hidden">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-gray-600 font-medium">Total</span>
+      <span
+        id="cart-total"
+        class="font-display font-bold text-xl text-primary-600">0 CUP</span
+      >
+    </div>
+    <button
+      id="checkout-btn"
+      class="w-full btn-accent text-base py-3 flex items-center justify-center gap-2"
+    >
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <path
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
+        ></path>
+      </svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+</aside>
+
+<script>
+  // Cart state
+  interface CartItem {
+    id: string;
+    nombre: string;
+    precio: number;
+    imagen: string;
+    quantity: number;
+  }
+
+  let cart: CartItem[] = [];
+
+  // DOM elements
+  const cartOverlay = document.getElementById('cart-overlay')!;
+  const cartPanel = document.getElementById('cart-panel')!;
+  const cartToggle = document.getElementById('cart-toggle')!;
+  const cartClose = document.getElementById('cart-close')!;
+  const cartCount = document.getElementById('cart-count')!;
+  const cartEmpty = document.getElementById('cart-empty')!;
+  const cartItemsList = document.getElementById('cart-items-list')!;
+  const cartTotal = document.getElementById('cart-total')!;
+  const cartFooter = document.getElementById('cart-footer')!;
+  const checkoutBtn = document.getElementById('checkout-btn')!;
+
+  // WhatsApp number from env
+  const WHATSAPP_NUMBER =
+    import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5363264783';
+
+  function openCart() {
+    cartOverlay.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      cartOverlay.classList.add('opacity-100');
+      cartOverlay.classList.remove('opacity-0');
+      cartPanel.classList.remove('translate-x-full');
+    });
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCart() {
+    cartOverlay.classList.remove('opacity-100');
+    cartOverlay.classList.add('opacity-0');
+    cartPanel.classList.add('translate-x-full');
+    setTimeout(() => {
+      cartOverlay.classList.add('hidden');
+    }, 300);
+    document.body.style.overflow = '';
+  }
+
+  function formatPrice(price: number): string {
+    return price.toLocaleString('es-CU') + ' CUP';
+  }
+
+  function updateCartUI() {
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const total = cart.reduce(
+      (sum, item) => sum + item.precio * item.quantity,
+      0,
+    );
+
+    // Update count badge
+    if (count > 0) {
+      cartCount.classList.remove('hidden');
+      cartCount.textContent = count.toString();
+    } else {
+      cartCount.classList.add('hidden');
+    }
+
+    // Show/hide empty state
+    if (cart.length === 0) {
+      cartEmpty.classList.remove('hidden');
+      cartItemsList.classList.add('hidden');
+      cartFooter.classList.add('hidden');
+    } else {
+      cartEmpty.classList.add('hidden');
+      cartItemsList.classList.remove('hidden');
+      cartFooter.classList.remove('hidden');
+    }
+
+    // Render items
+    cartItemsList.innerHTML = cart
+      .map(
+        (item) => `
+      <div class="flex gap-3 bg-gray-50 rounded-xl p-3" data-cart-item-id="${item.id}">
+        <img src="${item.imagen || '/images/placeholder.jpg'}" alt="${item.nombre}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" onerror="this.src='/images/placeholder.jpg'" />
+        <div class="flex-1 min-w-0">
+          <h4 class="text-sm font-medium text-gray-800 truncate">${item.nombre}</h4>
+          <p class="text-sm font-bold text-primary-600 mt-0.5">${formatPrice(item.precio)}</p>
+          <div class="flex items-center gap-2 mt-2">
+            <button class="decrease-qty w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:border-primary-300 hover:text-primary-500 transition-colors" data-id="${item.id}">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg>
+            </button>
+            <span class="text-sm font-medium w-6 text-center">${item.quantity}</span>
+            <button class="increase-qty w-7 h-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:border-primary-300 hover:text-primary-500 transition-colors" data-id="${item.id}">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+            </button>
+          </div>
+        </div>
+        <button class="remove-item p-1.5 text-gray-300 hover:text-red-400 transition-colors self-start" data-id="${item.id}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+        </button>
+      </div>
+    `,
+      )
+      .join('');
+
+    // Update total
+    cartTotal.textContent = formatPrice(total);
+
+    // Bind item events
+    cartItemsList.querySelectorAll('.decrease-qty').forEach((btn) => {
+      btn.addEventListener('click', () =>
+        updateQuantity((btn as HTMLElement).dataset.id!, -1),
+      );
+    });
+    cartItemsList.querySelectorAll('.increase-qty').forEach((btn) => {
+      btn.addEventListener('click', () =>
+        updateQuantity((btn as HTMLElement).dataset.id!, 1),
+      );
+    });
+    cartItemsList.querySelectorAll('.remove-item').forEach((btn) => {
+      btn.addEventListener('click', () =>
+        removeFromCart((btn as HTMLElement).dataset.id!),
+      );
+    });
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  function addToCart(
+    id: string,
+    nombre: string,
+    precio: number,
+    imagen: string,
+  ) {
+    const existing = cart.find((item) => item.id === id);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({ id, nombre, precio, imagen, quantity: 1 });
+    }
+    updateCartUI();
+    openCart();
+
+    // Quick feedback animation
+    cartToggle.classList.add('scale-125');
+    setTimeout(() => cartToggle.classList.remove('scale-125'), 200);
+  }
+
+  function updateQuantity(id: string, delta: number) {
+    const item = cart.find((i) => i.id === id);
+    if (item) {
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter((i) => i.id !== id);
+      }
+    }
+    updateCartUI();
+  }
+
+  function removeFromCart(id: string) {
+    cart = cart.filter((i) => i.id !== id);
+    updateCartUI();
+  }
+
+  function sendWhatsApp() {
+    const total = cart.reduce(
+      (sum, item) => sum + item.precio * item.quantity,
+      0,
+    );
+    const lines = cart.map(
+      (item) =>
+        `• ${item.nombre} x${item.quantity} — ${item.precio.toLocaleString('es-CU')} CUP`,
+    );
+    const message = [
+      '🛒 *Nuevo Pedido*',
+      '',
+      ...lines,
+      '',
+      `*Total: ${total.toLocaleString('es-CU')} CUP*`,
+    ].join('\n');
+
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  }
+
+  // Events
+  cartToggle.addEventListener('click', openCart);
+  cartClose.addEventListener('click', closeCart);
+  cartOverlay.addEventListener('click', closeCart);
+  checkoutBtn.addEventListener('click', sendWhatsApp);
+
+  // Add to cart buttons (delegated)
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest(
+      '.add-to-cart-btn',
+    ) as HTMLElement;
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = btn.dataset.productId!;
+      const nombre = btn.dataset.productName!;
+      const precio = parseInt(btn.dataset.productPrice!);
+      const imagen = btn.dataset.productImage || '';
+      addToCart(id, nombre, precio, imagen);
+    }
+  });
+
+  // Load cart from localStorage
+  const savedCart = localStorage.getItem('cart');
+  if (savedCart) {
+    try {
+      cart = JSON.parse(savedCart);
+      updateCartUI();
+    } catch {
+      cart = [];
+    }
+  }
+
+  // Expose cart globally for search page
+  (window as any).__cartAdd = addToCart;
+</script>

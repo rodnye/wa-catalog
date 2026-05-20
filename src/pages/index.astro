@@ -1,11 +1,227 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ProductCard.astro';
+import CartSidebar from '../components/CartSidebar.astro';
+import { loadAllProducts, getCategories } from '../lib/products';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Dynamically load all products from src/data/*.json
+const allProducts = await loadAllProducts();
+const categories = getCategories(allProducts);
+
+// Featured products
+const featured = allProducts.filter((p) => p.destacado && p.disponible);
 ---
 
 <Layout>
-	<Welcome />
+  <Header categories={categories} />
+  <CartSidebar />
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Hero -->
+    <section class="mb-8">
+      <div
+        class="bg-gradient-to-br from-primary-400 via-primary-500 to-sand-500 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4"
+        >
+        </div>
+        <div
+          class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/3 -translate-x-1/4"
+        >
+        </div>
+        <div class="relative z-10">
+          <h1
+            class="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl mb-3"
+          >
+            Descubre lo que necesitas
+          </h1>
+          <p class="text-white/80 text-base sm:text-lg max-w-lg mb-5">
+            Productos variados con la mejor calidad y precios accesibles. ¡Tu
+            tienda de confianza te espera!
+          </p>
+          <div class="flex gap-3">
+            <a
+              href="#productos"
+              class="bg-white text-primary-600 font-semibold py-2.5 px-6 rounded-xl hover:bg-gray-50 transition-all shadow-sm"
+            >
+              Ver Productos
+            </a>
+            <a
+              href="https://wa.me/5351234567"
+              target="_blank"
+              class="bg-white/20 text-white font-semibold py-2.5 px-6 rounded-xl hover:bg-white/30 transition-all border border-white/30"
+            >
+              Contáctanos
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    {
+      featured.length > 0 && (
+        <section class="mb-10">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-display font-bold text-xl sm:text-2xl text-gray-800">
+              ⭐ Destacados
+            </h2>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {featured.slice(0, 8).map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <!-- All Products -->
+    <section id="productos" class="mb-10">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-display font-bold text-xl sm:text-2xl text-gray-800">
+          🛍️ Todos los Productos
+        </h2>
+      </div>
+
+      <!-- Search results (hidden by default) -->
+      <div id="search-results" class="hidden mb-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-sm text-gray-500">Resultados para:</span>
+          <span id="search-query" class="text-sm font-semibold text-primary-600"
+          ></span>
+          <button
+            id="clear-search"
+            class="text-xs text-gray-400 hover:text-red-400 transition-colors ml-2"
+          >
+            ✕ Limpiar
+          </button>
+        </div>
+        <div
+          id="search-results-grid"
+          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+        >
+        </div>
+        <p id="no-results" class="hidden text-center text-gray-400 py-12">
+          <span class="text-4xl block mb-3">🔍</span>
+          No encontramos productos con esa búsqueda
+        </p>
+      </div>
+
+      <!-- Products grid (shown by default) -->
+      <div
+        id="all-products-grid"
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"
+      >
+        {allProducts.map((product) => <ProductCard product={product} />)}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <!-- Client-side search script -->
+  <script define:vars={{ products: allProducts }}>
+    const productsData = products;
+
+    function performSearch(query) {
+      const searchResults = document.getElementById('search-results');
+      const searchResultsGrid = document.getElementById('search-results-grid');
+      const allProductsGrid = document.getElementById('all-products-grid');
+      const searchQueryEl = document.getElementById('search-query');
+      const noResults = document.getElementById('no-results');
+
+      if (!query.trim()) {
+        searchResults.classList.add('hidden');
+        allProductsGrid.classList.remove('hidden');
+        return;
+      }
+
+      const q = query.toLowerCase();
+      const filtered = productsData.filter(
+        (p) =>
+          p.nombre.toLowerCase().includes(q) ||
+          p.descripcion.toLowerCase().includes(q) ||
+          p.categorias.some((c) => c.toLowerCase().includes(q)),
+      );
+
+      searchResults.classList.remove('hidden');
+      allProductsGrid.classList.add('hidden');
+      searchQueryEl.textContent = query;
+
+      if (filtered.length === 0) {
+        searchResultsGrid.innerHTML = '';
+        noResults.classList.remove('hidden');
+        return;
+      }
+
+      noResults.classList.add('hidden');
+      searchResultsGrid.innerHTML = filtered
+        .map(
+          (p) => `
+        <article class="product-card card group cursor-pointer" data-product-id="${p.id}">
+          <a href="/producto/${p.id}" class="block">
+            <div class="relative overflow-hidden aspect-square bg-gray-50">
+              <img src="${p.imagenes[0] || '/images/placeholder.jpg'}" alt="${p.nombre}" class="product-img w-full h-full object-cover" loading="lazy" onerror="this.src='/images/placeholder.jpg'" />
+              ${p.destacado ? '<span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">⭐ Destacado</span>' : ''}
+            </div>
+            <div class="p-4">
+              <div class="flex flex-wrap gap-1.5 mb-2">
+                ${p.categorias
+                  .slice(0, 2)
+                  .map((c) => `<span class="badge">${c}</span>`)
+                  .join('')}
+              </div>
+              <h3 class="font-semibold text-gray-800 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">${p.nombre}</h3>
+              <p class="text-xs text-gray-500 line-clamp-2 mb-3">${p.descripcion}</p>
+              <span class="font-display font-bold text-primary-600 text-lg">${p.precio.toLocaleString('es-CU')} CUP</span>
+            </div>
+          </a>
+          ${
+            p.disponible
+              ? `
+          <div class="px-4 pb-4">
+            <button class="add-to-cart-btn w-full btn-primary text-sm flex items-center justify-center gap-2"
+              data-product-id="${p.id}"
+              data-product-name="${p.nombre}"
+              data-product-price="${p.precio}"
+              data-product-image="${p.imagenes[0] || ''}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+              Agregar
+            </button>
+          </div>`
+              : ''
+          }
+        </article>
+      `,
+        )
+        .join('');
+    }
+
+    // Bind search inputs
+    const searchDesktop = document.getElementById('search-desktop');
+    const searchMobile = document.getElementById('search-mobile');
+    const clearSearch = document.getElementById('clear-search');
+
+    let searchTimeout;
+    function onSearchInput(e) {
+      clearTimeout(searchTimeout);
+      const value = e.target.value;
+      if (searchDesktop) searchDesktop.value = value;
+      if (searchMobile) searchMobile.value = value;
+      searchTimeout = setTimeout(() => performSearch(value), 250);
+    }
+
+    searchDesktop?.addEventListener('input', onSearchInput);
+    searchMobile?.addEventListener('input', onSearchInput);
+
+    clearSearch?.addEventListener('click', () => {
+      if (searchDesktop) searchDesktop.value = '';
+      if (searchMobile) searchMobile.value = '';
+      performSearch('');
+    });
+  </script>
 </Layout>
