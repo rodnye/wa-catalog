@@ -8,6 +8,7 @@ on:
       - main
   workflow_dispatch:
 
+
 permissions:
   contents: read
   pages: write
@@ -16,6 +17,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v5
@@ -25,10 +28,11 @@ jobs:
           # path: . # The root location of your Astro project inside the repository. (optional)
           # node-version: 24 # The specific version of Node that should be used to build your site. Defaults to 22. (optional)
           package-manager: pnpm@10.33.2 # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
-          build-cmd: pnpm build # The command to run to build your site. Runs the package build script/task by default. (optional)
-        # env:
-        # PUBLIC_POKEAPI: 'https://pokeapi.co/api/v2' # Use single quotation marks for the variable value. (optional)
-
+          build-cmd: pnpm build
+        env:
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+          PUBLIC_SITE: ${{ vars.PUBLIC_SITE }}
+          
   deploy:
     needs: build
     runs-on: ubuntu-latest
