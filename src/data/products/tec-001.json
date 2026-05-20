@@ -1,0 +1,11 @@
+{
+  "id": "tec-001",
+  "nombre": "Altavoz Bluetooth Portátil",
+  "descripcion": "Altavoz compacto con sonido 360° y bajos potentes. Batería de 12 horas de duración. Resistente al agua IPX7. Conexión Bluetooth 5.3. Incluye correa para transportar. Disponible en 4 colores.",
+  "precio": 3500,
+  "moneda": "CUP",
+  "imagenes": ["/images/altavoz-bluetooth.jpg"],
+  "categorias": ["Tecnología", "Audio"],
+  "destacado": true,
+  "disponible": true
+}

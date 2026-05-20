@@ -1,0 +1,11 @@
+{
+  "id": "hog-004",
+  "nombre": "Difusor de Aceites Esenciales",
+  "descripcion": "Difusor ultrasónico con luz LED ambiental y temporizador. Capacidad de 300ml. Funciona silenciosamente. Incluye aceite esencial de eucalipto de regalo. Diseño elegante en madera bambú.",
+  "precio": 2200,
+  "moneda": "CUP",
+  "imagenes": ["/images/difusor-aceites.jpg"],
+  "categorias": ["Hogar", "Bienestar"],
+  "destacado": false,
+  "disponible": true
+}

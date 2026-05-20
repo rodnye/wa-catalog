@@ -1,0 +1,11 @@
+{
+  "id": "mod-001",
+  "nombre": "Tote Bag de Lino Natural",
+  "descripcion": "Bolso tipo tote de lino orgánico con bolsillo interior. Diseño minimalista con asas reforzadas. Capacidad amplia para uso diario. Tela pre-lavada para mayor suavidad. Medidas: 40x35x12cm.",
+  "precio": 950,
+  "moneda": "CUP",
+  "imagenes": ["/images/tote-lino.jpg"],
+  "categorias": ["Moda", "Accesorios"],
+  "destacado": true,
+  "disponible": true
+}

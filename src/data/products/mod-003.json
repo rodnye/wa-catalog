@@ -1,0 +1,11 @@
+{
+  "id": "mod-003",
+  "nombre": "Sombrero de Paja Playa",
+  "descripcion": "Sombrero de paja natural con cinta de tela estampada. Ala ancha para protección solar. Interior con banda absorbente. Plegable para fácil transporte. Talla ajustable con cordón interior.",
+  "precio": 1350,
+  "moneda": "CUP",
+  "imagenes": ["/images/sombrero-paja.jpg"],
+  "categorias": ["Moda", "Accesorios"],
+  "destacado": false,
+  "disponible": true
+}
