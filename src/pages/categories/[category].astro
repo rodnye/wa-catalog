@@ -23,7 +23,7 @@ const categories = getCategories(allProductsFresh);
 const categorySlug = Astro.params.category || '';
 const filtered = matchedCategory
   ? allProductsFresh.filter((p) =>
-      p.categorias.some(
+      p.categories.some(
         (c) => c.toLowerCase().replace(/\s+/g, '-') === categorySlug,
       ),
     )

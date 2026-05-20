@@ -11,7 +11,7 @@ const allProducts = await loadAllProducts();
 const categories = getCategories(allProducts);
 
 // Featured products
-const featured = allProducts.filter((p) => p.destacado && p.disponible);
+const featured = allProducts.filter((p) => p.featured && p.available);
 ---
 
 <Layout>
@@ -44,7 +44,7 @@ const featured = allProducts.filter((p) => p.destacado && p.disponible);
           </p>
           <div class="flex gap-3">
             <a
-              href="#productos"
+              href="#products"
               class="bg-white text-primary-600 font-semibold py-2.5 px-6 rounded-xl hover:bg-gray-50 transition-all shadow-sm"
             >
               Ver Productos
@@ -80,7 +80,7 @@ const featured = allProducts.filter((p) => p.destacado && p.disponible);
     }
 
     <!-- All Products -->
-    <section id="productos" class="mb-10">
+    <section id="products" class="mb-10">
       <div class="flex items-center justify-between mb-5">
         <h2 class="font-display font-bold text-xl sm:text-2xl text-gray-800">
           🛍️ Todos los Productos
@@ -163,7 +163,7 @@ const featured = allProducts.filter((p) => p.destacado && p.disponible);
         .map(
           (p) => `
         <article class="product-card card group cursor-pointer" data-product-id="${p.id}">
-          <a href="/producto/${p.id}" class="block">
+          <a href="/products/${p.id}" class="block">
             <div class="relative overflow-hidden aspect-square bg-gray-50">
               <img src="${p.imagenes[0] || '/images/placeholder.jpg'}" alt="${p.nombre}" class="product-img w-full h-full object-cover" loading="lazy" onerror="this.src='/images/placeholder.jpg'" />
               ${p.destacado ? '<span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">⭐ Destacado</span>' : ''}

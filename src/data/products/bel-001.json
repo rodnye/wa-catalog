@@ -1,11 +1,10 @@
 {
   "id": "bel-001",
-  "nombre": "Set de Skincare Natural",
-  "descripcion": "Kit completo de cuidado facial con ingredientes naturales: limpiador, tónico, sérum y crema hidratante. Libre de parabenos y sulfatos. Apto para pieles sensibles. Presentación en botellas de vidrio reciclable.",
-  "precio": 3200,
-  "moneda": "CUP",
-  "imagenes": ["/images/skincare-set.jpg"],
-  "categorias": ["Belleza", "Bienestar"],
-  "destacado": true,
-  "disponible": true
+  "name": "Set de Skincare Natural",
+  "description": "Kit completo de cuidado facial con ingredientes naturales: limpiador, tónico, sérum y crema hidratante. Libre de parabenos y sulfatos. Apto para pieles sensibles. Presentación en botellas de vidrio reciclable.",
+  "price": 3200,
+  "images": ["/images/skincare-set.jpg"],
+  "categories": ["Belleza", "Bienestar"],
+  "featured": true,
+  "available": true
 }

@@ -1,11 +1,10 @@
 {
   "id": "hog-001",
-  "nombre": "Vela Aromática de Lavanda",
-  "descripcion": "Vela artesanal de cera de soja con aroma a lavanda francesa. Duración aproximada de 45 horas. Presentación en frasco de vidrio reutilizable con tapa de madera. Ideal para crear ambientes relajantes.",
-  "precio": 650,
-  "moneda": "CUP",
-  "imagenes": ["/images/vela-lavanda.jpg"],
-  "categorias": ["Hogar", "Bienestar"],
-  "destacado": true,
-  "disponible": true
+  "name": "Vela Aromática de Lavanda",
+  "description": "Vela artesanal de cera de soja con aroma a lavanda francesa. Duración aproximada de 45 horas. Presentación en frasco de vidrio reutilizable con tapa de madera. Ideal para crear ambientes relajantes.",
+  "price": 650,
+  "images": ["/images/vela-lavanda.jpg"],
+  "categories": ["Hogar", "Bienestar"],
+  "featured": true,
+  "available": true
 }

@@ -1,11 +1,10 @@
 {
   "id": "hog-002",
-  "nombre": "Set de Macetas Cerámica",
-  "descripcion": "Conjunto de 3 macetas de cerámica con diseño minimalista en tonos pastel. Incluyen platillo drenaje. Perfectas para suculentas y plantas pequeñas. Tamaños: pequeño, mediano y grande.",
-  "precio": 1800,
-  "moneda": "CUP",
-  "imagenes": ["/images/macetas-ceramica.jpg"],
-  "categorias": ["Hogar", "Jardinería"],
-  "destacado": false,
-  "disponible": true
+  "name": "Set de Macetas Cerámica",
+  "description": "Conjunto de 3 macetas de cerámica con diseño minimalista en tonos pastel. Incluyen platillo drenaje. Perfectas para suculentas y plantas pequeñas. Tamaños: pequeño, mediano y grande.",
+  "price": 1800,
+  "images": ["/images/macetas-ceramica.jpg"],
+  "categories": ["Hogar", "Jardinería"],
+  "featured": false,
+  "available": true
 }

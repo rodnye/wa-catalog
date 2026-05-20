@@ -1,14 +1,7 @@
-export interface Product {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  moneda: string;
-  imagenes: string[];
-  categorias: string[];
-  destacado: boolean;
-  disponible: boolean;
-}
+import type { productSchema } from "@/schemas";
+import type { z } from "astro/zod";
+
+export type Product = z.infer<typeof productSchema>;
 
 export interface CartItem {
   product: Product;

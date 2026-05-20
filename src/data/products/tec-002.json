@@ -1,11 +1,10 @@
 {
   "id": "tec-002",
-  "nombre": "Auriculares Inalámbricos ANC",
-  "descripcion": "Auriculares con cancelación activa de ruido y modo transparencia. Batería de 30h con estuche de carga. Sonido Hi-Res certificado. Comodidad premium con almohadillas de espuma viscoelástica.",
-  "precio": 4200,
-  "moneda": "CUP",
-  "imagenes": ["/images/auriculares-anc.jpg"],
-  "categorias": ["Tecnología", "Audio"],
-  "destacado": true,
-  "disponible": true
+  "name": "Auriculares Inalámbricos ANC",
+  "description": "Auriculares con cancelación activa de ruido y modo transparencia. Batería de 30h con estuche de carga. Sonido Hi-Res certificado. Comodidad premium con almohadillas de espuma viscoelástica.",
+  "price": 4200,
+  "images": ["/images/auriculares-anc.jpg"],
+  "categories": ["Tecnología", "Audio"],
+  "featured": true,
+  "available": true
 }
