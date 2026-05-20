@@ -114,7 +114,7 @@ const categoryEmojis: Record<string, string> = {
           {
             product.categories.map((cat) => (
               <a
-                href={`/categoria/${cat.toLowerCase().replace(/\s+/g, '-')}`}
+                href={`/categories/${cat.toLowerCase().replace(/\s+/g, '-')}`}
                 class="badge hover:bg-primary-200 transition-colors cursor-pointer"
               >
                 {categoryEmojis[cat] || ''} {cat}
