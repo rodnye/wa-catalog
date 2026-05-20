@@ -1,0 +1,92 @@
+media_folder: '/public/images'
+public_folder: '/wa-catalog/images'
+
+# Use DecapBridge PKCE auth (required)
+backend:
+  name: git-gateway
+  repo: rodnye/wa-catalog
+  branch: main
+  auth_type: pkce
+  base_url: https://auth.decapbridge.com
+  auth_endpoint: /sites/b24d4304-f503-45ca-b408-da24db405ebb/pkce
+  auth_token_endpoint: /sites/b24d4304-f503-45ca-b408-da24db405ebb/token
+  gateway_url: https://gateway.decapbridge.com
+
+  # See who did what (optional)
+  commit_messages:
+    create: 'data: create “{{slug}}” - {{author-name}} via DecapBridge'
+    update: 'data: update “{{slug}}” - {{author-name}} via DecapBridge'
+    delete: 'data: delete “{{slug}}” - {{author-name}} via DecapBridge'
+    uploadMedia: 'data: upload “{{path}}” - {{author-name}} via DecapBridge'
+    deleteMedia: 'data: delete “{{path}}” - {{author-name}} via DecapBridge'
+    openAuthoring: 'data: message {{message}} - {{author-name}} via DecapBridge'
+
+# Enable PKCE fields (optional, recommended)
+auth:
+  email_claim: email
+  first_name_claim: first_name
+  last_name_claim: last_name
+  avatar_url_claim: avatar_url
+
+# Better Decap + Bridge logo (optional)
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+
+# Add site links in Decap CMS (optional)
+site_url: https://rodnye.github.io
+
+collections:
+  - name: 'products' # Used in routes, e.g., /admin/collections/blog
+    extension: json
+    label: 'Productos' # Used in the UI
+    folder: 'src/data/products' # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    slug: '{{slug}}' # Filename template, e.g., title.md
+
+    editor:
+      preview: false
+
+    fields: # The fields for each json
+      - label: 'Nombre del producto'
+        name: 'title'
+        widget: 'string'
+
+      - label: 'Es muy importante??'
+        name: 'featured'
+        widget: 'boolean'
+        default: false
+
+      - label: 'Está disponible??'
+        name: 'available'
+        widget: 'boolean'
+        default: true
+
+      - label: 'Descripción o pequeño resumen'
+        name: 'description'
+        widget: 'string'
+
+      - label: 'Fotos del producto'
+        name: 'images'
+        widget: 'list'
+        #summary: '{{fields.image}}'
+        field: { label: Imagen, name: image, widget: image }
+
+      - label: 'Categorías'
+        name: 'categories'
+        widget: 'select'
+        multiple: true
+        options:
+          [
+            Accesorios,
+            Artesanía,
+            Audio,
+            Belleza,
+            Bienestar,
+            Hogar,
+            Jardinería,
+            Joyería,
+            Maquillaje,
+            Moda,
+            Outdoor,
+            Ropa,
+            Tecnología,
+          ]
