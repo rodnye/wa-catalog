@@ -1,0 +1,35 @@
+[
+  {
+    "id": "tec-001",
+    "nombre": "Altavoz Bluetooth Portátil",
+    "descripcion": "Altavoz compacto con sonido 360° y bajos potentes. Batería de 12 horas de duración. Resistente al agua IPX7. Conexión Bluetooth 5.3. Incluye correa para transportar. Disponible en 4 colores.",
+    "precio": 3500,
+    "moneda": "CUP",
+    "imagenes": ["/images/altavoz-bluetooth.jpg"],
+    "categorias": ["Tecnología", "Audio"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "tec-002",
+    "nombre": "Auriculares Inalámbricos ANC",
+    "descripcion": "Auriculares con cancelación activa de ruido y modo transparencia. Batería de 30h con estuche de carga. Sonido Hi-Res certificado. Comodidad premium con almohadillas de espuma viscoelástica.",
+    "precio": 4200,
+    "moneda": "CUP",
+    "imagenes": ["/images/auriculares-anc.jpg"],
+    "categorias": ["Tecnología", "Audio"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "tec-003",
+    "nombre": "Cargador Solar Plegable",
+    "descripcion": "Panel solar de 20W con doble puerto USB. Se pliega como un cuaderno para fácil transporte. Ideal para camping y outdoor. Resistente al agua y polvo. Carga dos dispositivos simultáneamente.",
+    "precio": 2800,
+    "moneda": "CUP",
+    "imagenes": ["/images/cargador-solar.jpg"],
+    "categorias": ["Tecnología", "Outdoor"],
+    "destacado": false,
+    "disponible": true
+  }
+]

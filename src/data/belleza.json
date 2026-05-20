@@ -1,0 +1,35 @@
+[
+  {
+    "id": "bel-001",
+    "nombre": "Set de Skincare Natural",
+    "descripcion": "Kit completo de cuidado facial con ingredientes naturales: limpiador, tónico, sérum y crema hidratante. Libre de parabenos y sulfatos. Apto para pieles sensibles. Presentación en botellas de vidrio reciclable.",
+    "precio": 3200,
+    "moneda": "CUP",
+    "imagenes": ["/images/skincare-set.jpg"],
+    "categorias": ["Belleza", "Bienestar"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "bel-002",
+    "nombre": "Paleta de Sombras Tropical",
+    "descripcion": "Paleta de 12 sombras en tonos cálidos y tropicales. Textura mate y shimmer ultra pigmentada. Incluye espejo y doble aplicador. Fórmula vegana y cruelty-free. Larga duración hasta 12 horas.",
+    "precio": 1800,
+    "moneda": "CUP",
+    "imagenes": ["/images/paleta-sombras.jpg"],
+    "categorias": ["Belleza", "Maquillaje"],
+    "destacado": false,
+    "disponible": true
+  },
+  {
+    "id": "bel-003",
+    "nombre": "Aceite Corporal de Coco",
+    "descripcion": "Aceite corporal orgánico de coco virgen con vitamina E. Hidrata y nutre la piel dejando un brillo sutil. Absorción rápida sin sensación grasosa. Botella de 250ml con dispensador. Ideal también para el cabello.",
+    "precio": 900,
+    "moneda": "CUP",
+    "imagenes": ["/images/aceite-coco.jpg"],
+    "categorias": ["Belleza", "Bienestar"],
+    "destacado": false,
+    "disponible": true
+  }
+]

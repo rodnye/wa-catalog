@@ -1,0 +1,46 @@
+[
+  {
+    "id": "hog-001",
+    "nombre": "Vela Aromática de Lavanda",
+    "descripcion": "Vela artesanal de cera de soja con aroma a lavanda francesa. Duración aproximada de 45 horas. Presentación en frasco de vidrio reutilizable con tapa de madera. Ideal para crear ambientes relajantes.",
+    "precio": 650,
+    "moneda": "CUP",
+    "imagenes": ["/images/vela-lavanda.jpg"],
+    "categorias": ["Hogar", "Bienestar"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "hog-002",
+    "nombre": "Set de Macetas Cerámica",
+    "descripcion": "Conjunto de 3 macetas de cerámica con diseño minimalista en tonos pastel. Incluyen platillo drenaje. Perfectas para suculentas y plantas pequeñas. Tamaños: pequeño, mediano y grande.",
+    "precio": 1800,
+    "moneda": "CUP",
+    "imagenes": ["/images/macetas-ceramica.jpg"],
+    "categorias": ["Hogar", "Jardinería"],
+    "destacado": false,
+    "disponible": true
+  },
+  {
+    "id": "hog-003",
+    "nombre": "Cojín Bordado a Mano",
+    "descripcion": "Cojín decorativo con bordado artesanal floral sobre tela de lino natural. Relleno de fibra hipoalergénica. Dimensiones: 45x45cm. Cada pieza es única por su elaboración manual.",
+    "precio": 1100,
+    "moneda": "CUP",
+    "imagenes": ["/images/cojin-bordado.jpg"],
+    "categorias": ["Hogar", "Artesanía"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "hog-004",
+    "nombre": "Difusor de Aceites Esenciales",
+    "descripcion": "Difusor ultrasónico con luz LED ambiental y temporizador. Capacidad de 300ml. Funciona silenciosamente. Incluye aceite esencial de eucalipto de regalo. Diseño elegante en madera bambú.",
+    "precio": 2200,
+    "moneda": "CUP",
+    "imagenes": ["/images/difusor-aceites.jpg"],
+    "categorias": ["Hogar", "Bienestar"],
+    "destacado": false,
+    "disponible": true
+  }
+]

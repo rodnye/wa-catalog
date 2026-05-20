@@ -1,0 +1,35 @@
+[
+  {
+    "id": "mod-001",
+    "nombre": "Tote Bag de Lino Natural",
+    "descripcion": "Bolso tipo tote de lino orgánico con bolsillo interior. Diseño minimalista con asas reforzadas. Capacidad amplia para uso diario. Tela pre-lavada para mayor suavidad. Medidas: 40x35x12cm.",
+    "precio": 950,
+    "moneda": "CUP",
+    "imagenes": ["/images/tote-lino.jpg"],
+    "categorias": ["Moda", "Accesorios"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "mod-002",
+    "nombre": "Vestido Midi Veraniego",
+    "descripcion": "Vestido midi de tela fresca con estampado tropical. Escote en V con manga corta volada. Cierre lateral con cremallera oculta. Perfecto para el clima caribeño. Disponible en tallas S-XL.",
+    "precio": 2100,
+    "moneda": "CUP",
+    "imagenes": ["/images/vestido-midi.jpg"],
+    "categorias": ["Moda", "Ropa"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "mod-003",
+    "nombre": "Sombrero de Paja Playa",
+    "descripcion": "Sombrero de paja natural con cinta de tela estampada. Ala ancha para protección solar. Interior con banda absorbente. Plegable para fácil transporte. Talla ajustable con cordón interior.",
+    "precio": 1350,
+    "moneda": "CUP",
+    "imagenes": ["/images/sombrero-paja.jpg"],
+    "categorias": ["Moda", "Accesorios"],
+    "destacado": false,
+    "disponible": true
+  }
+]

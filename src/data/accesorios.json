@@ -1,0 +1,46 @@
+[
+  {
+    "id": "acc-001",
+    "nombre": "Collar de Perlas Natural",
+    "descripcion": "Elegante collar de perlas naturales con cierre dorado. Ideal para ocasiones especiales y uso diario. Cada perla es única, lo que hace de cada collar una pieza exclusiva. Longitud ajustable de 40-45cm.",
+    "precio": 2500,
+    "moneda": "CUP",
+    "imagenes": ["/images/collar-perlas.jpg"],
+    "categorias": ["Accesorios", "Joyería"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "acc-002",
+    "nombre": "Pulsera de Cuero Artesanal",
+    "descripcion": "Pulsera tejida a mano con cuero genuino y detalles metálicos. Diseño bohemio que combina con cualquier estilo. Ajustable a diferentes tamaños de muñeca. Resistente al agua.",
+    "precio": 800,
+    "moneda": "CUP",
+    "imagenes": ["/images/placeholder.jpg"],
+    "categorias": ["Accesorios", "Artesanía"],
+    "destacado": false,
+    "disponible": true
+  },
+  {
+    "id": "acc-003",
+    "nombre": "Gafas de Sol Vintage",
+    "descripcion": "Gafas de sol con montura retro estilo años 70. Lentes con protección UV400. Incluye estuche de cuero sintético. Disponibles en varios colores de montura.",
+    "precio": 1200,
+    "moneda": "CUP",
+    "imagenes": ["/images/gafas-sol.jpg"],
+    "categorias": ["Accesorios", "Moda"],
+    "destacado": true,
+    "disponible": true
+  },
+  {
+    "id": "acc-004",
+    "nombre": "Bufanda de Seda Floral",
+    "descripcion": "Bufanda de seda suave con estampado floral primaveral. Perfecta para dar un toque de color a cualquier outfit. Dimensiones: 90x90cm. Se puede usar también como pañuelo para el cabello.",
+    "precio": 1500,
+    "moneda": "CUP",
+    "imagenes": ["/images/placeholder.jpg"],
+    "categorias": ["Accesorios", "Moda"],
+    "destacado": false,
+    "disponible": true
+  }
+]
