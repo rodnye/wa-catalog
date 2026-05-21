@@ -8,9 +8,10 @@ const PUBLIC_SITE = process.env.PUBLIC_SITE;
 
 // https://astro.build/config
 export default defineConfig({
-  site: PUBLIC_SITE,
   integrations: [tailwind(), preact()],
-  base: PUBLIC_BASE_URL,
+
+  site: PUBLIC_SITE,
+  base: PUBLIC_BASE_URL || '/',
   build: {
     assets: 'assets',
   },

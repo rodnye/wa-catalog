@@ -29,6 +29,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.19
         version: 3.4.19(yaml@2.9.0)
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
     devDependencies:
       prettier:
         specifier: ^3.8.3
