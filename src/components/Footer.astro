@@ -1,4 +1,6 @@
 ---
+import BaseLink from './BaseLink.astro';
+
 const year = new Date().getFullYear();
 ---
 
@@ -23,26 +25,28 @@ const year = new Date().getFullYear();
         <h3 class="font-semibold text-gray-800 mb-3">Navegación</h3>
         <ul class="space-y-2 text-sm text-gray-500">
           <li>
-            <a href="/" class="hover:text-primary-500 transition-colors"
-              >Inicio</a
+            <BaseLink href="/" class="hover:text-primary-500 transition-colors"
+              >Inicio</BaseLink
             >
           </li>
           <li>
-            <a
+            <BaseLink
               href="/categories/accesorios"
-              class="hover:text-primary-500 transition-colors">Accesorios</a
+              class="hover:text-primary-500 transition-colors"
+              >Accesorios</BaseLink
             >
           </li>
           <li>
-            <a
+            <BaseLink
               href="/categories/hogar"
-              class="hover:text-primary-500 transition-colors">Hogar</a
+              class="hover:text-primary-500 transition-colors">Hogar</BaseLink
             >
           </li>
           <li>
-            <a
+            <BaseLink
               href="/categories/tecnologia"
-              class="hover:text-primary-500 transition-colors">Tecnología</a
+              class="hover:text-primary-500 transition-colors"
+              >Tecnología</BaseLink
             >
           </li>
         </ul>
@@ -53,27 +57,27 @@ const year = new Date().getFullYear();
         <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
         <ul class="space-y-2 text-sm text-gray-500">
           <li>
-            <a
+            <BaseLink
               href="/categories/moda"
-              class="hover:text-primary-500 transition-colors">Moda</a
+              class="hover:text-primary-500 transition-colors">Moda</BaseLink
             >
           </li>
           <li>
-            <a
+            <BaseLink
               href="/categories/belleza"
-              class="hover:text-primary-500 transition-colors">Belleza</a
+              class="hover:text-primary-500 transition-colors">Belleza</BaseLink
             >
           </li>
           <li>
-            <a
+            <BaseLink
               href="/categories/joyeria"
-              class="hover:text-primary-500 transition-colors">Joyería</a
+              class="hover:text-primary-500 transition-colors">Joyería</BaseLink
             >
           </li>
           <li>
-            <a
+            <BaseLink
               href="/categories/audio"
-              class="hover:text-primary-500 transition-colors">Audio</a
+              class="hover:text-primary-500 transition-colors">Audio</BaseLink
             >
           </li>
         </ul>
@@ -85,9 +89,10 @@ const year = new Date().getFullYear();
         <ul class="space-y-2 text-sm text-gray-500">
           <li class="flex items-center gap-2">
             <span>📱</span>
-            <a
+            <BaseLink
               href="https://wa.me/5363264783"
-              class="hover:text-primary-500 transition-colors">WhatsApp</a
+              class="hover:text-primary-500 transition-colors"
+              >WhatsApp</BaseLink
             >
           </li>
           <li class="flex items-center gap-2">

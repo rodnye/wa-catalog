@@ -8,7 +8,6 @@ on:
       - main
   workflow_dispatch:
 
-
 permissions:
   contents: read
   pages: write
@@ -32,7 +31,7 @@ jobs:
         env:
           PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
           PUBLIC_SITE: ${{ vars.PUBLIC_SITE }}
-          
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

@@ -11,7 +11,6 @@ export default defineConfig({
   site: PUBLIC_SITE,
   integrations: [tailwindIntegration()],
   base: PUBLIC_BASE_URL,
-  outDir: path.join('./dist', PUBLIC_BASE_URL),
   build: {
     assets: 'assets',
   },

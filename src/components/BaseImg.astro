@@ -1,0 +1,11 @@
+---
+import { resolveUrl } from '@/utils/helpers';
+
+type Props = astroHTML.JSX.ImgHTMLAttributes & {
+  src: string;
+};
+
+const { src, ...props } = Astro.props;
+---
+
+<img src={resolveUrl(src)} {...props} />

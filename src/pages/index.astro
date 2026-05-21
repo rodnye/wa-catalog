@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import ProductCard from '../components/ProductCard.astro';
 import CartSidebar from '../components/CartSidebar.astro';
 import { loadAllProducts, getCategories } from '../lib/products';
+import BaseLink from '@/components/BaseLink.astro';
 
 // Dynamically load all products from src/data/*.json
 const allProducts = await loadAllProducts();
@@ -43,19 +44,19 @@ const featured = allProducts.filter((p) => p.featured && p.available);
             tienda de confianza te espera!
           </p>
           <div class="flex gap-3">
-            <a
+            <BaseLink
               href="#products"
               class="bg-white text-primary-600 font-semibold py-2.5 px-6 rounded-xl hover:bg-gray-50 transition-all shadow-sm"
             >
               Ver Productos
-            </a>
-            <a
+            </BaseLink>
+            <BaseLink
               href="https://wa.me/5351234567"
               target="_blank"
               class="bg-white/20 text-white font-semibold py-2.5 px-6 rounded-xl hover:bg-white/30 transition-all border border-white/30"
             >
               Contáctanos
-            </a>
+            </BaseLink>
           </div>
         </div>
       </div>
@@ -162,10 +163,10 @@ const featured = allProducts.filter((p) => p.featured && p.available);
       searchResultsGrid.innerHTML = filtered
         .map(
           (p) => `
-        <article class="product-card card group cursor-pointer" data-product-id="${p.id}">
-          <a href="/products/${p.id}" class="block">
+        <BaseLinkrticle class="product-card card group cursor-pointer" data-product-id="${p.id}">
+          <BaseLink href="/products/${p.id}" class="block">
             <div class="relative overflow-hidden aspect-square bg-gray-50">
-              <img src="${p.imagenes[0] || '/images/placeholder.jpg'}" alt="${p.nombre}" class="product-img w-full h-full object-cover" loading="lazy" onerror="this.src='/images/placeholder.jpg'" />
+              <BaseImg src="${p.imagenes[0] || '/images/placeholder.jpg'}" alt="${p.nombre}" class="product-img w-full h-full object-cover" loading="lazy" onerror="this.src='/images/placeholder.jpg'" />
               ${p.destacado ? '<span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">⭐ Destacado</span>' : ''}
             </div>
             <div class="p-4">
@@ -179,7 +180,7 @@ const featured = allProducts.filter((p) => p.featured && p.available);
               <p class="text-xs text-gray-500 line-clamp-2 mb-3">${p.descripcion}</p>
               <span class="font-display font-bold text-primary-600 text-lg">${p.precio.toLocaleString('es-CU')} CUP</span>
             </div>
-          </a>
+          </BaseLink>
           ${
             p.disponible
               ? `
@@ -195,7 +196,7 @@ const featured = allProducts.filter((p) => p.featured && p.available);
           </div>`
               : ''
           }
-        </article>
+        </BaseLinkrticle>
       `,
         )
         .join('');

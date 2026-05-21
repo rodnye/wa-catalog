@@ -172,7 +172,7 @@
       .map(
         (item) => `
       <div class="flex gap-3 bg-gray-50 rounded-xl p-3" data-cart-item-id="${item.id}">
-        <img src="${item.imagen || '/images/placeholder.jpg'}" alt="${item.nombre}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" onerror="this.src='/images/placeholder.jpg'" />
+        <BaseImg src="${item.imagen || '/images/placeholder.jpg'}" alt="${item.nombre}" class="w-16 h-16 rounded-lg object-cover flex-shrink-0" onerror="this.src='/images/placeholder.jpg'" />
         <div class="flex-1 min-w-0">
           <h4 class="text-sm font-medium text-gray-800 truncate">${item.nombre}</h4>
           <p class="text-sm font-bold text-primary-600 mt-0.5">${formatPrice(item.precio)}</p>

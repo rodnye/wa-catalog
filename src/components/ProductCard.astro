@@ -1,6 +1,8 @@
 ---
 import type { Product } from '../types';
 import { formatPrice } from '../utils/helpers';
+import BaseImg from './BaseImg.astro';
+import BaseLink from './BaseLink.astro';
 
 interface Props {
   product: Product;
@@ -14,10 +16,10 @@ const slug = product.id;
   class="product-card card group cursor-pointer"
   data-product-id={product.id}
 >
-  <a href={`/products/${slug}`} class="block">
+  <BaseLink href={`/products/${slug}`} class="block">
     <!-- Image -->
     <div class="relative overflow-hidden aspect-square bg-gray-50">
-      <img
+      <BaseImg
         src={product.images[0] || '/images/placeholder.jpg'}
         alt={product.name}
         class="product-img w-full h-full object-cover"
@@ -65,7 +67,7 @@ const slug = product.id;
         >
       </div>
     </div>
-  </a>
+  </BaseLink>
 
   <!-- Add to cart button -->
   {

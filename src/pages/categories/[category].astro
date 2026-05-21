@@ -5,6 +5,7 @@ import Footer from '../../components/Footer.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import CartSidebar from '../../components/CartSidebar.astro';
 import { loadAllProducts, getCategories } from '../../lib/products';
+import BaseLink from '@/components/BaseLink.astro';
 
 export async function getStaticPaths() {
   const allProducts = await loadAllProducts();
@@ -53,7 +54,7 @@ const emoji = matchedCategory ? categoryEmojis[matchedCategory] || 'ðŸ“¦' : 'ðŸ“
 
   <main class="max-w-7xl mx-auto px-4 py-6">
     <div class="mb-6">
-      <a
+      <BaseLink
         href="/"
         class="text-sm text-gray-400 hover:text-primary-500 transition-colors inline-flex items-center gap-1 mb-3"
       >
@@ -69,7 +70,7 @@ const emoji = matchedCategory ? categoryEmojis[matchedCategory] || 'ðŸ“¦' : 'ðŸ“
             d="M15 19l-7-7 7-7"></path></svg
         >
         Volver a todo
-      </a>
+      </BaseLink>
       <h1
         class="font-display font-bold text-2xl sm:text-3xl text-gray-800 flex items-center gap-3"
       >
@@ -97,9 +98,9 @@ const emoji = matchedCategory ? categoryEmojis[matchedCategory] || 'ðŸ“¦' : 'ðŸ“
           <p class="text-sm text-gray-400 mb-4">
             Prueba explorando otras categorÃ­as
           </p>
-          <a href="/" class="btn-primary inline-block">
+          <BaseLink href="/" class="btn-primary inline-block">
             Ver todos los productos
-          </a>
+          </BaseLink>
         </div>
       )
     }
