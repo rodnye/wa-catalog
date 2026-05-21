@@ -1,7 +1,7 @@
 // @ts-check
-import tailwindIntegration from '@astrojs/tailwind';
+import tailwind from '@astrojs/tailwind';
+import preact from '@astrojs/preact';
 import { defineConfig } from 'astro/config';
-import path from 'node:path';
 
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || '/';
 const PUBLIC_SITE = process.env.PUBLIC_SITE;
@@ -9,7 +9,7 @@ const PUBLIC_SITE = process.env.PUBLIC_SITE;
 // https://astro.build/config
 export default defineConfig({
   site: PUBLIC_SITE,
-  integrations: [tailwindIntegration()],
+  integrations: [tailwind(), preact()],
   base: PUBLIC_BASE_URL,
   build: {
     assets: 'assets',
