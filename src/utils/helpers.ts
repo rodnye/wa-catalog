@@ -3,9 +3,7 @@ export const WHATSAPP_NUMBER =
   import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5351234567';
 
 export const resolveUrl = (path: string) => {
-  return path.startsWith('/')
-    ? import.meta.env.BASE_URL.replace(/\/$/, '') + path
-    : path;
+  return path.startsWith('/') ? BASE_URL.replace(/\/$/, '') + path : path;
 };
 
 export function formatPrice(price: number): string {

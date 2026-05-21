@@ -1,6 +1,5 @@
 import { useState } from 'preact/hooks';
 import BaseImg from '../preact/BaseImg';
-import { resolveUrl } from '@/utils/helpers';
 
 interface Props {
   images: string[];
@@ -9,7 +8,7 @@ interface Props {
 
 export default function ProductGallery({ images, productName }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const mainSrc = resolveUrl(images[activeIndex] || '/images/placeholder.jpg');
+  const mainSrc = images[activeIndex] || '/images/placeholder.jpg';
 
   return (
     <div class="space-y-3">
