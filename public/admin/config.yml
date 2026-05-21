@@ -47,7 +47,7 @@ collections:
 
     fields: # The fields for each json
       - label: 'Nombre del producto'
-        name: 'title'
+        name: 'name'
         widget: 'string'
 
       - label: 'Es muy importante??'
