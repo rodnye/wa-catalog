@@ -10,7 +10,7 @@ const PUBLIC_SITE = process.env.PUBLIC_SITE;
 export default defineConfig({
   integrations: [tailwind(), preact()],
 
-  site: PUBLIC_SITE,
+  site: PUBLIC_SITE || 'http://0.0.0.0',
   base: PUBLIC_BASE_URL || '/',
   build: {
     assets: 'assets',

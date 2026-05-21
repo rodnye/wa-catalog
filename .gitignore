@@ -1,4 +1,5 @@
 .git
+.cache
 
 # build output
 dist/
@@ -24,3 +25,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# repo-sync folders
+src/data/products
+public/images
