@@ -1,0 +1,10 @@
+{
+  "id": "mod-002",
+  "name": "Vestido Midi Veraniego",
+  "description": "Vestido midi de tela fresca con estampado tropical. Escote en V con manga corta volada. Cierre lateral con cremallera oculta. Perfecto para el clima caribeño. Disponible en tallas S-XL.",
+  "price": 2100,
+  "images": ["/images/vestido-midi.jpg"],
+  "categories": ["Moda", "Ropa"],
+  "featured": true,
+  "available": true
+}

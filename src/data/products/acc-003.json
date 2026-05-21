@@ -1,0 +1,10 @@
+{
+  "id": "acc-003",
+  "name": "Gafas de Sol Vintage",
+  "description": "Gafas de sol con montura retro estilo años 70. Lentes con protección UV400. Incluye estuche de cuero sintético. Disponibles en varios colores de montura.",
+  "price": 1200,
+  "images": ["/images/gafas-sol.jpg"],
+  "categories": ["Accesorios", "Moda"],
+  "featured": true,
+  "available": true
+}

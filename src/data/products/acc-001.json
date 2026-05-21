@@ -1,0 +1,10 @@
+{
+  "id": "acc-001",
+  "name": "Collar de Perlas Natural",
+  "description": "Elegante collar de perlas naturales con cierre dorado. Ideal para ocasiones especiales y uso diario. Cada perla es única, lo que hace de cada collar una pieza exclusiva. Longitud ajustable de 40-45cm.",
+  "price": 2500,
+  "images": ["/images/collar-perlas.jpg"],
+  "categories": ["Accesorios", "Joyería"],
+  "featured": true,
+  "available": true
+}

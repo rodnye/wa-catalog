@@ -1,0 +1,10 @@
+{
+  "id": "bel-003",
+  "name": "Aceite Corporal de Coco",
+  "description": "Aceite corporal orgánico de coco virgen con vitamina E. Hidrata y nutre la piel dejando un brillo sutil. Absorción rápida sin sensación grasosa. Botella de 250ml con dispensador. Ideal también para el cabello.",
+  "price": 900,
+  "images": ["/images/aceite-coco.jpg"],
+  "categories": ["Belleza", "Bienestar"],
+  "featured": false,
+  "available": true
+}

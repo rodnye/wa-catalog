@@ -1,0 +1,10 @@
+{
+  "id": "hog-003",
+  "name": "Cojín Bordado a Mano",
+  "description": "Cojín decorativo con bordado artesanal floral sobre tela de lino natural. Relleno de fibra hipoalergénica. Dimensiones: 45x45cm. Cada pieza es única por su elaboración manual.",
+  "price": 1100,
+  "images": ["/images/cojin-bordado.jpg"],
+  "categories": ["Hogar", "Artesanía"],
+  "featured": true,
+  "available": true
+}
