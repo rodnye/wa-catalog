@@ -3,9 +3,9 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import CartSidebar from '../../components/CartSidebar.astro';
 import { loadAllProducts, getCategories } from '../../lib/products';
 import BaseLink from '@/components/BaseLink.astro';
+import CartSidebar from '@/components/preact/CartSidebar';
 
 export async function getStaticPaths() {
   const allProducts = await loadAllProducts();

@@ -1,11 +1,12 @@
 ---
-import type { Product } from '../types';
+import type { IProduct } from '../types';
 import { formatPrice } from '../utils/helpers';
 import BaseImg from './BaseImg.astro';
 import BaseLink from './BaseLink.astro';
+import AddToCartButton from '@/components/preact/AddToCartButton';
 
 interface Props {
-  product: Product;
+  product: IProduct;
 }
 
 const { product } = Astro.props;
@@ -73,38 +74,14 @@ const slug = product.id;
   {
     product.available && (
       <div class="px-4 pb-4">
-        <button
-          class="add-to-cart-btn w-full btn-primary text-sm flex items-center justify-center gap-2"
-          data-product-id={product.id}
-          data-product-name={product.name}
-          data-product-price={product.price}
-          data-product-image={product.images[0] || ''}
-        >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-          Agregar
-        </button>
+        <AddToCartButton
+          productId={product.id}
+          productName={product.name}
+          productPrice={product.price}
+          productImage={product.images[0] || ''}
+          client:load
+        />
       </div>
     )
   }
 </article>
-
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>

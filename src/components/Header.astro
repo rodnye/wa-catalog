@@ -1,5 +1,8 @@
 ---
 import BaseLink from './BaseLink.astro';
+import CartToggle from '@/components/preact/CartToggle';
+import MobileSearchToggle from '@/components/preact/MobileSearchToggle';
+import SearchBar from '@/components/preact/SearchBar';
 
 interface Props {
   categories: string[];
@@ -26,91 +29,16 @@ const { categories, activeCategory = '' } = Astro.props;
 
       <!-- Search bar (desktop) -->
       <div class="hidden md:flex flex-1 max-w-lg mx-4">
-        <div class="relative w-full">
-          <input
-            id="search-desktop"
-            type="text"
-            placeholder="Buscar productos..."
-            class="input-field pl-10 pr-4"
-          />
-          <svg
-            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </div>
+        <SearchBar client:load />
       </div>
 
       <!-- Actions -->
       <div class="flex items-center gap-2">
-        <!-- Search toggle (mobile) -->
-        <button
-          id="search-toggle"
-          class="md:hidden p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors"
-          aria-label="Buscar"
-        >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-          </svg>
-        </button>
+        <!-- Search toggle (mobile) + collapsible input -->
+        <MobileSearchToggle client:load />
 
         <!-- Cart button -->
-        <button
-          id="cart-toggle"
-          class="relative p-2 rounded-xl text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors"
-          aria-label="Carrito"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
-            ></path>
-          </svg>
-          <span
-            id="cart-count"
-            class="absolute -top-1 -right-1 bg-primary-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-          >
-            0
-          </span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile search (collapsible) -->
-    <div
-      id="mobile-search"
-      class="md:hidden overflow-hidden transition-all duration-300 max-h-0"
-    >
-      <div class="pb-3">
-        <input
-          id="search-mobile"
-          type="text"
-          placeholder="Buscar productss..."
-          class="input-field pl-10 pr-4"
-        />
+        <CartToggle client:load />
       </div>
     </div>
 
@@ -147,24 +75,3 @@ const { categories, activeCategory = '' } = Astro.props;
     </nav>
   </div>
 </header>
-
-<script>
-  // Mobile search toggle
-  const searchToggle = document.getElementById('search-toggle');
-  const mobileSearch = document.getElementById('mobile-search');
-
-  searchToggle?.addEventListener('click', () => {
-    if (mobileSearch) {
-      const isOpen =
-        mobileSearch.style.maxHeight && mobileSearch.style.maxHeight !== '0px';
-      mobileSearch.style.maxHeight = isOpen ? '0px' : '60px';
-      if (!isOpen) {
-        setTimeout(() => {
-          (
-            document.getElementById('search-mobile') as HTMLInputElement
-          )?.focus();
-        }, 300);
-      }
-    }
-  });
-</script>

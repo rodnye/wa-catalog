@@ -1,3 +1,4 @@
+export const BASE_URL = import.meta.env.BASE_URL || '/';
 export const WHATSAPP_NUMBER =
   import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5351234567';
 

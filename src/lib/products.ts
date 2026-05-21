@@ -1,10 +1,10 @@
 import { productSchema } from '@/schemas';
-import type { Product } from '../types';
+import type { IProduct } from '../types';
 
 /**
  *  Validate json
  */
-function parseProduct(raw: any, fallbackId: string): Product {
+function parseProduct(raw: any, fallbackId: string): IProduct {
   if (!raw.id) raw.id = fallbackId;
   return productSchema.parse(raw);
 }
@@ -12,7 +12,7 @@ function parseProduct(raw: any, fallbackId: string): Product {
 /**
  * Dynamically loads all product JSON files from src/data/
  */
-export async function loadAllProducts(): Promise<Product[]> {
+export async function loadAllProducts(): Promise<IProduct[]> {
   // Import all JSON files from src/data/ eagerly
   const dataModules = import.meta.glob<{ default: any }>(
     '/src/data/products/*.json',
@@ -21,7 +21,7 @@ export async function loadAllProducts(): Promise<Product[]> {
     },
   );
 
-  const products: Product[] = [];
+  const products: IProduct[] = [];
 
   for (const path in dataModules) {
     const module = dataModules[path];
@@ -43,6 +43,6 @@ export async function loadAllProducts(): Promise<Product[]> {
 /**
  * Get all unique categories from products
  */
-export function getCategories(products: Product[]): string[] {
+export function getCategories(products: IProduct[]): string[] {
   return [...new Set(products.flatMap((p) => p.categories))].sort();
 }

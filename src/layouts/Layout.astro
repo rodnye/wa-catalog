@@ -1,6 +1,8 @@
 ---
 import { resolveUrl } from '@/utils/helpers';
 import '../styles/global.css';
+import CartInitializer from '@/components/preact/CartInitializer';
+import CartSidebar from '@/components/preact/CartSidebar';
 
 interface Props {
   title?: string;
@@ -23,6 +25,8 @@ const {
     <title>{title}</title>
   </head>
   <body class="min-h-screen flex flex-col">
+    <CartInitializer client:load />
+    <CartSidebar client:load />
     <slot />
   </body>
 </html>
