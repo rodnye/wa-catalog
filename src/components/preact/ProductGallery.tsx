@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import BaseImg from '../BaseImg.astro';
+import BaseImg from '../preact/BaseImg';
 import { resolveUrl } from '@/utils/helpers';
 
 interface Props {
@@ -14,7 +14,7 @@ export default function ProductGallery({ images, productName }: Props) {
   return (
     <div class="space-y-3">
       <div class="rounded-2xl overflow-hidden bg-gray-50 aspect-square">
-        <img
+        <BaseImg
           src={mainSrc}
           alt={productName}
           class="w-full h-full object-cover"

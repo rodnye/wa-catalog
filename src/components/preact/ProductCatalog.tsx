@@ -4,6 +4,8 @@ import { searchQuery } from '@/stores/searchStore';
 import AddToCartButton from './AddToCartButton';
 import type { IProduct } from '@/types';
 import { formatPrice } from '@/utils/helpers';
+import BaseLink from './BaseLink';
+import BaseImg from './BaseImg';
 
 interface Props {
   products: IProduct[];
@@ -15,16 +17,13 @@ function ProductCard({ product }: { product: IProduct }) {
       class="product-card card group cursor-pointer"
       data-product-id={product.id}
     >
-      <a href={`/products/${product.id}`} class="block">
+      <BaseLink href={`/products/${product.id}`} class="block">
         <div class="relative overflow-hidden aspect-square bg-gray-50">
-          <img
+          <BaseImg
             src={product.images[0] || '/images/placeholder.jpg'}
             alt={product.name}
             class="product-img w-full h-full object-cover"
             loading="lazy"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = '/images/placeholder.jpg';
-            }}
           />
           {product.featured && (
             <span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
@@ -57,7 +56,7 @@ function ProductCard({ product }: { product: IProduct }) {
             {formatPrice(product.price)}
           </span>
         </div>
-      </a>
+      </BaseLink>
       {product.available && (
         <div class="px-4 pb-4">
           <AddToCartButton

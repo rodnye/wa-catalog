@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import ProductCard from '../components/ProductCard.astro';
 import ProductCatalog from '@/components/preact/ProductCatalog';
 import { loadAllProducts, getCategories } from '../lib/products';
-import BaseLink from '@/components/BaseLink.astro';
+import BaseLink from '@/components/preact/BaseLink';
 
 // Dynamically load all products from src/data/*.json
 const allProducts = await loadAllProducts();

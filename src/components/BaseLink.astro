@@ -1,8 +1,0 @@
----
-import { resolveUrl } from '@/utils/helpers';
-const { href, ...props } = Astro.props;
----
-
-<a href={resolveUrl(href)} {...props}>
-  <slot />
-</a>

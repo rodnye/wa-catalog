@@ -1,8 +1,8 @@
 ---
 import type { IProduct } from '../types';
 import { formatPrice } from '../utils/helpers';
-import BaseImg from './BaseImg.astro';
-import BaseLink from './BaseLink.astro';
+import BaseImg from './preact/BaseImg';
+import BaseLink from './preact/BaseLink';
 import AddToCartButton from '@/components/preact/AddToCartButton';
 
 interface Props {
@@ -25,7 +25,6 @@ const slug = product.id;
         alt={product.name}
         class="product-img w-full h-full object-cover"
         loading="lazy"
-        onerror="this.src='/images/placeholder.jpg'"
       />
       {
         product.featured && (

@@ -4,7 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import { loadAllProducts, getCategories } from '../../lib/products';
-import BaseLink from '@/components/BaseLink.astro';
+import BaseLink from '@/components/preact/BaseLink';
 import CartSidebar from '@/components/preact/CartSidebar';
 
 export async function getStaticPaths() {
