@@ -10,7 +10,7 @@ export async function GET({}) {
 
   const config = {
     media_folder: '/public/images',
-    public_folder: BASE_URL.replace(/\/$/, '') + '/images',
+    public_folder: '/images',
 
     backend: {
       name: 'git-gateway',
