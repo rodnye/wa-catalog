@@ -10,6 +10,7 @@ import {
   getWhatsAppUrl,
 } from '@/stores/cartStore';
 import { formatPrice } from '@/utils/helpers';
+import BaseImg from './BaseImg';
 
 export default function CartSidebar() {
   const items = useStore(cartItems);
@@ -98,14 +99,10 @@ export default function CartSidebar() {
             <div class="space-y-3">
               {items.map((item) => (
                 <div key={item.id} class="flex gap-3 bg-gray-50 rounded-xl p-3">
-                  <img
+                  <BaseImg
                     src={item.image || '/images/placeholder.jpg'}
                     alt={item.name}
                     class="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        '/images/placeholder.jpg';
-                    }}
                   />
                   <div class="flex-1 min-w-0">
                     <h4 class="text-sm font-medium text-gray-800 truncate">
