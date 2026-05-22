@@ -3,8 +3,15 @@
   "name": "Bufanda de Seda Floral",
   "description": "Bufanda de seda suave con estampado floral primaveral. Perfecta para dar un toque de color a cualquier outfit. Dimensiones: 90x90cm. Se puede usar también como pañuelo para el cabello.",
   "price": 1500,
-  "images": ["/images/placeholder.jpg"],
-  "categories": ["Accesorios", "Moda"],
+  "images": [
+    "/images/difusor-aceites.jpg"
+  ],
+  "categories": [
+    "Accesorios",
+    "Moda",
+    "Outdoor",
+    "Jardinería"
+  ],
   "featured": false,
-  "available": true
+  "available": false
 }
