@@ -53,7 +53,7 @@ export async function GET({}) {
         label: 'Productos',
         folder: 'src/data/products',
         create: true,
-        slug: '{{slug}}',
+        slug: '{{name}}',
         editor: {
           preview: false,
         },
