@@ -1,17 +1,74 @@
 {
   "categories": [
-    { "label": "Accesorios", "key": "Accesorios", "emoji": "💎" },
-    { "label": "Artesanía", "key": "Artesanía", "emoji": "🎨" },
-    { "label": "Audio", "key": "Audio", "emoji": "🎧" },
-    { "label": "Belleza", "key": "Belleza", "emoji": "✨" },
-    { "label": "Bienestar", "key": "Bienestar", "emoji": "🌿" },
-    { "label": "Hogar", "key": "Hogar", "emoji": "🏠" },
-    { "label": "Jardinería", "key": "Jardinería", "emoji": "🌱" },
-    { "label": "Joyería", "key": "Joyería", "emoji": "💍" },
-    { "label": "Maquillaje", "key": "Maquillaje", "emoji": "💄" },
-    { "label": "Moda", "key": "Moda", "emoji": "👗" },
-    { "label": "Outdoor", "key": "Outdoor", "emoji": "🏕️" },
-    { "label": "Ropa", "key": "Ropa", "emoji": "👕" },
-    { "label": "Tecnología", "key": "Tecnología", "emoji": "📱" }
+    {
+      "label": "Accesorios",
+      "key": "Accesorios",
+      "emoji": "💎"
+    },
+    {
+      "label": "Artesanía",
+      "key": "Artesanía",
+      "emoji": "🎨"
+    },
+    {
+      "label": "Audio",
+      "key": "Audio",
+      "emoji": "🎧"
+    },
+    {
+      "label": "Belleza",
+      "key": "Belleza",
+      "emoji": "✨"
+    },
+    {
+      "label": "Bienestar",
+      "key": "Bienestar",
+      "emoji": "🌿"
+    },
+    {
+      "label": "Hogar",
+      "key": "Hogar",
+      "emoji": "🏠"
+    },
+    {
+      "label": "Jardinería",
+      "key": "Jardinería",
+      "emoji": "🌱"
+    },
+    {
+      "label": "Joyería",
+      "key": "Joyería",
+      "emoji": "💍"
+    },
+    {
+      "label": "Maquillaje",
+      "key": "Maquillaje",
+      "emoji": "💄"
+    },
+    {
+      "label": "Moda",
+      "key": "Moda",
+      "emoji": "👗"
+    },
+    {
+      "label": "Outdoor",
+      "key": "Outdoor",
+      "emoji": "🏕️"
+    },
+    {
+      "label": "Ropa",
+      "key": "Ropa",
+      "emoji": "👕"
+    },
+    {
+      "label": "Tecnología",
+      "key": "Tecnología",
+      "emoji": "📱"
+    },
+    {
+      "emoji": "🌿",
+      "key": "{{label}}",
+      "label": "Adultos"
+    }
   ]
 }
