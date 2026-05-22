@@ -106,6 +106,7 @@ export async function GET({}) {
           {
             name: 'categories',
             extension: 'json',
+            label: 'Categorías',
             file: 'src/data/categories.json',
             fields: [
               {
