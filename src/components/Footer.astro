@@ -53,55 +53,56 @@ const primaryCategories = getCategories()
               </li>
             ))
           }
-      </div>
+        </ul>
 
-      <!-- Categories -->
-      <div>
-        <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
-        <ul class="space-y-2 text-sm text-gray-500">
+        <!-- Categories -->
+        <div>
+          <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
+          <ul class="space-y-2 text-sm text-gray-500">
             {
-            primaryCategories.slice(3, 7).map(({ label, slug }) => (
-              <li>
-                <BaseLink
-                  href={'/categories/' + slug}
-                  class="hover:text-primary-500 transition-colors"
-                >
-                  {label}
-                </BaseLink>
-              </li>
-            ))
-          }
-        </ul>
+              primaryCategories.slice(3, 7).map(({ label, slug }) => (
+                <li>
+                  <BaseLink
+                    href={'/categories/' + slug}
+                    class="hover:text-primary-500 transition-colors"
+                  >
+                    {label}
+                  </BaseLink>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h3 class="font-semibold text-gray-800 mb-3">Contacto</h3>
+          <ul class="space-y-2 text-sm text-gray-500">
+            <li class="flex items-center gap-2">
+              <span>📱</span>
+              <BaseLink
+                href={'https://wa.me/' + WHATSAPP_NUMBER}
+                class="hover:text-primary-500 transition-colors"
+                >WhatsApp</BaseLink
+              >
+            </li>
+            <li class="flex items-center gap-2">
+              <span>📍</span>
+              <span>La Habana, Cuba</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span>🕐</span>
+              <span>Lun-Sáb: 9am - 6pm</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
-      <!-- Contact -->
-      <div>
-        <h3 class="font-semibold text-gray-800 mb-3">Contacto</h3>
-        <ul class="space-y-2 text-sm text-gray-500">
-          <li class="flex items-center gap-2">
-            <span>📱</span>
-            <BaseLink
-              href={'https://wa.me/' + WHATSAPP_NUMBER}
-              class="hover:text-primary-500 transition-colors"
-              >WhatsApp</BaseLink
-            >
-          </li>
-          <li class="flex items-center gap-2">
-            <span>📍</span>
-            <span>La Habana, Cuba</span>
-          </li>
-          <li class="flex items-center gap-2">
-            <span>🕐</span>
-            <span>Lun-Sáb: 9am - 6pm</span>
-          </li>
-        </ul>
+      <div
+        class="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-400"
+      >
+        <p>&copy; {year} {APP_NAME}. Todos los derechos reservados.</p>
       </div>
-    </div>
-
-    <div
-      class="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-400"
-    >
-      <p>&copy; {year} {APP_NAME}. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>

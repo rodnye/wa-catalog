@@ -13,7 +13,7 @@ const record = Object.fromEntries(
 );
 
 export function getCategories() {
-  return Object.entries(record).map(([key, value]) => ({...value, key}));
+  return Object.entries(record).map(([key, value]) => ({ ...value, key }));
 }
 
 export function getCategoryByKey(key: string) {

@@ -17,9 +17,7 @@ export async function getStaticPaths() {
     const params = { category: cat.slug };
     const props = {
       category: cat,
-      products: allProducts.filter((p) =>
-        p.categories.includes(cat.key),
-      ),
+      products: allProducts.filter((p) => p.categories.includes(cat.key)),
     };
     return {
       params,

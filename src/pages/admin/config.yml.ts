@@ -106,6 +106,9 @@ export async function GET({}) {
           {
             name: 'categories',
             extension: 'json',
+            editor: {
+              preview: false,
+            },
             label: 'Categorías',
             file: 'src/data/categories.json',
             fields: [
@@ -123,7 +126,7 @@ export async function GET({}) {
                     label: 'Emoji',
                     name: 'emoji',
                     widget: 'string',
-                    default: '🌿'
+                    default: '🌿',
                   },
                   {
                     label: 'Clave/ID',

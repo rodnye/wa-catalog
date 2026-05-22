@@ -51,7 +51,9 @@ const slug = product.id;
         {
           product.categories
             .slice(0, 2)
-            .map((cat) => <span class="badge">{getCategoryByKey(cat).label}</span>)
+            .map((cat) => (
+              <span class="badge">{getCategoryByKey(cat).label}</span>
+            ))
         }
       </div>
       <h3
