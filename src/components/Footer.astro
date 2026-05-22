@@ -1,8 +1,19 @@
 ---
 import { APP_DESC, APP_NAME, WHATSAPP_NUMBER } from '@/utils/helpers';
 import BaseLink from './preact/BaseLink';
+import { getCategories } from '@/lib/categories';
+import { loadAllProducts } from '@/lib/products';
 
 const year = new Date().getFullYear();
+const products = await loadAllProducts();
+const primaryCategories = getCategories()
+  .map(({ key, slug, label }) => ({
+    slug,
+    label,
+    count: products.filter((p) => p.categories.includes(key)).length,
+  }))
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 7);
 ---
 
 <footer class="bg-white border-t border-gray-100 mt-auto">
@@ -30,57 +41,36 @@ const year = new Date().getFullYear();
               >Inicio</BaseLink
             >
           </li>
-          <li>
-            <BaseLink
-              href="/categories/accesorios"
-              class="hover:text-primary-500 transition-colors"
-              >Accesorios</BaseLink
-            >
-          </li>
-          <li>
-            <BaseLink
-              href="/categories/hogar"
-              class="hover:text-primary-500 transition-colors">Hogar</BaseLink
-            >
-          </li>
-          <li>
-            <BaseLink
-              href="/categories/tecnologia"
-              class="hover:text-primary-500 transition-colors"
-              >Tecnología</BaseLink
-            >
-          </li>
-        </ul>
+          {
+            primaryCategories.slice(0, 3).map(({ label, slug }) => (
+              <li>
+                <BaseLink
+                  href={'/categories/' + slug}
+                  class="hover:text-primary-500 transition-colors"
+                >
+                  {label}
+                </BaseLink>
+              </li>
+            ))
+          }
       </div>
 
       <!-- Categories -->
       <div>
         <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
         <ul class="space-y-2 text-sm text-gray-500">
-          <li>
-            <BaseLink
-              href="/categories/moda"
-              class="hover:text-primary-500 transition-colors">Moda</BaseLink
-            >
-          </li>
-          <li>
-            <BaseLink
-              href="/categories/belleza"
-              class="hover:text-primary-500 transition-colors">Belleza</BaseLink
-            >
-          </li>
-          <li>
-            <BaseLink
-              href="/categories/joyeria"
-              class="hover:text-primary-500 transition-colors">Joyería</BaseLink
-            >
-          </li>
-          <li>
-            <BaseLink
-              href="/categories/audio"
-              class="hover:text-primary-500 transition-colors">Audio</BaseLink
-            >
-          </li>
+            {
+            primaryCategories.slice(3, 7).map(({ label, slug }) => (
+              <li>
+                <BaseLink
+                  href={'/categories/' + slug}
+                  class="hover:text-primary-500 transition-colors"
+                >
+                  {label}
+                </BaseLink>
+              </li>
+            ))
+          }
         </ul>
       </div>
 

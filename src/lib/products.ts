@@ -1,5 +1,6 @@
 import { productSchema } from '@/schemas';
 import type { IProduct } from '../types';
+import { getCategoryByKey } from './categories';
 
 /**
  *  Validate json
@@ -38,11 +39,4 @@ export async function loadAllProducts(): Promise<IProduct[]> {
   }
 
   return products;
-}
-
-/**
- * Get all unique categories from products
- */
-export function getCategories(products: IProduct[]): string[] {
-  return [...new Set(products.flatMap((p) => p.categories))].sort();
 }

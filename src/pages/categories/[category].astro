@@ -3,54 +3,36 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { loadAllProducts, getCategories } from '../../lib/products';
+import { loadAllProducts } from '../../lib/products';
+import { getCategories } from '@/lib/categories';
 import BaseLink from '@/components/preact/BaseLink';
 import CartSidebar from '@/components/preact/CartSidebar';
 import { APP_NAME } from '@/utils/helpers';
 
 export async function getStaticPaths() {
   const allProducts = await loadAllProducts();
-  const categories = getCategories(allProducts);
+  const categories = getCategories();
 
-  return categories.map((cat) => ({
-    params: { category: cat.toLowerCase().replace(/\s+/g, '-') },
-    props: { category: cat, allProducts },
-  }));
+  return categories.map((cat) => {
+    const params = { category: cat.slug };
+    const props = {
+      category: cat,
+      products: allProducts.filter((p) =>
+        p.categories.includes(cat.key),
+      ),
+    };
+    return {
+      params,
+      props,
+    };
+  });
 }
 
-const { category: matchedCategory, allProducts } = Astro.props;
-const allProductsFresh = await loadAllProducts();
-const categories = getCategories(allProductsFresh);
-
-const categorySlug = Astro.params.category || '';
-const filtered = matchedCategory
-  ? allProductsFresh.filter((p) =>
-      p.categories.some(
-        (c) => c.toLowerCase().replace(/\s+/g, '-') === categorySlug,
-      ),
-    )
-  : [];
-
-const categoryEmojis: Record<string, string> = {
-  Accesorios: '💎',
-  Joyería: '💍',
-  Artesanía: '🎨',
-  Moda: '👗',
-  Hogar: '🏠',
-  Bienestar: '🌿',
-  Jardinería: '🌱',
-  Tecnología: '📱',
-  Audio: '🎧',
-  Outdoor: '🏕️',
-  Ropa: '👕',
-  Belleza: '✨',
-  Maquillaje: '💄',
-};
-const emoji = matchedCategory ? categoryEmojis[matchedCategory] || '📦' : '📦';
+const { category, products } = Astro.props;
 ---
 
-<Layout title={`${matchedCategory || 'Categoría'} — ${APP_NAME}`}>
-  <Header categories={categories} activeCategory={matchedCategory} />
+<Layout title={`${category.label || 'Categoría'} — ${APP_NAME}`}>
+  <Header activeCategory={category.key} />
   <CartSidebar />
 
   <main class="max-w-7xl mx-auto px-4 py-6">
@@ -75,18 +57,18 @@ const emoji = matchedCategory ? categoryEmojis[matchedCategory] || '📦' : '�
       <h1
         class="font-display font-bold text-2xl sm:text-3xl text-gray-800 flex items-center gap-3"
       >
-        <span class="text-3xl">{emoji}</span>
-        {matchedCategory || 'Categoría no encontrada'}
+        <span class="text-3xl">{category.emoji}</span>
+        {category.label || 'Categoría no encontrada'}
       </h1>
       <p class="text-gray-500 mt-1">
-        {filtered.length} producto{filtered.length !== 1 ? 's' : ''} en esta categoría
+        {products.length} producto{products.length !== 1 ? 's' : ''} en esta categoría
       </p>
     </div>
 
     {
-      filtered.length > 0 ? (
+      products.length > 0 ? (
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-          {filtered.map((product) => (
+          {products.map((product) => (
             <ProductCard product={product} />
           ))}
         </div>

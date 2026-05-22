@@ -89,22 +89,49 @@ export async function GET({}) {
           {
             label: 'Categorías',
             name: 'categories',
-            widget: 'select',
+            widget: 'relation',
+            collection: 'config',
+            file: 'categories',
             multiple: true,
-            options: [
-              'Accesorios',
-              'Artesanía',
-              'Audio',
-              'Belleza',
-              'Bienestar',
-              'Hogar',
-              'Jardinería',
-              'Joyería',
-              'Maquillaje',
-              'Moda',
-              'Outdoor',
-              'Ropa',
-              'Tecnología',
+            search_fields: ['categories.*.label'],
+            display_fields: ['categories.*.label'],
+            value_field: 'categories.*.key',
+          },
+        ],
+      },
+      {
+        name: 'config',
+        label: 'Configuración',
+        files: [
+          {
+            name: 'categories',
+            extension: 'json',
+            file: 'src/data/categories.json',
+            fields: [
+              {
+                label: 'categories',
+                name: 'categories',
+                widget: 'list',
+                fields: [
+                  {
+                    label: 'Nombre',
+                    name: 'label',
+                    widget: 'string',
+                  },
+                  {
+                    label: 'Emoji',
+                    name: 'emoji',
+                    widget: 'string',
+                    default: '🌿'
+                  },
+                  {
+                    label: 'Clave/ID',
+                    name: 'key',
+                    widget: 'hidden',
+                    default: '{{label}}',
+                  },
+                ],
+              },
             ],
           },
         ],
