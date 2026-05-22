@@ -6,6 +6,7 @@ import ProductCard from '../../components/ProductCard.astro';
 import { loadAllProducts, getCategories } from '../../lib/products';
 import BaseLink from '@/components/preact/BaseLink';
 import CartSidebar from '@/components/preact/CartSidebar';
+import { APP_NAME } from '@/utils/helpers';
 
 export async function getStaticPaths() {
   const allProducts = await loadAllProducts();
@@ -48,7 +49,7 @@ const categoryEmojis: Record<string, string> = {
 const emoji = matchedCategory ? categoryEmojis[matchedCategory] || '📦' : '📦';
 ---
 
-<Layout title={`${matchedCategory || 'Categoría'} — WA-Catalog`}>
+<Layout title={`${matchedCategory || 'Categoría'} — ${APP_NAME}`}>
   <Header categories={categories} activeCategory={matchedCategory} />
   <CartSidebar />
 

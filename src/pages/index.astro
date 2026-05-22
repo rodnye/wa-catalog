@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard.astro';
 import ProductCatalog from '@/components/preact/ProductCatalog';
 import { loadAllProducts, getCategories } from '../lib/products';
 import BaseLink from '@/components/preact/BaseLink';
+import { BANNER_CONTENT, BANNER_TITLE, WHATSAPP_LINK } from '@/utils/helpers';
 
 // Dynamically load all products from src/data/*.json
 const allProducts = await loadAllProducts();
@@ -36,11 +37,10 @@ const featured = allProducts.filter((p) => p.featured && p.available);
           <h1
             class="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl mb-3"
           >
-            Descubre lo que necesitas
+            {BANNER_TITLE}
           </h1>
           <p class="text-white/80 text-base sm:text-lg max-w-lg mb-5">
-            Productos variados con la mejor calidad y precios accesibles. ¡Tu
-            tienda de confianza te espera!
+            {BANNER_CONTENT}
           </p>
           <div class="flex gap-3">
             <BaseLink
@@ -50,7 +50,7 @@ const featured = allProducts.filter((p) => p.featured && p.available);
               Ver Productos
             </BaseLink>
             <BaseLink
-              href="https://wa.me/5363264783"
+              href={WHATSAPP_LINK}
               target="_blank"
               class="bg-white/20 text-white font-semibold py-2.5 px-6 rounded-xl hover:bg-white/30 transition-all border border-white/30"
             >

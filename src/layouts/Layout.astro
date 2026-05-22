@@ -1,5 +1,5 @@
 ---
-import { resolveUrl } from '@/utils/helpers';
+import { APP_DESC, APP_NAME, resolveUrl } from '@/utils/helpers';
 import '../styles/global.css';
 import CartInitializer from '@/components/preact/CartInitializer';
 import CartSidebar from '@/components/preact/CartSidebar';
@@ -9,10 +9,7 @@ interface Props {
   description?: string;
 }
 
-const {
-  title = 'WA-Catalog — Encuentra de Todo',
-  description = 'Tienda variada con los mejores productos al mejor precio. Accesorios, hogar, tecnología, moda y más.',
-} = Astro.props;
+const { title = APP_NAME, description = APP_DESC } = Astro.props;
 ---
 
 <!doctype html>

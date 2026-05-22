@@ -3,6 +3,7 @@ import BaseLink from './preact/BaseLink';
 import CartToggle from '@/components/preact/CartToggle';
 import MobileSearchToggle from '@/components/preact/MobileSearchToggle';
 import SearchBar from '@/components/preact/SearchBar';
+import { APP_NAME } from '@/utils/helpers';
 
 interface Props {
   categories: string[];
@@ -23,7 +24,7 @@ const { categories, activeCategory = '' } = Astro.props;
         <span class="text-2xl">🛍️</span>
         <span
           class="font-display font-bold text-xl text-gray-800 hidden sm:block"
-          >WA-Catalog</span
+          >{APP_NAME}</span
         >
       </BaseLink>
 
