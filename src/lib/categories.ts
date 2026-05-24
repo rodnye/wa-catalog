@@ -1,10 +1,10 @@
-import type { IProduct } from '@/types';
 import { categories } from '@/data/categories.json';
 
 const record = Object.fromEntries(
   categories.map(({ key, label, emoji }) => [
     key,
     {
+      key,
       label,
       emoji,
       slug: label.toLowerCase().replace(/\s+/g, '-'),
@@ -23,7 +23,6 @@ export function getCategoryByKey(key: string) {
 /**
  * Get all unique categories from products
  */
-
 export function getCategoryKeys() {
   return Object.keys(record);
 }

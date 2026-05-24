@@ -3,21 +3,17 @@ import BaseImg from '../preact/BaseImg';
 
 interface Props {
   images: string[];
-  productName: string;
+  alt: string;
 }
 
-export default function ProductGallery({ images, productName }: Props) {
+export default function ProductGallery({ images, alt }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const mainSrc = images[activeIndex] || '/images/placeholder.jpg';
 
   return (
     <div class="space-y-3">
       <div class="rounded-2xl overflow-hidden bg-gray-50 aspect-square">
-        <BaseImg
-          src={mainSrc}
-          alt={productName}
-          class="w-full h-full object-cover"
-        />
+        <BaseImg src={mainSrc} alt={alt} class="w-full h-full object-cover" />
       </div>
       {images.length > 1 && (
         <div class="flex gap-2 overflow-x-auto hide-scrollbar">
@@ -33,7 +29,7 @@ export default function ProductGallery({ images, productName }: Props) {
             >
               <BaseImg
                 src={img}
-                alt={`${productName} - ${i + 1}`}
+                alt={`${alt} - ${i + 1}`}
                 class="w-full h-full object-cover"
               />
             </button>

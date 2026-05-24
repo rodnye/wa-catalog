@@ -70,6 +70,12 @@ export async function GET({}) {
             default: false,
           },
           {
+            label: 'Es VIP??',
+            name: 'featured',
+            widget: 'boolean',
+            default: false,
+          },
+          {
             label: 'Está disponible??',
             name: 'available',
             widget: 'boolean',

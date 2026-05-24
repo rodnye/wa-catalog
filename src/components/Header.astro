@@ -4,12 +4,13 @@ import CartToggle from '@/components/preact/CartToggle';
 import MobileSearchToggle from '@/components/preact/MobileSearchToggle';
 import SearchBar from '@/components/preact/SearchBar';
 import { getCategories } from '@/lib/categories';
-import { APP_NAME } from '@/utils/helpers';
+import { APP_NAME, resolveUrlBase, resolveUrlFrom } from '@/utils/helpers';
 
 interface Props {
   activeCategory?: string;
 }
 
+const pn = Astro.url.pathname;
 const { activeCategory = '' } = Astro.props;
 const categories = getCategories();
 ---
@@ -21,7 +22,10 @@ const categories = getCategories();
     <!-- Top bar: Logo + Search + Cart -->
     <div class="flex items-center justify-between h-16 gap-3">
       <!-- Logo -->
-      <BaseLink href="/" class="flex items-center gap-2 shrink-0">
+      <BaseLink
+        href={resolveUrlFrom(pn, '/')}
+        class="flex items-center gap-2 shrink-0"
+      >
         <span class="text-2xl">🛍️</span>
         <span
           class="font-display font-bold text-xl text-gray-800 hidden sm:block"
@@ -49,7 +53,7 @@ const categories = getCategories();
       class="flex gap-2 overflow-x-auto hide-scrollbar py-3 -mx-4 px-4 border-t border-gray-50"
     >
       <BaseLink
-        href="/"
+        href={resolveUrlFrom(pn, '/')}
         class:list={[
           'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
           activeCategory === ''
@@ -62,7 +66,7 @@ const categories = getCategories();
       {
         categories.map((cat) => (
           <BaseLink
-            href={`/categories/${cat.slug}`}
+            href={resolveUrlFrom(pn, `/categories/${cat.slug}`)}
             class:list={[
               'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
               activeCategory === cat.key

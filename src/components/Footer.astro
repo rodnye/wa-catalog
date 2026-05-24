@@ -1,9 +1,15 @@
 ---
-import { APP_DESC, APP_NAME, WHATSAPP_NUMBER } from '@/utils/helpers';
+import {
+  APP_DESC,
+  APP_NAME,
+  resolveUrlFrom,
+  WHATSAPP_NUMBER,
+} from '@/utils/helpers';
 import BaseLink from './preact/BaseLink';
 import { getCategories } from '@/lib/categories';
 import { loadAllProducts } from '@/lib/products';
 
+const pn = Astro.url.pathname;
 const year = new Date().getFullYear();
 const products = await loadAllProducts();
 const primaryCategories = getCategories()
@@ -37,15 +43,18 @@ const primaryCategories = getCategories()
         <h3 class="font-semibold text-gray-800 mb-3">Navegación</h3>
         <ul class="space-y-2 text-sm text-gray-500">
           <li>
-            <BaseLink href="/" class="hover:text-primary-500 transition-colors"
-              >Inicio</BaseLink
+            <BaseLink
+              href={resolveUrlFrom(pn, '/')}
+              class="hover:text-primary-500 transition-colors"
             >
+              Inicio
+            </BaseLink>
           </li>
           {
             primaryCategories.slice(0, 3).map(({ label, slug }) => (
               <li>
                 <BaseLink
-                  href={'/categories/' + slug}
+                  href={resolveUrlFrom(pn, '/categories/' + slug)}
                   class="hover:text-primary-500 transition-colors"
                 >
                   {label}
@@ -63,7 +72,7 @@ const primaryCategories = getCategories()
               primaryCategories.slice(3, 7).map(({ label, slug }) => (
                 <li>
                   <BaseLink
-                    href={'/categories/' + slug}
+                    href={resolveUrlFrom(pn, '/categories/' + slug)}
                     class="hover:text-primary-500 transition-colors"
                   >
                     {label}
@@ -83,8 +92,9 @@ const primaryCategories = getCategories()
               <BaseLink
                 href={'https://wa.me/' + WHATSAPP_NUMBER}
                 class="hover:text-primary-500 transition-colors"
-                >WhatsApp</BaseLink
               >
+                WhatsApp
+              </BaseLink>
             </li>
             <li class="flex items-center gap-2">
               <span>📍</span>

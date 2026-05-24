@@ -84,6 +84,51 @@ export default function ProductCatalog({
   products,
   linkParser,
 }: ProductCatalogProps) {
+  const query = useStore(searchQuery);
+  const isSearching = query.trim().length > 0;
+
+  const filtered = useMemo(() => {
+    if (!isSearching) return [];
+    const q = query.toLowerCase();
+    return products.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.categories.some((c) => c.toLowerCase().includes(q)),
+    );
+  }, [query, products, isSearching]);
+
+  const clearSearch = () => searchQuery.set('');
+
+  if (isSearching) {
+    return (
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-sm text-gray-500">Resultados para:</span>
+          <span class="text-sm font-semibold text-primary-600">{query}</span>
+          <button
+            onClick={clearSearch}
+            class="text-xs text-gray-400 hover:text-red-400 transition-colors ml-2"
+          >
+            ✕ Limpiar
+          </button>
+        </div>
+        {filtered.length > 0 ? (
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {filtered.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        ) : (
+          <p class="text-center text-gray-400 py-12">
+            <span class="text-4xl block mb-3">🔍</span>
+            No encontramos productos con esa búsqueda
+          </p>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
       {products.map((p) => (

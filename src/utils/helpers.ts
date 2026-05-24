@@ -11,10 +11,49 @@ export const BANNER_CONTENT =
 export const WHATSAPP_NUMBER =
   import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5351234567';
 export const WHATSAPP_LINK = 'https://wa.me/' + WHATSAPP_NUMBER;
+export const APP_VIP_CODE = import.meta.env.PUBLIC_APP_VIP_CODE || '1234';
 
-export const resolveUrl = (path: string) => {
-  return path.startsWith('/') ? BASE_URL.replace(/\/$/, '') + path : path;
+/**
+ *
+ */
+export const isBaseUrl = (path: string) => path.startsWith(BASE_URL);
+
+/**
+ * Return true if is a /vip url
+ */
+export const isVipUrl = (path: string) =>
+  clearUrlBase(path).split('/')[1] === 'vip';
+
+/**
+ *
+ */
+export const resolveUrlBase = (path: string) => {
+  if (!path.startsWith('/') || isBaseUrl(path)) return path;
+
+  return BASE_URL.replace(/\/$/, '') + path;
 };
+
+/**
+ * Resolve the url with BASE_URL and VIP url
+ *
+ * @param from Assign `Astro.url.pathname`
+ * @param to - Target url to parse
+ */
+export const resolveUrlFrom = (from: string, to: string) => {
+  let resolved = to;
+
+  if (!to.startsWith('/')) return resolved;
+  if (isBaseUrl(to)) resolved = clearUrlBase(resolved);
+  if (isVipUrl(from)) resolved = '/vip/' + APP_VIP_CODE + resolved;
+
+  return resolveUrlBase(resolved);
+};
+
+/**
+ *
+ */
+export const clearUrlBase = (path: string) =>
+  path.replace(new RegExp('^' + BASE_URL.replace(/\/$/, '')), '');
 
 export function formatPrice(price: number): string {
   return price.toLocaleString('es-CU') + ' CUP';

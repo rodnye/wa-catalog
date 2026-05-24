@@ -8,17 +8,20 @@ import AddToCartButton from '@/components/preact/AddToCartButton';
 
 interface Props {
   product: IProduct;
+  link?: string;
 }
 
-const { product } = Astro.props;
+let { product, link } = Astro.props;
 const slug = product.id;
+
+if (!link) link = `/products/${slug}`;
 ---
 
 <article
   class="product-card card group cursor-pointer"
   data-product-id={product.id}
 >
-  <BaseLink href={`/products/${slug}`} class="block">
+  <BaseLink href={link} class="block">
     <!-- Image -->
     <div class="relative overflow-hidden aspect-square bg-gray-50">
       <BaseImg

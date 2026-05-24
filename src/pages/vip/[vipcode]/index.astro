@@ -1,0 +1,14 @@
+---
+import HomeLayout from '@/layouts/HomeLayout.astro';
+import { APP_VIP_CODE } from '@/utils/helpers';
+
+export async function getStaticPaths() {
+  return [
+    {
+      params: { vipcode: APP_VIP_CODE },
+    },
+  ];
+}
+---
+
+<HomeLayout />
