@@ -1,0 +1,101 @@
+import { useEffect } from 'preact/hooks';
+import { useStore } from '@nanostores/preact';
+import { isMobileMenuOpen, closeMobileMenu } from '@/stores/mobileMenuStore';
+import BaseLink from './BaseLink';
+import { getCategories } from '@/lib/categories';
+import IconClose from '~icons/mdi/close';
+
+interface Props {
+  activeCategory?: string;
+}
+
+export default function MobileMenuPanel({ activeCategory = '' }: Props) {
+  const isOpen = useStore(isMobileMenuOpen);
+  const categories = getCategories();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        class={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 lg:hidden ${
+          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={closeMobileMenu}
+      />
+
+      {/* Panel */}
+      <div
+        class={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transition-transform duration-300 ease-in-out transform lg:hidden ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {/* Header */}
+        <div class="flex items-center justify-between p-4 border-b border-gray-100">
+          <h2 class="font-display font-bold text-lg text-gray-800">
+            Categorías
+          </h2>
+          <button
+            onClick={closeMobileMenu}
+            class="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <IconClose class="size-5" />
+          </button>
+        </div>
+
+        {/* Menu items */}
+        <nav class="flex-1 overflow-y-auto p-4">
+          <ul class="space-y-2">
+            <li>
+              <BaseLink
+                href={'/'}
+                onClick={closeMobileMenu}
+                class={[
+                  'block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                  activeCategory === ''
+                    ? 'bg-primary-500 text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
+                ].join(' ')}
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">🏠</span>
+                  <span>Todo</span>
+                </div>
+              </BaseLink>
+            </li>
+            {categories.map((cat) => (
+              <li key={cat.key}>
+                <BaseLink
+                  href={`/categories/${cat.slug}`}
+                  onClick={closeMobileMenu}
+                  class={[
+                    'block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                    activeCategory === cat.key
+                      ? 'bg-primary-500 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
+                  ].join(' ')}
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="text-xl">{cat.emoji}</span>
+                    <span>{cat.label}</span>
+                  </div>
+                </BaseLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </>
+  );
+}
