@@ -13,6 +13,8 @@ import {
   WHATSAPP_LINK,
 } from '@/utils/helpers';
 import type { IProduct } from '@/types';
+import IconShopBag from '~icons/mdi/shopping';
+import IconStar from '~icons/mdi/star';
 
 const pn = Astro.url.pathname;
 
@@ -78,8 +80,9 @@ const nonFeatured = allProducts.filter((p) => !p.featured);
       featured.length > 0 && (
         <section class="mb-10">
           <div class="flex items-center justify-between mb-5">
-            <h2 class="font-display font-bold text-xl sm:text-2xl text-gray-800">
-              ⭐ Destacados
+            <h2 class="flex items-center font-display font-bold text-xl sm:text-2xl text-gray-800">
+              <IconStar class="size-8 mr-2 text-yellow-400" />
+              <span> Destacados </span>
             </h2>
           </div>
           <ProductCatalog products={featured} linkParser={linkParser} />
@@ -90,8 +93,11 @@ const nonFeatured = allProducts.filter((p) => !p.featured);
     <!-- All Products (with client-side search) -->
     <section id="products" class="mb-10">
       <div class="flex items-center justify-between mb-5">
-        <h2 class="font-display font-bold text-xl sm:text-2xl text-gray-800">
-          🛍️ Todos los Productos
+        <h2
+          class="font-display font-bold text-xl sm:text-2xl flex items-center text-gray-800"
+        >
+          <IconShopBag class="size-8 mr-2 text-purple-500" />
+          <span> Todos los productos </span>
         </h2>
       </div>
       <ProductCatalog

@@ -5,6 +5,7 @@ import { formatPrice } from '../utils/helpers';
 import BaseImg from './preact/BaseImg';
 import BaseLink from './preact/BaseLink';
 import AddToCartButton from '@/components/preact/AddToCartButton';
+import IconStar from '~icons/mdi/star';
 
 interface Props {
   product: IProduct;
@@ -32,8 +33,9 @@ if (!link) link = `/products/${slug}`;
       />
       {
         product.featured && (
-          <span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-            ⭐ Destacado
+          <span class="flex items-center absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+            <IconStar class="text-yellow-400 size-5 mr-1" />
+            <span> Destacado </span>
           </span>
         )
       }

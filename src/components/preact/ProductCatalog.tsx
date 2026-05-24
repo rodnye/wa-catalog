@@ -1,11 +1,9 @@
-import { useStore } from '@nanostores/preact';
-import { useMemo } from 'preact/hooks';
-import { searchQuery } from '@/stores/searchStore';
 import AddToCartButton from './AddToCartButton';
 import type { IProduct } from '@/types';
 import { formatPrice } from '@/utils/helpers';
 import BaseLink from './BaseLink';
 import BaseImg from './BaseImg';
+import IconStar from '~icons/mdi/star';
 
 interface ProductCatalogProps {
   products: IProduct[];
@@ -35,8 +33,9 @@ function ProductCard({
             loading="lazy"
           />
           {product.featured && (
-            <span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-              ⭐ Destacado
+            <span class="flex items-center absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+              <IconStar class="text-yellow-400 size-5 mr-1" />
+              <span> Destacado </span>
             </span>
           )}
           {!product.available && (

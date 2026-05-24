@@ -7,6 +7,9 @@ import { formatPrice } from '@/utils/helpers';
 import BaseLink from './BaseLink';
 import BaseImg from './BaseImg';
 
+/**
+ * @deprecated
+ */
 interface ProductCatalogProps {
   products: IProduct[];
   linkParser: ProductCardProps['linkParser'];
@@ -80,6 +83,9 @@ function ProductCard({
   );
 }
 
+/**
+ * @deprecated
+ */
 export default function ProductCatalog({
   products,
   linkParser,
