@@ -3,7 +3,6 @@ import tailwind from '@astrojs/tailwind';
 import preact from '@astrojs/preact';
 import { defineConfig } from 'astro/config';
 import Icons from 'unplugin-icons/vite';
-import { readFile } from 'node:fs/promises';
 import type { Options } from 'unplugin-icons';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
 
