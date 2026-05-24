@@ -29,3 +29,8 @@ pnpm-debug.log*
 # repo-sync folders
 src/data/products
 public/images
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
