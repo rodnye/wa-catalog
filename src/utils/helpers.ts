@@ -1,5 +1,5 @@
 export const BASE_URL = import.meta.env.BASE_URL || '/';
-export const APP_NAME = import.meta.env.PUBLIC_APP_NAME || 'WA-Catalog';
+export const APP_NAME = import.meta.env.PUBLIC_APP_NAME || 'La Gitana Shop';
 export const APP_DESC =
   import.meta.env.PUBLIC_APP_DESC ||
   'Tienda variada con los mejores productos al mejor precio.';
