@@ -43,7 +43,8 @@ export async function GET({}) {
       avatar_url_claim: 'avatar_url',
     },
 
-    logo_url: 'https://raw.githubusercontent.com/rodnye/wa-catalog/maite/main/src/assets/logo_brand.webp',
+    logo_url:
+      'https://raw.githubusercontent.com/rodnye/wa-catalog/maite/main/src/assets/logo_brand.webp',
     site_url: site.replace(/\/$/, '') + BASE_URL,
 
     collections: [

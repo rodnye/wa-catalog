@@ -4,6 +4,11 @@ import { defineConfig } from 'astro/config';
 import Icons from 'unplugin-icons/vite';
 import type { Options } from 'unplugin-icons';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
+import { loadEnvFile } from 'node:process';
+
+try {
+  loadEnvFile('./.env');
+} catch {}
 
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || '/';
 const PUBLIC_SITE = process.env.PUBLIC_SITE;

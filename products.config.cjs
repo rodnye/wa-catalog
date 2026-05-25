@@ -1,3 +1,9 @@
+const { loadEnvFile } = require('node:process');
+
+try {
+  loadEnvFile('./.env');
+} catch {}
+
 module.exports = {
   repo:
     'https://github.com/' + (process.env.PUBLIC_REPO || 'rodnye/wa-catalog'),
