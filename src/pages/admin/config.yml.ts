@@ -6,7 +6,7 @@ export async function GET({}) {
     import.meta.env.PUBLIC_DECAPBRIDGE_ID ||
     'b24d4304-f503-45ca-b408-da24db405ebb';
   const repo = import.meta.env.PUBLIC_REPO || 'rodnye/wa-catalog';
-  const branch = import.meta.env.PUBLIC_REPO_BRANCH || 'data/maite';
+  const branch = import.meta.env.PUBLIC_REPO_BRANCH || 'maite/data';
   const site = import.meta.env.SITE;
 
   const config = {
@@ -43,7 +43,7 @@ export async function GET({}) {
       avatar_url_claim: 'avatar_url',
     },
 
-    logo_url: 'https://decapbridge.com/decapcms-with-bridge.svg',
+    logo_url: 'https://https://raw.githubusercontent.com/rodnye/wa-catalog/maite/main/src/assets/logo_brand.webp',
     site_url: site.replace(/\/$/, '') + BASE_URL,
 
     collections: [
@@ -137,8 +137,8 @@ export async function GET({}) {
                   {
                     label: 'Clave/ID',
                     name: 'key',
-                    widget: 'hidden',
-                    default: '{{label}}',
+                    widget: 'string',
+                    default: 'key1234',
                   },
                 ],
               },
