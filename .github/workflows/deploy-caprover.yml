@@ -5,6 +5,7 @@ on:
     branches:
       - maite/data
       - maite/main
+  workflow_dispatch:
 
 jobs:
   deploy:
