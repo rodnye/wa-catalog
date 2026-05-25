@@ -66,49 +66,49 @@ const primaryCategories = getCategories()
             ))
           }
         </ul>
+      </div>
 
-        <!-- Categories -->
-        <div class="mt-3">
-          <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
-          <ul class="space-y-2 text-sm text-gray-500">
-            {
-              primaryCategories.slice(3, 7).map(({ label, slug }) => (
-                <li>
-                  <BaseLink
-                    href={resolveUrlFrom(pn, '/categories/' + slug)}
-                    class="hover:text-primary-500 transition-colors"
-                  >
-                    {label}
-                  </BaseLink>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
+      <!-- Categories -->
+      <div class="mt-3">
+        <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
+        <ul class="space-y-2 text-sm text-gray-500">
+          {
+            primaryCategories.slice(3, 7).map(({ label, slug }) => (
+              <li>
+                <BaseLink
+                  href={resolveUrlFrom(pn, '/categories/' + slug)}
+                  class="hover:text-primary-500 transition-colors"
+                >
+                  {label}
+                </BaseLink>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
 
-        <!-- Contact -->
-        <div class="mt-3">
-          <h3 class="font-semibold text-gray-800 mb-3">Contacto</h3>
-          <ul class="space-y-2 text-sm text-gray-500">
-            <li class="flex items-center gap-2">
-              <IconWhatsapp class="text-lg text-green-600" />
-              <BaseLink
-                href={'https://wa.me/' + WHATSAPP_NUMBER}
-                class="hover:text-primary-500 transition-colors"
-              >
-                WhatsApp
-              </BaseLink>
-            </li>
-            <li class="flex items-center gap-2">
-              <IconMapMarker class="text-lg text-red-400" />
-              <span>La Habana, Cuba</span>
-            </li>
-            <li class="flex items-center gap-2">
-              <IconClockOutline class="text-lg text-blue-700" />
-              <span>Lun-Sáb: 9am - 6pm</span>
-            </li>
-          </ul>
-        </div>
+      <!-- Contact -->
+      <div class="mt-3">
+        <h3 class="font-semibold text-gray-800 mb-3">Contacto</h3>
+        <ul class="space-y-2 text-sm text-gray-500">
+          <li class="flex items-center gap-2">
+            <IconWhatsapp class="text-lg text-green-600" />
+            <BaseLink
+              href={'https://wa.me/' + WHATSAPP_NUMBER}
+              class="hover:text-primary-500 transition-colors"
+            >
+              WhatsApp
+            </BaseLink>
+          </li>
+          <li class="flex items-center gap-2">
+            <IconMapMarker class="text-lg text-red-400" />
+            <span>La Habana, Cuba</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <IconClockOutline class="text-lg text-blue-700" />
+            <span>Lun-Sáb: 9am - 6pm</span>
+          </li>
+        </ul>
       </div>
 
       <div
