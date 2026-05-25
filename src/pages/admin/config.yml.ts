@@ -71,7 +71,7 @@ export async function GET({}) {
           },
           {
             label: 'Es VIP??',
-            name: 'featured',
+            name: 'vip',
             widget: 'boolean',
             default: false,
           },
