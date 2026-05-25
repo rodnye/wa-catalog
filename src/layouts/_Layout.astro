@@ -7,9 +7,16 @@ import CartSidebar from '@/components/preact/CartSidebar';
 interface Props {
   title?: string;
   description?: string;
+  iconHref?: string;
+  iconType?: string;
 }
 
-const { title = APP_NAME, description = APP_DESC } = Astro.props;
+const {
+  title = APP_NAME,
+  description = APP_DESC,
+  iconHref = resolveUrlBase('/favicon.svg'),
+  iconType = 'image/svg+xml',
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -18,11 +25,7 @@ const { title = APP_NAME, description = APP_DESC } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href={resolveUrlBase('/favicon.svg')}
-    />
+    <link rel="icon" type={iconType} href={iconHref} />
     <title>{title}</title>
   </head>
   <body class="min-h-screen flex flex-col">

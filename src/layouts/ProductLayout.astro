@@ -6,6 +6,7 @@ import ProductCard from '@/components/ProductCard.astro';
 import { loadAllProducts } from '@/lib/products';
 import { getCategoryByKey } from '@/lib/categories';
 import {
+  APP_DESC,
   APP_NAME,
   formatPrice,
   isVipUrl,
@@ -37,7 +38,12 @@ const related = (await loadAllProducts({ withVIP: isVipUrl(pn) }))
   .slice(0, 4);
 ---
 
-<Layout title={`${product.name} — ${APP_NAME}`}>
+<Layout
+  title={`${product.name} — ${APP_NAME}`}
+  description={product.description || APP_DESC}
+  iconType="images/png"
+  iconHref={product.images[0] || '/images/placeholder.jpg'}
+>
   <Header />
 
   <main class="max-w-7xl mx-auto px-4 py-6">
