@@ -8,6 +8,7 @@ import {
   BANNER_CONTENT,
   BANNER_TITLE,
   isVipUrl,
+  resolveUrlBase,
   resolveUrlFrom,
   WHATSAPP_LINK,
 } from '@/utils/helpers';
@@ -15,6 +16,7 @@ import type { IProduct } from '@/types';
 import IconShopBag from '~icons/mdi/shopping';
 import IconStar from '~icons/mdi/star';
 import ProductCard from '@/components/ProductCard.astro';
+import logoImg from '@/assets/logo_only_icon.webp';
 
 const pn = Astro.url.pathname;
 
@@ -30,7 +32,7 @@ const featured = allProducts.filter((p) => p.featured);
 const nonFeatured = allProducts.filter((p) => !p.featured);
 ---
 
-<Layout>
+<Layout iconType="image/webp" iconHref={resolveUrlBase(logoImg.src)}>
   <Header />
 
   <main class="max-w-7xl mx-auto px-4 py-6">
