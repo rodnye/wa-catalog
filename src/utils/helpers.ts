@@ -11,7 +11,7 @@ export const BANNER_CONTENT =
 export const WHATSAPP_NUMBER =
   import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5351234567';
 export const WHATSAPP_LINK = 'https://wa.me/' + WHATSAPP_NUMBER;
-export const APP_VIP_CODE = import.meta.env.PUBLIC_APP_VIP_CODE || '1234';
+export const APP_VIP_CODE = import.meta.env.PUBLIC_APP_VIP_CODE || 'gitana';
 
 /**
  *

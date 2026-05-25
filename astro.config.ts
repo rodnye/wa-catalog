@@ -1,5 +1,4 @@
 // @ts-check
-import tailwind from '@astrojs/tailwind';
 import preact from '@astrojs/preact';
 import { defineConfig } from 'astro/config';
 import Icons from 'unplugin-icons/vite';
@@ -15,7 +14,7 @@ const customCollections: Options['customCollections'] = {
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind(), preact()],
+  integrations: [preact()],
 
   site: PUBLIC_SITE || 'http://0.0.0.0',
   base: PUBLIC_BASE_URL || '/',
