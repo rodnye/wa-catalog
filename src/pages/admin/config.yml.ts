@@ -65,6 +65,15 @@ export async function GET({}) {
             widget: 'string',
           },
           {
+            label: 'Precio en CUP',
+            name: 'price',
+            widget: 'number',
+            default: 1000,
+            value_type: 'int',
+            min: 0,
+            step: 200,
+          },
+          {
             label: 'Es muy importante??',
             name: 'featured',
             widget: 'boolean',
