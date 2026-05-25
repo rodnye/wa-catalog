@@ -6,7 +6,7 @@ export async function GET({}) {
     import.meta.env.PUBLIC_DECAPBRIDGE_ID ||
     'b24d4304-f503-45ca-b408-da24db405ebb';
   const repo = import.meta.env.PUBLIC_REPO || 'rodnye/wa-catalog';
-  const branch = import.meta.env.PUBLIC_REPO_BRANCH || 'data/demo';
+  const branch = import.meta.env.PUBLIC_REPO_BRANCH || 'data/maite';
   const site = import.meta.env.SITE;
 
   const config = {
