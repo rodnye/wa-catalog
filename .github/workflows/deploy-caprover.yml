@@ -1,4 +1,4 @@
-name: Deploy to EvenNode
+name: Deploy to CapRover
 
 on:
   push:
@@ -19,6 +19,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 'latest'
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm i
@@ -31,14 +32,18 @@ jobs:
       - name: Build web app
         run: pnpm build
 
-      - name: Clear sources
-        run: rm -rf src public
-
-      - name: Deploy to EvenNode
-        uses: rodnye/evennode-deploy-action@v2
+      - uses: a7ul/tar-action@v1.1.0
         with:
-          key: ${{ secrets.EVENNODE_SSH_KEY }}
-          git_url: ${{ secrets.EVENNODE_GIT_URL }}
-          pre_commit_command: |
-            git add .
-            git add ./dist -f
+          command: c
+          cwd: "./"
+          files: |
+            dist/
+            Dockerfile
+          outPath: deploy.tar
+
+      - name: Desplegar en CapRover
+        uses: caprover/deploy-from-github@v1.2.0
+        with:
+          server: ${{ secrets.CAPROVER_SERVER }}
+          token: ${{ secrets.CAPROVER_TOKEN }}
+          app: ${{ secrets.CAPROVER_APP_NAME }}
