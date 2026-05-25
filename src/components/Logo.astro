@@ -1,0 +1,16 @@
+---
+import { APP_NAME, resolveUrlFrom } from '@/utils/helpers';
+import BaseLink from './preact/BaseLink';
+
+const pn = Astro.url.pathname;
+---
+
+<BaseLink
+  href={resolveUrlFrom(pn, '/')}
+  class="flex items-center gap-2 shrink-0"
+>
+  <span class="text-2xl">🛍️</span>
+  <span class="font-display font-bold text-xl text-gray-800 sm:block">
+    {APP_NAME}
+  </span>
+</BaseLink>
