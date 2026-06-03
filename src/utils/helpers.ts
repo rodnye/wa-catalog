@@ -1,4 +1,6 @@
 export const BASE_URL = import.meta.env.BASE_URL || '/';
+
+export const APP_VIP_CODE = import.meta.env.PUBLIC_APP_VIP_CODE || 'gitana';
 export const APP_NAME = import.meta.env.PUBLIC_APP_NAME || 'La Gitana Shop';
 export const APP_DESC =
   import.meta.env.PUBLIC_APP_DESC ||
@@ -8,10 +10,15 @@ export const BANNER_TITLE =
 export const BANNER_CONTENT =
   import.meta.env.PUBLIC_BANNER_CONTENT ||
   'Productos variados con la mejor calidad y precios accesibles. ¡Tu tienda de confianza te espera!';
+
 export const WHATSAPP_NUMBER =
   import.meta.env.PUBLIC_WHATSAPP_NUMBER || '5351234567';
 export const WHATSAPP_LINK = 'https://wa.me/' + WHATSAPP_NUMBER;
-export const APP_VIP_CODE = import.meta.env.PUBLIC_APP_VIP_CODE || 'gitana';
+
+export const STORE_LOCATION =
+  import.meta.env.PUBLIC_STORE_LOCATION || 'La Habana, Cuba';
+export const STORE_HOURS =
+  import.meta.env.PUBLIC_STORE_HOURS || 'Lun-Sáb: 9am - 6pm';
 
 /**
  *

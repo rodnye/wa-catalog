@@ -3,6 +3,8 @@ import {
   APP_DESC,
   APP_NAME,
   resolveUrlFrom,
+  STORE_HOURS,
+  STORE_LOCATION,
   WHATSAPP_NUMBER,
 } from '@/utils/helpers';
 import BaseLink from './preact/BaseLink';
@@ -98,11 +100,11 @@ const primaryCategories = getCategories()
           </li>
           <li class="flex items-center gap-2">
             <IconMapMarker class="text-lg text-red-400" />
-            <span>La Habana, Cuba</span>
+            <span>{STORE_LOCATION}</span>
           </li>
           <li class="flex items-center gap-2">
             <IconClockOutline class="text-lg text-blue-700" />
-            <span>Lun-Sáb: 9am - 6pm</span>
+            <span>{STORE_HOURS}</span>
           </li>
         </ul>
       </div>
