@@ -1,11 +1,11 @@
-import { toggleMobileMenu } from '@/stores/mobileMenuStore';
+import { toggleMenu } from '@/stores/menuStore';
 import IconMenu from '~icons/mdi/menu';
 
-export default function MobileMenuToggle() {
+export default function MenuToggle() {
   const handleClick = (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toggleMobileMenu();
+    toggleMenu();
   };
 
   return (

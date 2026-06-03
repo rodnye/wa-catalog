@@ -56,17 +56,17 @@ export function atomUrlParam(
       let parsedValue = value;
       urlParamsStore.set(paramKey, parsedValue);
     });
-  }
 
-  if (!urlParamsStore.has(key)) {
-    if (defaultValue) urlParamsStore.set(key, defaultValue);
-    else urlParamsStore.delete(key);
+    if (!urlParamsStore.has(key)) {
+      if (defaultValue) urlParamsStore.set(key, defaultValue);
+      else urlParamsStore.delete(key);
+    }
   }
-
   return {
     get: () => urlParamsStore.get(key) || null,
     set: (newValue: string | null) => {
       const oldValue = urlParamsStore.get(key) || null;
+
       if (oldValue !== newValue) {
         if (newValue) urlParamsStore.set(key, newValue);
         else urlParamsStore.delete(key);

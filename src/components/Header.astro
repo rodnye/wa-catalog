@@ -1,11 +1,14 @@
 ---
 import BaseLink from './preact/BaseLink';
 import CartToggle from '@/components/preact/CartToggle';
-import MobileMenuToggle from '@/components/preact/MobileMenuToggle';
-import MobileMenuPanel from '@/components/preact/MobileMenuPanel';
+import MenuToggle from '@/components/preact/MenuToggle';
 import { getCategories } from '@/lib/categories';
 import { resolveUrlFrom } from '@/utils/helpers';
 import Logo from './Logo.astro';
+import MenuSidebar from './preact/MenuSidebar';
+import CartSidebar from './preact/CartSidebar';
+import CartInitializer from './preact/CartInitializer';
+import MenuInitializer from './preact/MenuInitializer';
 
 interface Props {
   activeCategory?: string;
@@ -15,6 +18,9 @@ const pn = Astro.url.pathname;
 const { activeCategory = '' } = Astro.props;
 const categories = getCategories();
 ---
+
+<MenuInitializer client:load />
+<CartInitializer client:load />
 
 <header
   class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm"
@@ -43,7 +49,7 @@ const categories = getCategories();
     <!-- Mobile categories nav with hamburger menu -->
     <div class="flex items-center gap-2 py-3 border-t border-gray-50">
       <div class="lg:hidden">
-        <MobileMenuToggle client:load />
+        <MenuToggle client:load />
       </div>
       <div class="flex-1 overflow-x-auto hide-scrollbar">
         <div class="flex gap-2">
@@ -79,5 +85,5 @@ const categories = getCategories();
   </div>
 </header>
 
-<!-- Mobile Menu Panel -->
-<MobileMenuPanel activeCategory={activeCategory} client:load />
+<MenuSidebar activeCategory={activeCategory} client:load />
+<CartSidebar client:load />

@@ -3,7 +3,7 @@ import { atomUrlParam } from '@/utils/url-params';
 import { atom, computed } from 'nanostores';
 
 export const cartItems = atom<ICartItem[]>([]);
-export const isCartOpen = atomUrlParam('cart_open', null);
+export const isCartOpen = atomUrlParam('cart_open');
 
 export const cartCount = computed(cartItems, (items) =>
   items.reduce((sum, item) => sum + item.quantity, 0),
@@ -16,19 +16,6 @@ export const cartTotal = computed(cartItems, (items) =>
 function persist() {
   if (typeof window !== 'undefined') {
     sessionStorage.setItem('cart', JSON.stringify(cartItems.get()));
-  }
-}
-
-export function loadCartFromStorage() {
-  if (typeof window === 'undefined') return;
-  const saved = sessionStorage.getItem('cart');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) cartItems.set(parsed);
-    } catch {
-      cartItems.set([]);
-    }
   }
 }
 

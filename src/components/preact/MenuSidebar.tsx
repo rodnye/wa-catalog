@@ -1,16 +1,16 @@
 import { useEffect } from 'preact/hooks';
-import { isMobileMenuOpen, closeMobileMenu } from '@/stores/mobileMenuStore';
-import BaseLink from './BaseLink';
+import { isMenuOpen, closeMenu } from '@/stores/menuStore';
 import { getCategories } from '@/lib/categories';
-import IconClose from '~icons/mdi/close';
 import { useUrlStore } from '@/hooks/preact/useUrlStore';
+import BaseLink from './BaseLink';
+import IconClose from '~icons/mdi/close';
 
 interface Props {
   activeCategory?: string;
 }
 
-export default function MobileMenuPanel({ activeCategory = '' }: Props) {
-  const isOpen = useUrlStore(isMobileMenuOpen) === 'true';
+export default function MenuSidebar({ activeCategory = '' }: Props) {
+  const isOpen = useUrlStore(isMenuOpen) === 'true';
   const categories = getCategories();
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function MobileMenuPanel({ activeCategory = '' }: Props) {
         class={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 lg:hidden ${
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
-        onClick={closeMobileMenu}
+        onClick={closeMenu}
       />
 
       {/* Panel */}
@@ -46,7 +46,7 @@ export default function MobileMenuPanel({ activeCategory = '' }: Props) {
             Categorías
           </h2>
           <button
-            onClick={closeMobileMenu}
+            onClick={closeMenu}
             class="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             aria-label="Cerrar menú"
           >
@@ -60,7 +60,7 @@ export default function MobileMenuPanel({ activeCategory = '' }: Props) {
             <li>
               <BaseLink
                 href={'/'}
-                onClick={closeMobileMenu}
+                onClick={closeMenu}
                 class={[
                   'block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
                   activeCategory === ''
@@ -78,7 +78,7 @@ export default function MobileMenuPanel({ activeCategory = '' }: Props) {
               <li key={cat.key}>
                 <BaseLink
                   href={`/categories/${cat.slug}`}
-                  onClick={closeMobileMenu}
+                  onClick={closeMenu}
                   class={[
                     'block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
                     activeCategory === cat.key
