@@ -60,12 +60,15 @@ export function formatPrice(price: number): string {
 }
 
 export function buildWhatsAppMessage(
-  items: { nombre: string; precio: number; quantity: number }[],
-  total: number,
+  items: { name: string; price: number; quantity: number }[],
 ): string {
+  const total = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   const lines = items.map(
     (item) =>
-      `• ${item.nombre} x${item.quantity} — ${item.precio.toLocaleString('es-CU')} CUP`,
+      `• ${item.name} x${item.quantity} — ${item.price.toLocaleString('es-CU')} CUP`,
   );
   const message = [
     '🛒 *Nuevo Pedido*',
@@ -74,13 +77,12 @@ export function buildWhatsAppMessage(
     '',
     `*Total: ${total.toLocaleString('es-CU')} CUP*`,
   ].join('\n');
-  return encodeURIComponent(message);
+  return message;
 }
 
 export function getWhatsAppUrl(
-  items: { nombre: string; precio: number; quantity: number }[],
-  total: number,
+  items: { name: string; price: number; quantity: number }[],
 ): string {
-  const message = buildWhatsAppMessage(items, total);
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  const message = buildWhatsAppMessage(items);
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
