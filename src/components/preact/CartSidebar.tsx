@@ -7,29 +7,29 @@ import {
   closeCart,
   removeFromCart,
   updateQuantity,
-  getWhatsAppUrl,
 } from '@/stores/cartStore';
-import { formatPrice } from '@/utils/helpers';
+import { formatPrice, getWhatsAppUrl } from '@/utils/helpers';
 import BaseImg from './BaseImg';
 import IconShopCar from '~icons/assets/shop-car';
 import IconClose from '~icons/mdi/close';
 import IconDelete from '~icons/mdi/trash-can-outline';
 import IconWhatsapp from '~icons/mdi/whatsapp';
+import { useUrlStore } from '@/hooks/preact/useUrlStore';
 
 export default function CartSidebar() {
   const items = useStore(cartItems);
-  const open = useStore(isCartOpen);
   const total = useStore(cartTotal);
+  const isOpen = useUrlStore(isCartOpen) === 'true';
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [open]);
+  }, [isOpen]);
 
   const handleCheckout = () => {
-    window.open(getWhatsAppUrl(), '_blank');
+    window.open(getWhatsAppUrl(items), '_blank');
   };
 
   return (
@@ -37,7 +37,7 @@ export default function CartSidebar() {
       {/* Overlay */}
       <div
         class={`cart-overlay fixed inset-0 bg-black/50 z-[60] ${
-          open ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         onClick={closeCart}
       />
@@ -45,7 +45,7 @@ export default function CartSidebar() {
       {/* Panel */}
       <aside
         class={`cart-panel fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-[70] shadow-2xl flex flex-col ${
-          open ? '' : 'translate-x-full'
+          isOpen ? '' : 'translate-x-full'
         }`}
       >
         {/* Header */}

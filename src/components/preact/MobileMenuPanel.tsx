@@ -1,16 +1,16 @@
 import { useEffect } from 'preact/hooks';
-import { useStore } from '@nanostores/preact';
 import { isMobileMenuOpen, closeMobileMenu } from '@/stores/mobileMenuStore';
 import BaseLink from './BaseLink';
 import { getCategories } from '@/lib/categories';
 import IconClose from '~icons/mdi/close';
+import { useUrlStore } from '@/hooks/preact/useUrlStore';
 
 interface Props {
   activeCategory?: string;
 }
 
 export default function MobileMenuPanel({ activeCategory = '' }: Props) {
-  const isOpen = useStore(isMobileMenuOpen);
+  const isOpen = useUrlStore(isMobileMenuOpen) === 'true';
   const categories = getCategories();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function MobileMenuPanel({ activeCategory = '' }: Props) {
 
       {/* Panel */}
       <div
-        class={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transition-transform duration-300 ease-in-out transform lg:hidden ${
+        class={`flex flex-col fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transition-transform duration-300 ease-in-out transform lg:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
