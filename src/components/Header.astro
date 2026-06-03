@@ -40,41 +40,11 @@ const categories = getCategories();
       </div>
     </div>
 
-    <!-- Categories nav (desktop) -->
-    <nav
-      class="hidden lg:flex gap-2 overflow-x-auto hide-scrollbar py-3 -mx-4 px-4 border-t border-gray-50"
-    >
-      <BaseLink
-        href={resolveUrlFrom(pn, '/')}
-        class:list={[
-          'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
-          activeCategory === ''
-            ? 'bg-primary-500 text-white shadow-sm'
-            : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
-        ]}
-      >
-        Todo
-      </BaseLink>
-      {
-        categories.map((cat) => (
-          <BaseLink
-            href={resolveUrlFrom(pn, `/categories/${cat.slug}`)}
-            class:list={[
-              'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
-              activeCategory === cat.key
-                ? 'bg-primary-500 text-white shadow-sm'
-                : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
-            ]}
-          >
-            {cat.label}
-          </BaseLink>
-        ))
-      }
-    </nav>
-
     <!-- Mobile categories nav with hamburger menu -->
-    <div class="flex items-center gap-2 py-3 border-t border-gray-50 lg:hidden">
-      <MobileMenuToggle client:load />
+    <div class="flex items-center gap-2 py-3 border-t border-gray-50">
+      <div class="lg:hidden">
+        <MobileMenuToggle client:load />
+      </div>
       <div class="flex-1 overflow-x-auto hide-scrollbar">
         <div class="flex gap-2">
           <BaseLink
@@ -89,7 +59,7 @@ const categories = getCategories();
             Todo
           </BaseLink>
           {
-            categories.slice(0, 5).map((cat) => (
+            categories.map((cat) => (
               <BaseLink
                 href={resolveUrlFrom(pn, `/categories/${cat.slug}`)}
                 class:list={[
