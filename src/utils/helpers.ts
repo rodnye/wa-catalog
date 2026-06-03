@@ -18,7 +18,7 @@ export const WHATSAPP_LINK = 'https://wa.me/' + WHATSAPP_NUMBER;
 export const STORE_LOCATION =
   import.meta.env.PUBLIC_STORE_LOCATION || 'La Habana, Cuba';
 export const STORE_HOURS =
-  import.meta.env.PUBLIC_STORE_HOURS || 'Lun-Sáb: 9am - 6pm';
+  import.meta.env.PUBLIC_STORE_HOURS || 'Lunes a Domingo: 11am - 8pm';
 
 /**
  *
