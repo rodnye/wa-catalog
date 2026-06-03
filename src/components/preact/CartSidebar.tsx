@@ -29,6 +29,7 @@ export default function CartSidebar() {
   }, [isOpen]);
 
   const handleCheckout = () => {
+    cartItems.set([]);
     window.open(getWhatsAppUrl(items), '_blank');
   };
 
