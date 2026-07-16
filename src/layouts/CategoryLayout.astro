@@ -4,8 +4,9 @@ import CartSidebar from '@/components/preact/CartSidebar';
 import { APP_NAME, APP_VIP_CODE, resolveUrlFrom } from '@/utils/helpers';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
-import ProductCard from '@/components/ProductCard.astro';
 import Layout from '@/layouts/_Layout.astro';
+import ProductCard from '@/components/preact/ProductCard';
+import ProductCatalog from '@/components/preact/ProductCatalog';
 import type { getCategoryByKey } from '@/lib/categories';
 import type { IProduct } from '@/types';
 import IconBack from '~icons/mdi/arrow-left';
@@ -45,14 +46,7 @@ const { category, products } = Astro.props;
 
     {
       products.length > 0 ? (
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-          {products.map((product) => (
-            <ProductCard
-              product={product}
-              link={resolveUrlFrom(pn, `/products/${product.id}`)}
-            />
-          ))}
-        </div>
+        <ProductCatalog products={products} currentPath={pn} client:load />
       ) : (
         <div class="text-center py-16">
           <span class="text-6xl block mb-4">📭</span>

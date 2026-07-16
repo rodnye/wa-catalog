@@ -2,7 +2,6 @@
 import Layout from '@/layouts/_Layout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import ProductCard from '@/components/ProductCard.astro';
 import { loadAllProducts } from '@/lib/products';
 import { getCategoryByKey } from '@/lib/categories';
 import {
@@ -16,6 +15,7 @@ import {
 import BaseLink from '@/components/preact/BaseLink';
 import ProductGallery from '@/components/preact/ProductGallery';
 import AddToCartButton from '@/components/preact/AddToCartButton';
+import ProductCard from '@/components/preact/ProductCard';
 import type { IProduct } from '@/types';
 import IconBack from '~icons/mdi/arrow-left';
 import IconStar from '~icons/mdi/star';
@@ -44,7 +44,7 @@ const related = (await loadAllProducts({ withVIP: isVipUrl(pn) }))
   iconType="images/png"
   iconHref={product.images[0] || '/images/placeholder.jpg'}
 >
-  <Header />
+  <Header withSearch={false} />
 
   <main class="max-w-7xl mx-auto px-4 py-6">
     <nav class="mb-5">
@@ -142,10 +142,7 @@ const related = (await loadAllProducts({ withVIP: isVipUrl(pn) }))
           </h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             {related.map((p) => (
-              <ProductCard
-                product={p}
-                link={resolveUrlFrom(pn, `/products/${p.id}`)}
-              />
+              <ProductCard product={p} currentPath={pn} client:load />
             ))}
           </div>
         </section>

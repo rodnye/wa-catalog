@@ -1,9 +1,10 @@
-import { useEffect } from 'preact/hooks';
+import { useEffect, useLayoutEffect, useState } from 'preact/hooks';
 import { isMenuOpen, closeMenu } from '@/stores/menuStore';
 import { getCategories } from '@/lib/categories';
 import { useUrlStore } from '@/hooks/preact/useUrlStore';
 import BaseLink from './BaseLink';
 import IconClose from '~icons/mdi/close';
+import { resolveUrlFrom } from '@/utils/helpers';
 
 interface Props {
   activeCategory?: string;
@@ -12,7 +13,11 @@ interface Props {
 export default function MenuSidebar({ activeCategory = '' }: Props) {
   const isOpen = useUrlStore(isMenuOpen) === 'true';
   const categories = getCategories();
+  const [currentPath, setCurrentPath] = useState('/');
 
+  useLayoutEffect(() => {
+    setCurrentPath(location.pathname);
+  });
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -59,7 +64,7 @@ export default function MenuSidebar({ activeCategory = '' }: Props) {
           <ul class="space-y-2">
             <li>
               <BaseLink
-                href={'/'}
+                href={resolveUrlFrom(currentPath, '/')}
                 onClick={closeMenu}
                 class={[
                   'block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
@@ -77,7 +82,7 @@ export default function MenuSidebar({ activeCategory = '' }: Props) {
             {categories.map((cat) => (
               <li key={cat.key}>
                 <BaseLink
-                  href={`/categories/${cat.slug}`}
+                  href={resolveUrlFrom(currentPath, `/categories/${cat.slug}`)}
                   onClick={closeMenu}
                   class={[
                     'block px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',

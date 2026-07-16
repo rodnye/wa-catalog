@@ -9,13 +9,16 @@ import MenuSidebar from './preact/MenuSidebar';
 import CartSidebar from './preact/CartSidebar';
 import CartInitializer from './preact/CartInitializer';
 import MenuInitializer from './preact/MenuInitializer';
+import SearchBar from './preact/SearchBar';
+import MobileSearchToggle from './preact/MobileSearchToggle';
 
 interface Props {
   activeCategory?: string;
+  withSearch?: boolean;
 }
 
 const pn = Astro.url.pathname;
-const { activeCategory = '' } = Astro.props;
+const { activeCategory = '', withSearch = true } = Astro.props;
 const categories = getCategories();
 ---
 
@@ -32,15 +35,16 @@ const categories = getCategories();
       <Logo />
 
       <!-- Search bar (desktop) -->
-      <!--div class="hidden md:flex flex-1 max-w-lg mx-4">
-        <SearchBar client:load />
-      </div-->
+      {
+        withSearch && (
+          <div class="hidden md:flex flex-1 max-w-lg mx-4">
+            <SearchBar client:load />
+          </div>
+        )
+      }
 
       <!-- Actions -->
       <div class="flex items-center gap-2">
-        <!-- Search toggle (mobile) + collapsible input -->
-        <!--MobileSearchToggle client:load /-->
-
         <!-- Cart button -->
         <CartToggle client:load />
       </div>
@@ -51,6 +55,7 @@ const categories = getCategories();
       <div class="lg:hidden">
         <MenuToggle client:load />
       </div>
+      {withSearch && <MobileSearchToggle client:load />}
       <div class="flex-1 overflow-x-auto hide-scrollbar">
         <div class="flex gap-2">
           <BaseLink
