@@ -71,7 +71,7 @@ export default function ProductCatalog({
       {/* Hero */}
       {withHero && (
         <section class="mb-8">
-          <div class="bg-gradient-to-br from-primary-400 via-primary-500 to-sand-500 rounded-3xl p-6 sm:p-10 text-white relative overflow-hidden">
+          <div class="bg-gradient-to-br from-primary-400 via-primary-500 to-sand-500 md:rounded-3xl -mx-4 -mt-6 md:m-auto p-6 sm:p-10 text-white relative overflow-hidden">
             <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4"></div>
             <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/3 -translate-x-1/4"></div>
             <div class="relative z-10">
@@ -81,7 +81,7 @@ export default function ProductCatalog({
               <p class="text-white/80 text-base sm:text-lg max-w-lg mb-5">
                 {BANNER_CONTENT}
               </p>
-              <div class="flex gap-3">
+              <div class="flex flex-col xs:flex-row gap-3">
                 <BaseLink
                   href="#products"
                   class="bg-white text-primary-600 font-semibold py-2.5 px-6 rounded-xl hover:bg-gray-50 transition-all shadow-sm"
