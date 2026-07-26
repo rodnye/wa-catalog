@@ -1,0 +1,15 @@
+{
+  "name": "@bot/core",
+  "version": "1.0.0",
+  "main": "./dist/engine.js",
+  "types": "./dist/engine.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@bot/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1"
+  }
+}
