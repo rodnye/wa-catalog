@@ -35,10 +35,18 @@ export class WhatsAppAdapter implements IChannelAdapter {
       console.log('New QR Code generated. Access /auth/qr to view it.');
     });
 
-    this.client.on('connected', ({ jid }) => {
+    this.client.on('connected', async ({ jid }) => {
       console.log(`Connected to WhatsApp as ${jid}`);
-      this.client.sendPresence('available');
-      this.latestQR = null;
+
+      if (this.latestQR) {
+        // is a new auth!!
+        this.latestQR = null;
+
+        // wait some time to poblate the DB
+        await setTimeout(10000);
+      }
+
+      this.client.sendPresence('available').catch(console.warn);
     });
 
     this.client.on('message', async (a) => {
