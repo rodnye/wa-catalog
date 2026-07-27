@@ -3,7 +3,7 @@ import { WhatsAppAdapter } from './adapter.js';
 import { createServer } from './server.js';
 import { BotEngine } from '@bot/core';
 
-dotenv.config({ path: ['.env', '../../../.env'] });
+dotenv.config({ path: ['.env', '../../.env'] });
 
 async function main() {
   const authorizedNumbers = (process.env.AUTHORIZED_NUMBERS || '')

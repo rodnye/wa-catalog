@@ -153,7 +153,7 @@ export class WhatsAppAdapter implements IChannelAdapter {
         (message.imageMessage as any)?.caption ||
         '';
 
-delete message.messageContextInfo;
+      delete message.messageContextInfo;
 
       await this.handleIncomingMessage({
         id: info.id,
@@ -201,7 +201,7 @@ delete message.messageContextInfo;
             text,
             contextInfo: {
               stanzaID: replyToMessage.id,
-              quotedType: "EXPLICIT",
+              quotedType: 'EXPLICIT',
               participant: replyToMessage.senderId,
               quotedMessage: replyToMessage.rawMessage,
             },
