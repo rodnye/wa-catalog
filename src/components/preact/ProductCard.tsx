@@ -1,0 +1,81 @@
+import { getCategoryByKey } from '@/lib/categories';
+import AddToCartButton from '@/components/preact/AddToCartButton';
+import IconStar from '~icons/mdi/star';
+import type { IProduct } from '@/types';
+import { formatPrice, resolveUrlFrom } from '@/utils/helpers';
+import BaseImg from './BaseImg';
+import BaseLink from './BaseLink';
+
+interface Props {
+  product: IProduct;
+  currentPath?: string;
+}
+
+export default function ProductCard({ product, currentPath = '/' }: Props) {
+  const slug = product.id;
+  const resolvedLink = resolveUrlFrom(currentPath, `/products/${slug}`);
+
+  return (
+    <article
+      class="product-card card group cursor-pointer"
+      data-product-id={product.id}
+    >
+      <BaseLink href={resolvedLink} class="block">
+        {/* Image */}
+        <div class="relative overflow-hidden aspect-square bg-gray-50">
+          <BaseImg
+            src={product.images[0] || '/images/placeholder.jpg'}
+            alt={product.name}
+            class="product-img w-full h-full object-cover"
+            loading="lazy"
+          />
+          {product.featured && (
+            <span class="flex items-center absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+              <IconStar class="text-yellow-400 size-5 mr-1" />
+              <span> Destacado </span>
+            </span>
+          )}
+          {!product.available && (
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <span class="bg-white text-gray-800 font-bold px-4 py-2 rounded-xl">
+                Agotado
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Info */}
+        <div class="p-4">
+          <div class="flex flex-wrap gap-1.5 mb-2">
+            {product.categories.slice(0, 2).map((cat) => (
+              <span class="badge">{getCategoryByKey(cat).label}</span>
+            ))}
+          </div>
+          <h3 class="font-semibold text-gray-800 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
+            {product.name}
+          </h3>
+          <p class="text-xs text-gray-500 line-clamp-2 mb-3">
+            {product.description}
+          </p>
+          <div class="flex items-center justify-between">
+            <span class="font-display font-bold text-primary-600 text-lg">
+              {formatPrice(product.price)}
+            </span>
+          </div>
+        </div>
+      </BaseLink>
+
+      {/* Add to cart button */}
+      {product.available && (
+        <div class="px-4 pb-4">
+          <AddToCartButton
+            productId={product.id}
+            productName={product.name}
+            productPrice={product.price}
+            productImage={product.images[0] || ''}
+          />
+        </div>
+      )}
+    </article>
+  );
+}

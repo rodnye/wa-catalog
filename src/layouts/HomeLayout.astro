@@ -1,0 +1,42 @@
+---
+import Layout from '@/layouts/_Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { loadAllProducts } from '@/lib/products';
+import BaseLink from '@/components/preact/BaseLink';
+import {
+  BANNER_CONTENT,
+  BANNER_TITLE,
+  isVipUrl,
+  resolveUrlBase,
+  resolveUrlFrom,
+  WHATSAPP_LINK,
+} from '@/utils/helpers';
+import type { IProduct } from '@/types';
+import logoImg from '@/assets/logo_only_icon.webp';
+import ProductCatalog from '@/components/preact/ProductCatalog';
+
+const pn = Astro.url.pathname;
+
+// Dynamically load all products from src/data/*.json
+const allProducts = await loadAllProducts({ withVIP: isVipUrl(pn) });
+
+const linkParser = ({ id }: IProduct) => {
+  return resolveUrlFrom(pn, `/products/${id}`);
+};
+---
+
+<Layout iconType="image/webp" iconHref={resolveUrlBase(logoImg.src)}>
+  <Header />
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <ProductCatalog
+      products={allProducts}
+      currentPath={pn}
+      withHero={true}
+      client:load
+    />
+  </main>
+
+  <Footer />
+</Layout>

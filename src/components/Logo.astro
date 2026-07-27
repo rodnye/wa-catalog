@@ -1,0 +1,19 @@
+---
+import logoImg from '@/assets/logo_only_icon.webp';
+import { resolveUrlFrom } from '@/utils/helpers';
+import BaseLink from './preact/BaseLink';
+import BaseImg from './preact/BaseImg';
+
+const pn = Astro.url.pathname;
+---
+
+<BaseLink
+  href={resolveUrlFrom(pn, '/')}
+  class="flex items-center gap-2 shrink-0"
+>
+  <BaseImg src={logoImg.src} class="h-12" />
+  <span class="font-display font-bold text-xl text-gray-800 sm:block">
+    <span class="text-orange-500">La Gitana</span>
+    <span>Shop</span>
+  </span>
+</BaseLink>

@@ -1,3 +1,3 @@
-import { atom } from 'nanostores';
+import { atomUrlParam } from '@/utils/url-params';
 
-export const searchQuery = atom<string>('');
+export const searchQuery = atomUrlParam('q');

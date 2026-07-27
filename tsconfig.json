@@ -8,6 +8,7 @@
       "@/*": ["src/*"]
     },
     "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "jsxImportSource": "preact",
+    "types": ["unplugin-icons/types/preact", "unplugin-icons/types/astro"]
   }
 }

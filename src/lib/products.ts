@@ -13,7 +13,14 @@ function parseProduct(raw: any, fallbackId: string): IProduct {
 /**
  * Dynamically loads all product JSON files from src/data/
  */
-export async function loadAllProducts(): Promise<IProduct[]> {
+export async function loadAllProducts({
+  withVIP,
+}: {
+  /**
+   * Load all products included VIP products
+   */
+  withVIP?: boolean;
+} = {}): Promise<IProduct[]> {
   // Import all JSON files from src/data/ eagerly
   const dataModules = import.meta.glob<{ default: any }>(
     '/src/data/products/*.json',
@@ -35,7 +42,7 @@ export async function loadAllProducts(): Promise<IProduct[]> {
         ?.replace(/\.json$/, '') || path;
 
     const product = parseProduct(rawItem, fileId);
-    products.push(product);
+    if (withVIP || !product.vip) products.push(product);
   }
 
   return products;

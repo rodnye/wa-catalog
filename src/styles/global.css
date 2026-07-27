@@ -65,3 +65,11 @@
 .product-card:hover .product-img {
   transform: scale(1.05);
 }
+
+/* Mobile menu animations */
+.mobile-menu-overlay {
+  transition: opacity 0.3s ease;
+}
+.mobile-menu-panel {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

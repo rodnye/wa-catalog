@@ -1,79 +1,26 @@
-import { useStore } from '@nanostores/preact';
 import { useMemo } from 'preact/hooks';
 import { searchQuery } from '@/stores/searchStore';
-import AddToCartButton from './AddToCartButton';
 import type { IProduct } from '@/types';
-import { formatPrice } from '@/utils/helpers';
+import { BANNER_CONTENT, BANNER_TITLE, WHATSAPP_LINK } from '@/utils/helpers';
 import BaseLink from './BaseLink';
-import BaseImg from './BaseImg';
+import { useUrlStore } from '@/hooks/preact/useUrlStore';
+import IconShopBag from '~icons/mdi/shopping';
+import IconStar from '~icons/mdi/star';
+import ProductCard from './ProductCard';
 
-interface Props {
+interface ProductCatalogProps {
   products: IProduct[];
+  withHero: boolean;
+  currentPath?: string;
 }
 
-function ProductCard({ product }: { product: IProduct }) {
-  return (
-    <article
-      class="product-card card group cursor-pointer"
-      data-product-id={product.id}
-    >
-      <BaseLink href={`/products/${product.id}`} class="block">
-        <div class="relative overflow-hidden aspect-square bg-gray-50">
-          <BaseImg
-            src={product.images[0] || '/images/placeholder.jpg'}
-            alt={product.name}
-            class="product-img w-full h-full object-cover"
-            loading="lazy"
-          />
-          {product.featured && (
-            <span class="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
-              ⭐ Destacado
-            </span>
-          )}
-          {!product.available && (
-            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <span class="bg-white text-gray-800 font-bold px-4 py-2 rounded-xl">
-                Agotado
-              </span>
-            </div>
-          )}
-        </div>
-        <div class="p-4">
-          <div class="flex flex-wrap gap-1.5 mb-2">
-            {product.categories.slice(0, 2).map((cat) => (
-              <span key={cat} class="badge">
-                {cat}
-              </span>
-            ))}
-          </div>
-          <h3 class="font-semibold text-gray-800 text-sm leading-snug mb-1 line-clamp-2 group-hover:text-primary-600 transition-colors">
-            {product.name}
-          </h3>
-          <p class="text-xs text-gray-500 line-clamp-2 mb-3">
-            {product.description}
-          </p>
-          <span class="font-display font-bold text-primary-600 text-lg">
-            {formatPrice(product.price)}
-          </span>
-        </div>
-      </BaseLink>
-      {product.available && (
-        <div class="px-4 pb-4">
-          <AddToCartButton
-            productId={product.id}
-            productName={product.name}
-            productPrice={product.price}
-            productImage={product.images[0] || ''}
-          />
-        </div>
-      )}
-    </article>
-  );
-}
-
-export default function ProductCatalog({ products }: Props) {
-  const query = useStore(searchQuery);
-  const isSearching = query.trim().length > 0;
+export default function ProductCatalog({
+  products,
+  withHero = false,
+  currentPath,
+}: ProductCatalogProps) {
+  const query = useUrlStore(searchQuery);
+  const isSearching = !!query;
 
   const filtered = useMemo(() => {
     if (!isSearching) return [];
@@ -104,7 +51,7 @@ export default function ProductCatalog({ products }: Props) {
         {filtered.length > 0 ? (
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
             {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} currentPath={currentPath} />
             ))}
           </div>
         ) : (
@@ -117,11 +64,72 @@ export default function ProductCatalog({ products }: Props) {
     );
   }
 
+  const featured = products.filter((p) => p.featured);
+  const nonFeatured = products.filter((p) => !p.featured);
   return (
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-      {products.map((p) => (
-        <ProductCard key={p.id} product={p} />
-      ))}
-    </div>
+    <>
+      {/* Hero */}
+      {withHero && (
+        <section class="mb-8">
+          <div class="bg-gradient-to-br from-primary-400 via-primary-500 to-sand-500 md:rounded-3xl -mx-4 -mt-6 md:m-auto p-6 sm:p-10 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4"></div>
+            <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/3 -translate-x-1/4"></div>
+            <div class="relative z-10">
+              <h1 class="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl mb-3">
+                {BANNER_TITLE}
+              </h1>
+              <p class="text-white/80 text-base sm:text-lg max-w-lg mb-5">
+                {BANNER_CONTENT}
+              </p>
+              <div class="flex flex-col xs:flex-row gap-3">
+                <BaseLink
+                  href="#products"
+                  class="bg-white text-primary-600 font-semibold py-2.5 px-6 rounded-xl hover:bg-gray-50 transition-all shadow-sm"
+                >
+                  Ver Productos
+                </BaseLink>
+                <BaseLink
+                  href={WHATSAPP_LINK}
+                  target="_blank"
+                  class="bg-white/20 text-white font-semibold py-2.5 px-6 rounded-xl hover:bg-white/30 transition-all border border-white/30"
+                >
+                  Contáctanos
+                </BaseLink>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {featured.length > 0 && (
+        <section class="mb-10">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="flex items-center font-display font-bold text-xl sm:text-2xl text-gray-800">
+              <IconStar class="size-8 mr-2 text-yellow-400" />
+              <span> Destacados </span>
+            </h2>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {featured.map((p) => (
+              <ProductCard product={p} currentPath={currentPath} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section id="products" class="mb-10">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="font-display font-bold text-xl sm:text-2xl flex items-center text-gray-800">
+            <IconShopBag class="size-8 mr-2 text-purple-500" />
+            <span> Todos los productos </span>
+          </h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+          {nonFeatured.map((p) => (
+            <ProductCard product={p} currentPath={currentPath} />
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

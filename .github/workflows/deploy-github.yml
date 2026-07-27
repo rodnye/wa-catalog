@@ -5,8 +5,8 @@ on:
   # Using a different branch name? Replace `main` with your branch’s name
   push:
     branches:
-      - main
-      - data/demo
+      - root/main
+      - root/data
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,9 @@ jobs:
       name: github-pages
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+        with:
+          ref: root/main
 
       - name: Crear archivo .env desde secret
         run: |

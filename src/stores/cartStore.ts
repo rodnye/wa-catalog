@@ -1,9 +1,9 @@
 import type { ICartItem } from '@/types';
-import { WHATSAPP_NUMBER } from '@/utils/helpers';
+import { atomUrlParam } from '@/utils/url-params';
 import { atom, computed } from 'nanostores';
 
 export const cartItems = atom<ICartItem[]>([]);
-export const isCartOpen = atom<boolean>(false);
+export const isCartOpen = atomUrlParam('cart_open');
 
 export const cartCount = computed(cartItems, (items) =>
   items.reduce((sum, item) => sum + item.quantity, 0),
@@ -15,20 +15,7 @@ export const cartTotal = computed(cartItems, (items) =>
 
 function persist() {
   if (typeof window !== 'undefined') {
-    localStorage.setItem('cart', JSON.stringify(cartItems.get()));
-  }
-}
-
-export function loadCartFromStorage() {
-  if (typeof window === 'undefined') return;
-  const saved = localStorage.getItem('cart');
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) cartItems.set(parsed);
-    } catch {
-      cartItems.set([]);
-    }
+    sessionStorage.setItem('cart', JSON.stringify(cartItems.get()));
   }
 }
 
@@ -49,7 +36,7 @@ export function addToCart(
   } else {
     cartItems.set([...current, { id, name, price, image, quantity: 1 }]);
   }
-  isCartOpen.set(true);
+  isCartOpen.set('true');
   persist();
 }
 
@@ -74,37 +61,13 @@ export function updateQuantity(id: string, delta: number) {
 }
 
 export function openCart() {
-  isCartOpen.set(true);
+  isCartOpen.set('true');
 }
 
 export function closeCart() {
-  isCartOpen.set(false);
+  if (isCartOpen.get() === 'true') window.history.back();
 }
 
 export function toggleCart() {
-  isCartOpen.set(!isCartOpen.get());
-}
-
-function buildMessage(): string {
-  const items = cartItems.get();
-  const total = items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-  const lines = items.map(
-    (item) =>
-      `• ${item.name} x${item.quantity} — ${item.price.toLocaleString('es-CU')} CUP`,
-  );
-  return [
-    '🛒 *Nuevo Pedido*',
-    '',
-    ...lines,
-    '',
-    `*Total: ${total.toLocaleString('es-CU')} CUP*`,
-  ].join('\n');
-}
-
-export function getWhatsAppUrl(): string {
-  const message = encodeURIComponent(buildMessage());
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+  isCartOpen.set(isCartOpen.get() ? null : 'true');
 }

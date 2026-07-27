@@ -1,0 +1,154 @@
+---
+import Layout from '@/layouts/_Layout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { loadAllProducts } from '@/lib/products';
+import { getCategoryByKey } from '@/lib/categories';
+import {
+  APP_DESC,
+  APP_NAME,
+  formatPrice,
+  isVipUrl,
+  resolveUrlFrom,
+  WHATSAPP_LINK,
+} from '@/utils/helpers';
+import BaseLink from '@/components/preact/BaseLink';
+import ProductGallery from '@/components/preact/ProductGallery';
+import AddToCartButton from '@/components/preact/AddToCartButton';
+import ProductCard from '@/components/preact/ProductCard';
+import type { IProduct } from '@/types';
+import IconBack from '~icons/mdi/arrow-left';
+import IconStar from '~icons/mdi/star';
+import IconWhatsapp from '~icons/mdi/whatsapp';
+
+interface Props {
+  product: IProduct;
+}
+
+const pn = Astro.url.pathname;
+const { product } = Astro.props;
+
+const related = (await loadAllProducts({ withVIP: isVipUrl(pn) }))
+  .filter(
+    (p) =>
+      p.id !== product.id &&
+      p.categories.some((c) => product.categories.includes(c)),
+  )
+  .sort((a, b) => (a.featured === b.featured ? 0 : a.featured ? -1 : 1))
+  .slice(0, 4);
+---
+
+<Layout
+  title={`${product.name} — ${APP_NAME}`}
+  description={product.description || APP_DESC}
+  iconType="images/png"
+  iconHref={product.images[0] || '/images/placeholder.jpg'}
+>
+  <Header withSearch={false} />
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <nav class="mb-5">
+      <BaseLink
+        href={resolveUrlFrom(pn, '/')}
+        class="text-sm text-gray-400 hover:text-primary-500 transition-colors inline-flex items-center gap-1 mb-3"
+      >
+        <IconBack class="size-4" />
+        <span> Volver a todo </span>
+      </BaseLink>
+    </nav>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+      <!-- Images (client-side gallery) -->
+      <ProductGallery images={product.images} alt={product.name} client:load />
+
+      <!-- Info -->
+      <div class="flex flex-col">
+        <div class="flex flex-wrap gap-2 mb-3">
+          {
+            product.categories.map((key) => {
+              const { label, emoji, slug } = getCategoryByKey(key);
+              return (
+                <BaseLink
+                  href={resolveUrlFrom(pn, `/categories/${slug}`)}
+                  class="badge hover:bg-primary-200 transition-colors cursor-pointer"
+                >
+                  {emoji} {label}
+                </BaseLink>
+              );
+            })
+          }
+        </div>
+
+        <h1
+          class="font-display font-bold text-2xl sm:text-3xl text-gray-800 mb-2"
+        >
+          {product.name}
+        </h1>
+
+        <div class="flex items-center gap-3 mb-4">
+          <span class="font-display font-extrabold text-3xl text-primary-600">
+            {formatPrice(product.price)}
+          </span>
+          {
+            product.featured && (
+              <span class="flex items-center bg-accent-100 text-accent-700 text-xs font-bold px-2.5 py-1 rounded-full">
+                <IconStar class="text-yellow-400 size-5 mr-1" />
+                <span> Destacado </span>
+              </span>
+            )
+          }
+        </div>
+
+        <p class="text-gray-600 leading-relaxed mb-6">{product.description}</p>
+
+        <div class="mt-auto space-y-3">
+          {
+            product.available ? (
+              <AddToCartButton
+                productId={product.id}
+                productName={product.name}
+                productPrice={product.price}
+                productImage={product.images[0] || ''}
+                variant="full"
+                client:load
+              />
+            ) : (
+              <button
+                class="w-full bg-gray-200 text-gray-500 font-semibold py-3.5 rounded-xl cursor-not-allowed"
+                disabled
+              >
+                Producto Agotado
+              </button>
+            )
+          }
+
+          <BaseLink
+            href={`${WHATSAPP_LINK}?text=${encodeURIComponent(`Hola, me interesa el producto: ${product.name} (${formatPrice(product.price)})`)}`}
+            target="_blank"
+            class="w-full bg-green-50 hover:bg-green-100 text-green-700 font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 border border-green-200"
+          >
+            <IconWhatsapp class="size-7" />
+            Preguntar por WhatsApp
+          </BaseLink>
+        </div>
+      </div>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="mt-12">
+          <h2 class="font-display font-bold text-xl sm:text-2xl text-gray-800 mb-5">
+            También te puede interesar
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            {related.map((p) => (
+              <ProductCard product={p} currentPath={pn} client:load />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </main>
+
+  <Footer />
+</Layout>

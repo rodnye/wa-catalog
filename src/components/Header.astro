@@ -1,18 +1,29 @@
 ---
 import BaseLink from './preact/BaseLink';
 import CartToggle from '@/components/preact/CartToggle';
-import MobileSearchToggle from '@/components/preact/MobileSearchToggle';
-import SearchBar from '@/components/preact/SearchBar';
+import MenuToggle from '@/components/preact/MenuToggle';
 import { getCategories } from '@/lib/categories';
-import { APP_NAME } from '@/utils/helpers';
+import { resolveUrlFrom } from '@/utils/helpers';
+import Logo from './Logo.astro';
+import MenuSidebar from './preact/MenuSidebar';
+import CartSidebar from './preact/CartSidebar';
+import CartInitializer from './preact/CartInitializer';
+import MenuInitializer from './preact/MenuInitializer';
+import SearchBar from './preact/SearchBar';
+import MobileSearchToggle from './preact/MobileSearchToggle';
 
 interface Props {
   activeCategory?: string;
+  withSearch?: boolean;
 }
 
-const { activeCategory = '' } = Astro.props;
+const pn = Astro.url.pathname;
+const { activeCategory = '', withSearch = true } = Astro.props;
 const categories = getCategories();
 ---
+
+<MenuInitializer client:load />
+<CartInitializer client:load />
 
 <header
   class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm"
@@ -21,59 +32,63 @@ const categories = getCategories();
     <!-- Top bar: Logo + Search + Cart -->
     <div class="flex items-center justify-between h-16 gap-3">
       <!-- Logo -->
-      <BaseLink href="/" class="flex items-center gap-2 shrink-0">
-        <span class="text-2xl">🛍️</span>
-        <span
-          class="font-display font-bold text-xl text-gray-800 hidden sm:block"
-          >{APP_NAME}</span
-        >
-      </BaseLink>
+      <Logo />
 
       <!-- Search bar (desktop) -->
-      <div class="hidden md:flex flex-1 max-w-lg mx-4">
-        <SearchBar client:load />
-      </div>
+      {
+        withSearch && (
+          <div class="hidden md:flex flex-1 max-w-lg mx-4">
+            <SearchBar client:load />
+          </div>
+        )
+      }
 
       <!-- Actions -->
       <div class="flex items-center gap-2">
-        <!-- Search toggle (mobile) + collapsible input -->
-        <MobileSearchToggle client:load />
-
         <!-- Cart button -->
         <CartToggle client:load />
       </div>
     </div>
 
-    <!-- Categories nav -->
-    <nav
-      class="flex gap-2 overflow-x-auto hide-scrollbar py-3 -mx-4 px-4 border-t border-gray-50"
-    >
-      <BaseLink
-        href="/"
-        class:list={[
-          'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
-          activeCategory === ''
-            ? 'bg-primary-500 text-white shadow-sm'
-            : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
-        ]}
-      >
-        Todo
-      </BaseLink>
-      {
-        categories.map((cat) => (
+    <!-- Mobile categories nav with hamburger menu -->
+    <div class="flex items-center gap-2 py-3 border-t border-gray-50">
+      <div class="lg:hidden">
+        <MenuToggle client:load />
+      </div>
+      {withSearch && <MobileSearchToggle client:load />}
+      <div class="flex-1 overflow-x-auto hide-scrollbar">
+        <div class="flex gap-2">
           <BaseLink
-            href={`/categories/${cat.slug}`}
+            href={resolveUrlFrom(pn, '/')}
             class:list={[
               'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
-              activeCategory === cat.key
+              activeCategory === ''
                 ? 'bg-primary-500 text-white shadow-sm'
                 : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
             ]}
           >
-            {cat.label}
+            Todo
           </BaseLink>
-        ))
-      }
-    </nav>
+          {
+            categories.map((cat) => (
+              <BaseLink
+                href={resolveUrlFrom(pn, `/categories/${cat.slug}`)}
+                class:list={[
+                  'shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
+                  activeCategory === cat.key
+                    ? 'bg-primary-500 text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-600 hover:bg-primary-50 hover:text-primary-600',
+                ]}
+              >
+                {cat.label}
+              </BaseLink>
+            ))
+          }
+        </div>
+      </div>
+    </div>
   </div>
 </header>
+
+<MenuSidebar activeCategory={activeCategory} client:load />
+<CartSidebar client:load />

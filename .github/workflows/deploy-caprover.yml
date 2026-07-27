@@ -1,0 +1,53 @@
+name: Deploy to CapRover
+
+on:
+  push:
+    branches:
+      - maite/data
+      - maite/main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: 'maite-deploy'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: maite/main
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 'latest'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Crear archivo .env desde secret
+        run: |
+          echo "${{ secrets.DOT_ENV }}" > .env
+          echo "Archivo .env creado exitosamente"
+
+      - name: Build web app
+        run: pnpm build
+        env:
+          PUBLIC_SITE: ${{ vars.PUBLIC_SITE }}
+          PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
+
+      - uses: a7ul/tar-action@v1.1.0
+        with:
+          command: c
+          cwd: './'
+          files: |
+            dist/
+            Dockerfile
+          outPath: deploy.tar
+
+      - name: Desplegar en CapRover
+        uses: caprover/deploy-from-github@v1.2.0
+        with:
+          server: ${{ secrets.CAPROVER_SERVER }}
+          token: ${{ secrets.CAPROVER_TOKEN }}
+          app: ${{ secrets.CAPROVER_APP_NAME }}

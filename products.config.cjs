@@ -1,7 +1,13 @@
+const { loadEnvFile } = require('node:process');
+
+try {
+  loadEnvFile('./.env');
+} catch {}
+
 module.exports = {
   repo:
     'https://github.com/' + (process.env.PUBLIC_REPO || 'rodnye/wa-catalog'),
-  branch: process.env.PUBLIC_REPO_BRANCH || 'data/demo',
+  branch: process.env.PUBLIC_REPO_BRANCH || 'root/data',
   mappings: [
     {
       include: ['src/data/products/*.json'],
