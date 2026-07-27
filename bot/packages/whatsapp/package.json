@@ -1,0 +1,23 @@
+{
+  "name": "@bot/whatsapp",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@bot/core": "workspace:*",
+    "@bot/types": "workspace:*",
+    "@whatsmeow-node/whatsmeow-node": "^0.7.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "@types/qrcode": "^1.5.6",
+    "tsx": "^4.23.1"
+  }
+}

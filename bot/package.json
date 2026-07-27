@@ -1,0 +1,16 @@
+{
+  "name": "wa-catalog-bot",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev:whatsapp": "pnpm --filter whatsapp dev",
+    "clean": "pnpm -r exec rm -rf dist node_modules"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}
