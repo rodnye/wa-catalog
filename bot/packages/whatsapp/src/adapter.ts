@@ -18,90 +18,11 @@ export class WhatsAppAdapter implements IChannelAdapter {
   private currentChatId: string | null = null;
   private timeoutIdByAfk: NodeJS.Timeout | null = null;
 
-  async processTail(): Promise<void> {
-    if (!this.messageCallback) return;
-    const currentMessage = this.messagesTail.shift();
-
-    if (!currentMessage) {
-      // tail empty, end
-      this.messagesTail.processing = false;
-      return;
-    }
-
-    // cancelar afk e iniciar temporizador de afk
-    if (this.timeoutIdByAfk) global.clearTimeout(this.timeoutIdByAfk);
-    this.timeoutIdByAfk = global.setTimeout(
-      () => {
-        this.currentChatId = null;
-      },
-      1000 * 60 * 5,
-    );
-
-    // esta dentro del mismo chat el nuevo mensaje
-    const alreadyChat = currentMessage.chatId === this.currentChatId;
-
-    if (!alreadyChat) {
-      // human timeout para finjir cambio de chat
-      await setTimeout(1000 + Math.random() * 3000);
-      this.currentChatId = currentMessage.chatId;
-
-      let listToRead = [currentMessage.id];
-      let step = 0;
-
-      while (this.messagesTail[step]?.chatId === currentMessage.chatId) {
-        listToRead.push(this.messagesTail[step].chatId);
-        step++;
-      }
-
-      await this.client.markRead(
-        listToRead,
-        currentMessage.chatId,
-        currentMessage.senderId,
-      );
-    }
-
-    if (currentMessage.mediaType && currentMessage.rawMessage) {
-      try {
-        const tempPath = await this.client.downloadAny(
-          currentMessage.rawMessage,
-        );
-        const ext = extname(tempPath) || '.jpg';
-        const finalPath = join(this.mediaDir, `${currentMessage.id}${ext}`);
-
-        const buffer = await readFile(tempPath);
-        await writeFile(finalPath, buffer);
-        currentMessage.mediaPath = finalPath;
-      } catch (err) {
-        console.error('Error downloading media:', err);
-      }
-    }
-
-    // aplicar la logica del core
-    await this.messageCallback(currentMessage);
-
-    // continuar procesamiento de la cola
-    return this.processTail();
-  }
-
-  async handleIncomingMessage(msg: IncomingMessage) {
-    if (msg.chatId === this.currentChatId) {
-      // ya estabas dentro del chat, leer.
-      // ... Esto se hace aqui debido a que aunque estes procesando otro mensaje,
-      // ... whatsapp marca que se leyo el mensaje
-      await this.client.markRead([msg.id], msg.chatId, msg.senderId);
-    }
-
-    // encolar
-    this.messagesTail.push(msg);
-
-    if (this.messagesTail.processing) return;
-    this.messagesTail.processing = true;
-    return this.processTail();
-  }
-
   constructor(authorizedNumbers: string[]) {
     this.authorizedNumbers = authorizedNumbers.map((n) => n.replace(/\D/g, ''));
-    this.client = createClient({ store: 'session.db' });
+    this.client = createClient({
+      store: process.env.WHATSAPP_DATABASE_URL || 'session.db',
+    });
     this.mediaDir = join(process.cwd(), 'temp_media');
     if (!existsSync(this.mediaDir)) {
       mkdir(this.mediaDir, { recursive: true });
@@ -229,5 +150,86 @@ export class WhatsAppAdapter implements IChannelAdapter {
     return this.authorizedNumbers.some(
       (num) => cleanSender.endsWith(num) || num.endsWith(cleanSender),
     );
+  }
+
+  private async processTail(): Promise<void> {
+    if (!this.messageCallback) return;
+    const currentMessage = this.messagesTail.shift();
+
+    if (!currentMessage) {
+      // tail empty, end
+      this.messagesTail.processing = false;
+      return;
+    }
+
+    // cancelar afk e iniciar temporizador de afk
+    if (this.timeoutIdByAfk) global.clearTimeout(this.timeoutIdByAfk);
+    this.timeoutIdByAfk = global.setTimeout(
+      () => {
+        this.currentChatId = null;
+      },
+      1000 * 60 * 5,
+    );
+
+    // esta dentro del mismo chat el nuevo mensaje
+    const alreadyChat = currentMessage.chatId === this.currentChatId;
+
+    if (!alreadyChat) {
+      // human timeout para finjir cambio de chat
+      await setTimeout(1000 + Math.random() * 3000);
+      this.currentChatId = currentMessage.chatId;
+
+      let listToRead = [currentMessage.id];
+      let step = 0;
+
+      while (this.messagesTail[step]?.chatId === currentMessage.chatId) {
+        listToRead.push(this.messagesTail[step].chatId);
+        step++;
+      }
+
+      await this.client.markRead(
+        listToRead,
+        currentMessage.chatId,
+        currentMessage.senderId,
+      );
+    }
+
+    if (currentMessage.mediaType && currentMessage.rawMessage) {
+      try {
+        const tempPath = await this.client.downloadAny(
+          currentMessage.rawMessage,
+        );
+        const ext = extname(tempPath) || '.jpg';
+        const finalPath = join(this.mediaDir, `${currentMessage.id}${ext}`);
+
+        const buffer = await readFile(tempPath);
+        await writeFile(finalPath, buffer);
+        currentMessage.mediaPath = finalPath;
+      } catch (err) {
+        console.error('Error downloading media:', err);
+      }
+    }
+
+    // aplicar la logica del core
+    await this.messageCallback(currentMessage);
+
+    // continuar procesamiento de la cola
+    return this.processTail();
+  }
+
+  private async handleIncomingMessage(msg: IncomingMessage) {
+    if (msg.chatId === this.currentChatId) {
+      // ya estabas dentro del chat, leer.
+      // ... Esto se hace aqui debido a que aunque estes procesando otro mensaje,
+      // ... whatsapp marca que se leyo el mensaje
+      await this.client.markRead([msg.id], msg.chatId, msg.senderId);
+    }
+
+    // encolar
+    this.messagesTail.push(msg);
+
+    if (this.messagesTail.processing) return;
+    this.messagesTail.processing = true;
+    return this.processTail();
   }
 }
