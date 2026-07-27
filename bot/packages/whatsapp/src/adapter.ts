@@ -18,7 +18,141 @@ export class WhatsAppAdapter implements IChannelAdapter {
   private currentChatId: string | null = null;
   private timeoutIdByAfk: NodeJS.Timeout | null = null;
 
-  async processTail(): Promise<void> {
+  constructor(authorizedNumbers: string[]) {
+    this.authorizedNumbers = authorizedNumbers.map((n) => n.replace(/\D/g, ''));
+    this.client = createClient({
+      store: process.env.WHATSAPP_DATABASE_URL || 'session.db',
+    });
+    this.mediaDir = join(process.cwd(), 'temp_media');
+    if (!existsSync(this.mediaDir)) {
+      mkdir(this.mediaDir, { recursive: true });
+    }
+  }
+
+  async start(): Promise<void> {
+    this.client.on('qr', ({ code }) => {
+      this.latestQR = code;
+      console.log('New QR Code generated. Access /auth/qr to view it.');
+    });
+
+    this.client.on('connected', ({ jid }) => {
+      console.log(`Connected to WhatsApp as ${jid}`);
+      this.client.sendPresence('available');
+      this.latestQR = null;
+    });
+
+    this.client.on('message', async (a) => {
+      const { info, message } = a;
+
+      await appendFile(
+        'messages.log',
+        '\n\n--- ' +
+          new Date().toISOString() +
+          '\n\n' +
+          JSON.stringify(info) +
+          JSON.stringify(message),
+      );
+
+      if (info.isFromMe) return;
+
+      let mediaPath: string | undefined;
+      let mediaType: 'image' | 'video' | 'audio' | 'document' | undefined;
+
+      if (message.imageMessage) {
+        mediaType = 'image';
+      } else if (message.videoMessage) {
+        mediaType = 'video';
+      } else if (message.audioMessage) {
+        mediaType = 'audio';
+      } else if (message.documentMessage) {
+        mediaType = 'document';
+      }
+
+      const text =
+        (message.conversation as string) ||
+        (message.extendedTextMessage as any)?.text ||
+        (message.imageMessage as any)?.caption ||
+        '';
+
+      delete message.messageContextInfo;
+
+      await this.handleIncomingMessage({
+        id: info.id,
+        chatId: info.chat,
+        senderId: info.sender,
+        senderName: info.pushName || 'Unknown',
+        text,
+        mediaPath,
+        mediaType,
+        rawMessage: message,
+        timestamp: info.timestamp,
+      });
+    });
+
+    const { jid } = await this.client.init();
+    if (!jid) {
+      await this.client.getQRChannel();
+    }
+
+    await this.client.connect();
+  }
+
+  async stop(): Promise<void> {
+    await this.client.sendPresence('unavailable');
+    await this.client.disconnect();
+    this.client.close();
+  }
+
+  async sendText(
+    chatId: string,
+    text: string,
+    replyToMessage?: IncomingMessage,
+  ): Promise<void> {
+    try {
+      // human timeout para finjir pensamiento antes de comenzar a escribir
+      await setTimeout(500 + Math.random() * 500);
+      await this.client.sendChatPresence(chatId, 'composing');
+
+      // finjir demora en la redaccion
+      await setTimeout(text.length * (30 + Math.random() * 40));
+
+      if (replyToMessage) {
+        await this.client.sendRawMessage(chatId, {
+          extendedTextMessage: {
+            text,
+            contextInfo: {
+              stanzaID: replyToMessage.id,
+              quotedType: 'EXPLICIT',
+              participant: replyToMessage.senderId,
+              quotedMessage: replyToMessage.rawMessage,
+            },
+          },
+        });
+      } else {
+        await this.client.sendMessage(chatId, { conversation: text });
+      }
+    } finally {
+      // cualquier final de este proceso implica que se termino de escribir
+      await this.client.sendChatPresence(chatId, 'paused');
+    }
+  }
+
+  getLatestQR(): string | null {
+    return this.latestQR;
+  }
+
+  onMessage(callback: (msg: IncomingMessage) => Promise<void>): void {
+    this.messageCallback = callback;
+  }
+
+  isAuthorized(senderId: string): boolean {
+    const cleanSender = senderId.replace(/\D/g, '');
+    return this.authorizedNumbers.some(
+      (num) => cleanSender.endsWith(num) || num.endsWith(cleanSender),
+    );
+  }
+
+  private async processTail(): Promise<void> {
     if (!this.messageCallback) return;
     const currentMessage = this.messagesTail.shift();
 
@@ -83,7 +217,7 @@ export class WhatsAppAdapter implements IChannelAdapter {
     return this.processTail();
   }
 
-  async handleIncomingMessage(msg: IncomingMessage) {
+  private async handleIncomingMessage(msg: IncomingMessage) {
     if (msg.chatId === this.currentChatId) {
       // ya estabas dentro del chat, leer.
       // ... Esto se hace aqui debido a que aunque estes procesando otro mensaje,
@@ -97,137 +231,5 @@ export class WhatsAppAdapter implements IChannelAdapter {
     if (this.messagesTail.processing) return;
     this.messagesTail.processing = true;
     return this.processTail();
-  }
-
-  constructor(authorizedNumbers: string[]) {
-    this.authorizedNumbers = authorizedNumbers.map((n) => n.replace(/\D/g, ''));
-    this.client = createClient({ store: 'session.db' });
-    this.mediaDir = join(process.cwd(), 'temp_media');
-    if (!existsSync(this.mediaDir)) {
-      mkdir(this.mediaDir, { recursive: true });
-    }
-  }
-
-  async start(): Promise<void> {
-    this.client.on('qr', ({ code }) => {
-      this.latestQR = code;
-      console.log('New QR Code generated. Access /auth/qr to view it.');
-    });
-
-    this.client.on('connected', ({ jid }) => {
-      console.log(`Connected to WhatsApp as ${jid}`);
-      this.client.sendPresence('available');
-      this.latestQR = null;
-    });
-
-    this.client.on('message', async (a) => {
-      const { info, message } = a;
-
-      await appendFile(
-        'messages.log',
-        '\n\n--- ' +
-          new Date().toISOString() +
-          '\n\n' +
-          JSON.stringify(info) +
-          JSON.stringify(message),
-      );
-
-      if (info.isFromMe) return;
-
-      let mediaPath: string | undefined;
-      let mediaType: 'image' | 'video' | 'audio' | 'document' | undefined;
-
-      if (message.imageMessage) {
-        mediaType = 'image';
-      } else if (message.videoMessage) {
-        mediaType = 'video';
-      } else if (message.audioMessage) {
-        mediaType = 'audio';
-      } else if (message.documentMessage) {
-        mediaType = 'document';
-      }
-
-      const text =
-        (message.conversation as string) ||
-        (message.extendedTextMessage as any)?.text ||
-        (message.imageMessage as any)?.caption ||
-        '';
-
-delete message.messageContextInfo;
-
-      await this.handleIncomingMessage({
-        id: info.id,
-        chatId: info.chat,
-        senderId: info.sender,
-        senderName: info.pushName || 'Unknown',
-        text,
-        mediaPath,
-        mediaType,
-        rawMessage: message,
-        timestamp: info.timestamp,
-      });
-    });
-
-    const { jid } = await this.client.init();
-    if (!jid) {
-      await this.client.getQRChannel();
-    }
-
-    await this.client.connect();
-  }
-
-  async stop(): Promise<void> {
-    await this.client.sendPresence('unavailable');
-    await this.client.disconnect();
-    this.client.close();
-  }
-
-  async sendText(
-    chatId: string,
-    text: string,
-    replyToMessage?: IncomingMessage,
-  ): Promise<void> {
-    try {
-      // human timeout para finjir pensamiento antes de comenzar a escribir
-      await setTimeout(500 + Math.random() * 500);
-      await this.client.sendChatPresence(chatId, 'composing');
-
-      // finjir demora en la redaccion
-      await setTimeout(text.length * (30 + Math.random() * 40));
-
-      if (replyToMessage) {
-        await this.client.sendRawMessage(chatId, {
-          extendedTextMessage: {
-            text,
-            contextInfo: {
-              stanzaID: replyToMessage.id,
-              quotedType: "EXPLICIT",
-              participant: replyToMessage.senderId,
-              quotedMessage: replyToMessage.rawMessage,
-            },
-          },
-        });
-      } else {
-        await this.client.sendMessage(chatId, { conversation: text });
-      }
-    } finally {
-      // cualquier final de este proceso implica que se termino de escribir
-      await this.client.sendChatPresence(chatId, 'paused');
-    }
-  }
-
-  getLatestQR(): string | null {
-    return this.latestQR;
-  }
-
-  onMessage(callback: (msg: IncomingMessage) => Promise<void>): void {
-    this.messageCallback = callback;
-  }
-
-  isAuthorized(senderId: string): boolean {
-    const cleanSender = senderId.replace(/\D/g, '');
-    return this.authorizedNumbers.some(
-      (num) => cleanSender.endsWith(num) || num.endsWith(cleanSender),
-    );
   }
 }
