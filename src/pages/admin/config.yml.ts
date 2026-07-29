@@ -17,10 +17,7 @@ export async function GET({}) {
       name: 'git-gateway',
       repo,
       branch,
-      auth_type: 'pkce',
-      base_url: 'https://auth.decapbridge.com',
-      auth_endpoint: `/sites/${siteId}/pkce`,
-      auth_token_endpoint: `/sites/${siteId}/token`,
+      identity_url: `https://auth.decapbridge.com/sites/${siteId}`,
       gateway_url: 'https://gateway.decapbridge.com',
 
       commit_messages: {
