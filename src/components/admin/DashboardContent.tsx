@@ -7,7 +7,7 @@ import {
   loadProducts,
   deleteProduct,
 } from '@/stores/productStore';
-import { getCurrentUser, logout } from '@/lib/auth';
+import { logout } from '@/lib/auth';
 import { userStore } from '@/stores/authStore';
 import { navigate } from 'astro:transitions/client';
 import ProductForm from './ProductForm';
