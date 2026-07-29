@@ -19,7 +19,6 @@ export default function LoginForm() {
     try {
       const user = await login(email, password);
       userStore.set(user);
-      navigate(resolveUrlBase('/dashboard'));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
     } finally {
@@ -28,7 +27,7 @@ export default function LoginForm() {
   };
 
   if (user) {
-    navigate(resolveUrlBase('/dashboard'));
+    navigate(resolveUrlBase('/admin/v2'));
     return;
   }
 

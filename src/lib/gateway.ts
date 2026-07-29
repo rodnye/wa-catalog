@@ -1,27 +1,38 @@
-import { getCurrentUser } from './auth';
+import { userStore } from '@/stores/authStore';
+import { refreshToken } from './auth';
 
 const GATEWAY_URL =
   import.meta.env.PUBLIC_GATEWAY_URL || 'https://gateway.decapbridge.com';
 const REPO = import.meta.env.PUBLIC_REPO || 'rodnye/wa-catalog';
 const BRANCH = import.meta.env.PUBLIC_REPO_BRANCH || 'maite/data';
-
 const API_ROOT = `${GATEWAY_URL}/github`;
 
-/**
- * Enviar solicitud al proxy del gateway
- */
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const user = getCurrentUser();
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+  retry = true,
+): Promise<T> {
+  const user = userStore.get();
   if (!user) throw new Error('No autenticado');
 
   const url = `${API_ROOT}${path}`;
   const headers = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${user.token}`,
+    Authorization: `Bearer ${user.access_token}`,
     ...options.headers,
   };
 
   const response = await fetch(url, { ...options, headers });
+
+  if (response.status === 401 && retry) {
+    const newUser = await refreshToken();
+    if (newUser) {
+      return request<T>(path, options, false);
+    } else {
+      throw new Error('Sesión expirada, inicia sesión nuevamente');
+    }
+  }
+
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`Error ${response.status}: ${text}`);
