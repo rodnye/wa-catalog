@@ -6,7 +6,7 @@ export const productSchema = z.object({
   description: z.string().min(1, 'Description is required'),
 
   price: z.number().positive('Price must be a positive number'),
-  currency: z.enum(['CUP']).default('CUP'),
+  currency: z.enum(['CUP', 'USD']).default('CUP'),
 
   images: z.array(z.string('Each image must be a valid URL')).default([]),
   categories: z.array(z.string().min(1, 'Category cannot be empty')).min(1),
