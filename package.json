@@ -19,7 +19,7 @@
     "@iconify-json/mdi": "^1.2.3",
     "@nanostores/persistent": "^1.3.5",
     "@nanostores/preact": "^1.1.0",
-    "@rodny/decap-gateway": "github:rodnye/decap-gateway#3b3cf88",
+    "@rodny/decap-gateway": "github:rodnye/decap-gateway#latest",
     "@rodny/repo-sync": "^1.3.0",
     "astro": "^6.3.6",
     "autoprefixer": "^10.5.0",

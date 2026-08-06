@@ -8,7 +8,7 @@ import {
   loadProducts,
   deleteProduct,
 } from '@/stores/productStore';
-import { logout } from '@/lib/auth';
+import { logout, restoreSession } from '@/lib/auth';
 import { userStore } from '@/stores/authStore';
 import { navigate } from 'astro:transitions/client';
 import { getCategories } from '@/lib/categories';
@@ -56,7 +56,10 @@ export default function DashboardContent() {
   const categories = getCategories();
 
   useEffect(() => {
-    loadProducts();
+    (async () => {
+      await restoreSession();
+      await loadProducts();
+    })()
   }, []);
 
   /* ── auth guard ── */
@@ -238,11 +241,10 @@ export default function DashboardContent() {
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                class={`flex-1 sm:flex-none py-3 px-4 text-sm font-medium border-b-2 transition-all active:scale-[.98] flex items-center justify-center gap-1.5 ${
-                  tab === t.key
+                class={`flex-1 sm:flex-none py-3 px-4 text-sm font-medium border-b-2 transition-all active:scale-[.98] flex items-center justify-center gap-1.5 ${tab === t.key
                     ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                  }`}
               >
                 <t.icon class="size-4" />
                 {t.label}
@@ -273,11 +275,10 @@ export default function DashboardContent() {
             <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 mb-2 -mx-4 px-4">
               <button
                 onClick={() => handleCatFilter('')}
-                class={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
-                  activeCat === ''
+                class={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${activeCat === ''
                     ? 'bg-primary-500 text-white shadow-sm'
                     : 'bg-white text-gray-600 border border-gray-200 hover:border-primary-300'
-                }`}
+                  }`}
               >
                 Todos
               </button>
@@ -285,11 +286,10 @@ export default function DashboardContent() {
                 <button
                   key={cat.key}
                   onClick={() => handleCatFilter(cat.key)}
-                  class={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
-                    activeCat === cat.key
+                  class={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${activeCat === cat.key
                       ? 'bg-primary-500 text-white shadow-sm'
                       : 'bg-white text-gray-600 border border-gray-200 hover:border-primary-300'
-                  }`}
+                    }`}
                 >
                   {cat.emoji} {cat.label}
                 </button>
@@ -313,11 +313,10 @@ export default function DashboardContent() {
                     setStatusFilter(key);
                     setPage(1);
                   }}
-                  class={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 flex items-center gap-1 ${
-                    statusFilter === key
+                  class={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 flex items-center gap-1 ${statusFilter === key
                       ? 'bg-gray-800 text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
+                    }`}
                 >
                   {key === 'vip' && <IconCrown class="size-3.5" />}
                   {key === 'featured' && <IconStar class="size-3.5" />}

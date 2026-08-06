@@ -1,0 +1,15 @@
+*Nombre:* Un perchero
+
+*Precio:* 50 usd
+
+*Descripción:*
+Un perchero de alta calidad
+
+*Categorías (separadas por coma):*
+accesorios,ropa,hogar
+
+*Es prioridad?*
+no 
+
+*Es privado?*
+no
