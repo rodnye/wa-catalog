@@ -16,8 +16,23 @@ import { formatPrice, resolveUrlBase } from '@/utils/helpers';
 import type { IProduct } from '@/types';
 import ProductForm from './ProductForm';
 import CategoryManager from './CategoryManager';
+import IconCog from '~icons/mdi/cog';
+import IconPackageVariant from '~icons/mdi/package-variant';
+import IconTag from '~icons/mdi/tag';
+import IconCamera from '~icons/mdi/camera';
+import IconPencil from '~icons/mdi/pencil';
+import IconTrashCanOutline from '~icons/mdi/trash-can-outline';
+import IconEmailOpen from '~icons/mdi/email-open';
+import IconCrown from '~icons/mdi/crown';
+import IconStar from '~icons/mdi/star';
+import IconMagnify from '~icons/mdi/magnify';
+import IconChevronLeft from '~icons/mdi/chevron-left';
+import IconChevronRight from '~icons/mdi/chevron-right';
+import IconPlus from '~icons/mdi/plus';
+import IconAlertCircle from '~icons/mdi/alert-circle';
 
 const ITEMS_PER_PAGE = 20;
+
 type Tab = 'products' | 'settings';
 type StatusFilter = 'all' | 'available' | 'unavailable' | 'vip' | 'featured';
 
@@ -53,7 +68,6 @@ export default function DashboardContent() {
   /* ── filtering ── */
   const filtered = useMemo(() => {
     let list = products;
-
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -62,11 +76,9 @@ export default function DashboardContent() {
           p.description.toLowerCase().includes(q),
       );
     }
-
     if (activeCat) {
       list = list.filter((p) => p.categories.includes(activeCat));
     }
-
     switch (statusFilter) {
       case 'available':
         list = list.filter((p) => p.available);
@@ -81,7 +93,6 @@ export default function DashboardContent() {
         list = list.filter((p) => p.featured);
         break;
     }
-
     return list;
   }, [products, search, activeCat, statusFilter]);
 
@@ -169,7 +180,7 @@ export default function DashboardContent() {
     return (
       <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div class="bg-white rounded-2xl border border-red-200 p-6 max-w-md w-full text-center">
-          <span class="text-4xl block mb-3">⚠️</span>
+          <IconAlertCircle class="size-12 text-red-400 mx-auto mb-3" />
           <p class="text-red-600 font-medium mb-4">{error}</p>
           <button onClick={loadProducts} class="btn-primary">
             Reintentar
@@ -186,7 +197,7 @@ export default function DashboardContent() {
         <div class="max-w-5xl mx-auto px-4">
           <div class="flex items-center justify-between h-14">
             <h1 class="font-bold text-gray-800 text-base sm:text-lg flex items-center gap-2">
-              <span class="text-xl">⚙️</span>
+              <IconCog class="size-5 text-gray-600" />
               <span class="hidden sm:inline">Panel de Administración</span>
               <span class="sm:hidden">Admin</span>
             </h1>
@@ -211,19 +222,24 @@ export default function DashboardContent() {
           <div class="flex gap-1">
             {(
               [
-                { key: 'products', label: '📦 Productos', icon: '' },
-                { key: 'settings', label: '🏷️ Categorías', icon: '' },
-              ] as { key: Tab; label: string; icon: string }[]
+                {
+                  key: 'products',
+                  label: 'Productos',
+                  icon: IconPackageVariant,
+                },
+                { key: 'settings', label: 'Categorías', icon: IconTag },
+              ] as { key: Tab; label: string; icon: any }[]
             ).map((t) => (
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                class={`flex-1 sm:flex-none py-3 px-4 text-sm font-medium border-b-2 transition-all active:scale-[.98] ${
+                class={`flex-1 sm:flex-none py-3 px-4 text-sm font-medium border-b-2 transition-all active:scale-[.98] flex items-center justify-center gap-1.5 ${
                   tab === t.key
                     ? 'border-primary-500 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
                 }`}
               >
+                <t.icon class="size-4" />
                 {t.label}
               </button>
             ))}
@@ -245,19 +261,7 @@ export default function DashboardContent() {
                 onInput={handleSearch}
                 class="input-field pl-10"
               />
-              <svg
-                class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <IconMagnify class="absolute left-3 top-1/2 -translate-y-1/2 size-5 text-gray-400" />
             </div>
 
             {/* category chips */}
@@ -294,8 +298,8 @@ export default function DashboardContent() {
                   ['all', 'Todos'],
                   ['available', 'Disponibles'],
                   ['unavailable', 'Agotados'],
-                  ['vip', '👑 VIP'],
-                  ['featured', '⭐ Destacados'],
+                  ['vip', 'VIP'],
+                  ['featured', 'Destacados'],
                 ] as [StatusFilter, string][]
               ).map(([key, label]) => (
                 <button
@@ -304,12 +308,14 @@ export default function DashboardContent() {
                     setStatusFilter(key);
                     setPage(1);
                   }}
-                  class={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                  class={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 flex items-center gap-1 ${
                     statusFilter === key
                       ? 'bg-gray-800 text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
+                  {key === 'vip' && <IconCrown class="size-3.5" />}
+                  {key === 'featured' && <IconStar class="size-3.5" />}
                   {label}
                 </button>
               ))}
@@ -336,8 +342,8 @@ export default function DashboardContent() {
                           class="w-full h-full object-cover"
                         />
                       ) : (
-                        <div class="w-full h-full flex items-center justify-center text-gray-300 text-2xl">
-                          📷
+                        <div class="w-full h-full flex items-center justify-center text-gray-300">
+                          <IconCamera class="size-8" />
                         </div>
                       )}
                       {!p.available && (
@@ -367,13 +373,14 @@ export default function DashboardContent() {
                           </span>
                         ))}
                         {p.vip && (
-                          <span class="text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full">
+                          <span class="text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5">
+                            <IconCrown class="size-3" />
                             VIP
                           </span>
                         )}
                         {p.featured && (
-                          <span class="text-[10px] bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded-full">
-                            ⭐
+                          <span class="text-[10px] bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5">
+                            <IconStar class="size-3" />
                           </span>
                         )}
                       </div>
@@ -382,16 +389,24 @@ export default function DashboardContent() {
                       <div class="flex gap-2 mt-auto pt-2">
                         <button
                           onClick={() => handleEdit(p)}
-                          class="flex-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg py-2 hover:bg-blue-100 active:scale-95 transition-all"
+                          class="flex-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg py-2 hover:bg-blue-100 active:scale-95 transition-all flex items-center justify-center gap-1"
                         >
-                          ✏️ Editar
+                          <IconPencil class="size-3.5" />
+                          Editar
                         </button>
                         <button
                           onClick={() => handleDelete(p)}
                           disabled={deletingId === p.id}
-                          class="flex-1 text-xs font-medium text-red-500 bg-red-50 rounded-lg py-2 hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50"
+                          class="flex-1 text-xs font-medium text-red-500 bg-red-50 rounded-lg py-2 hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-1"
                         >
-                          {deletingId === p.id ? '…' : '🗑️ Borrar'}
+                          {deletingId === p.id ? (
+                            '…'
+                          ) : (
+                            <>
+                              <IconTrashCanOutline class="size-3.5" />
+                              Borrar
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -400,7 +415,7 @@ export default function DashboardContent() {
               </div>
             ) : (
               <div class="text-center py-16">
-                <span class="text-5xl block mb-3">📭</span>
+                <IconEmailOpen class="size-14 text-gray-300 mx-auto mb-3" />
                 <p class="text-gray-400 font-medium">
                   No se encontraron productos
                 </p>
@@ -415,7 +430,7 @@ export default function DashboardContent() {
                   disabled={safePage <= 1}
                   class="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 active:scale-90 transition-all disabled:opacity-30"
                 >
-                  ←
+                  <IconChevronLeft class="size-5" />
                 </button>
                 <span class="text-sm text-gray-500 px-3 font-medium">
                   {safePage} / {totalPages}
@@ -425,7 +440,7 @@ export default function DashboardContent() {
                   disabled={safePage >= totalPages}
                   class="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 active:scale-90 transition-all disabled:opacity-30"
                 >
-                  →
+                  <IconChevronRight class="size-5" />
                 </button>
               </div>
             )}
@@ -440,19 +455,7 @@ export default function DashboardContent() {
           class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-primary-500 text-white shadow-lg shadow-primary-500/30 flex items-center justify-center hover:bg-primary-600 active:scale-90 transition-all z-40"
           aria-label="Nuevo producto"
         >
-          <svg
-            class="w-7 h-7"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
+          <IconPlus class="size-7" />
         </button>
       )}
 

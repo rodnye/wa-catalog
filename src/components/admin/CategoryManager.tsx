@@ -4,6 +4,12 @@ import {
   saveCategoriesToRepo,
   type ICategory,
 } from '@/stores/productStore';
+import IconPlus from '~icons/mdi/plus';
+import IconCheckCircle from '~icons/mdi/check-circle';
+import IconContentSave from '~icons/mdi/content-save';
+import IconPencil from '~icons/mdi/pencil';
+import IconTrashCanOutline from '~icons/mdi/trash-can-outline';
+import IconAlertCircle from '~icons/mdi/alert-circle';
 
 const EMOJI_POOL = [
   '💎',
@@ -94,7 +100,7 @@ export default function CategoryManager() {
     setSuccess('');
     try {
       await saveCategoriesToRepo(categories);
-      setSuccess('✅ Categorías guardadas correctamente');
+      setSuccess('Categorías guardadas correctamente');
       setTimeout(() => setSuccess(''), 3000);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error al guardar');
@@ -140,19 +146,24 @@ export default function CategoryManager() {
     <div class="space-y-6">
       {/* messages */}
       {error && (
-        <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+        <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+          <IconAlertCircle class="size-4 shrink-0" />
           {error}
         </div>
       )}
       {success && (
-        <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl">
+        <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+          <IconCheckCircle class="size-4 shrink-0" />
           {success}
         </div>
       )}
 
       {/* add new */}
       <div class="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5">
-        <h3 class="font-semibold text-gray-800 mb-3">➕ Nueva categoría</h3>
+        <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+          <IconPlus class="size-5 text-primary-500" />
+          Nueva categoría
+        </h3>
         <div class="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
@@ -178,7 +189,6 @@ export default function CategoryManager() {
             </button>
           </div>
         </div>
-
         {showNewEmoji && (
           <div class="mt-3 grid grid-cols-8 sm:grid-cols-10 gap-1 p-3 bg-gray-50 rounded-xl max-h-36 overflow-y-auto">
             {EMOJI_POOL.map((e) => (
@@ -249,7 +259,6 @@ export default function CategoryManager() {
                     />
                   </div>
                 </div>
-
                 {showEmojiFor === idx && (
                   <div class="grid grid-cols-8 sm:grid-cols-10 gap-1 p-3 bg-gray-50 rounded-xl max-h-36 overflow-y-auto">
                     {EMOJI_POOL.map((e) => (
@@ -271,7 +280,6 @@ export default function CategoryManager() {
                     ))}
                   </div>
                 )}
-
                 <div class="flex gap-2 justify-end">
                   <button
                     type="button"
@@ -303,19 +311,7 @@ export default function CategoryManager() {
                   class="p-2 rounded-lg text-blue-500 hover:bg-blue-50 active:scale-90 transition-all"
                   aria-label="Editar"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
+                  <IconPencil class="size-5" />
                 </button>
                 <button
                   type="button"
@@ -323,19 +319,7 @@ export default function CategoryManager() {
                   class="p-2 rounded-lg text-red-400 hover:bg-red-50 active:scale-90 transition-all"
                   aria-label="Eliminar"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
+                  <IconTrashCanOutline class="size-5" />
                 </button>
               </div>
             )}
@@ -347,9 +331,10 @@ export default function CategoryManager() {
       <button
         onClick={handleSaveAll}
         disabled={saving}
-        class="w-full btn-primary py-3.5 text-base disabled:opacity-50"
+        class="w-full btn-primary py-3.5 text-base disabled:opacity-50 flex items-center justify-center gap-2"
       >
-        {saving ? 'Guardando…' : '💾 Guardar categorías'}
+        <IconContentSave class="size-5" />
+        {saving ? 'Guardando…' : 'Guardar categorías'}
       </button>
     </div>
   );

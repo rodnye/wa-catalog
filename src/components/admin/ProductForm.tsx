@@ -4,6 +4,12 @@ import { getCategories } from '@/lib/categories';
 import type { IProduct } from '@/types';
 import ImageUploader from './ImageUploader';
 import { useStore } from '@nanostores/preact';
+import IconClose from '~icons/mdi/close';
+import IconSparkles from '~icons/mdi/sparkles';
+import IconPencil from '~icons/mdi/pencil';
+import IconStar from '~icons/mdi/star';
+import IconCrown from '~icons/mdi/crown';
+import IconLoading from '~icons/mdi/loading';
 
 interface Props {
   product: IProduct | null;
@@ -73,7 +79,6 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
 
   const handleSave = async () => {
     setError('');
-
     if (!name.trim()) return setError('El nombre es obligatorio');
     if (!description.trim()) return setError('La descripción es obligatoria');
     if (price <= 0) return setError('El precio debe ser mayor a 0');
@@ -124,19 +129,28 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
       <div class="relative w-full sm:max-w-2xl bg-white sm:rounded-2xl rounded-t-2xl max-h-[92dvh] flex flex-col shadow-2xl">
         {/* header */}
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
-          <h2 class="font-bold text-lg text-gray-800">
-            {isNew ? '✨ Nuevo producto' : '✏️ Editar producto'}
+          <h2 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+            {isNew ? (
+              <>
+                <IconSparkles class="size-5 text-primary-500" />
+                Nuevo producto
+              </>
+            ) : (
+              <>
+                <IconPencil class="size-5 text-primary-500" />
+                Editar producto
+              </>
+            )}
           </h2>
           <button
             onClick={onClose}
             class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 active:scale-90 transition-all"
             aria-label="Cerrar"
           >
-            ✕
+            <IconClose class="size-5" />
           </button>
         </div>
 
-        {/* body – scrollable */}
         <div class="flex-1 overflow-y-auto px-5 py-4 space-y-5">
           {error && (
             <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
@@ -213,7 +227,7 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
             </div>
           </div>
 
-          {/* categories – chips */}
+          {/* categories */}
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1.5">
               Categorías *{' '}
@@ -278,8 +292,9 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                 }
                 class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
-              <span class="text-sm font-medium text-gray-700">
-                ⭐ Destacado
+              <span class="text-sm font-medium text-gray-700 flex items-center gap-1">
+                <IconStar class="size-4 text-yellow-400" />
+                Destacado
               </span>
             </label>
             <label class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3 cursor-pointer active:bg-gray-100 transition-colors">
@@ -289,12 +304,15 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                 onChange={(e) => setVip((e.target as HTMLInputElement).checked)}
                 class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
-              <span class="text-sm font-medium text-gray-700">👑 VIP</span>
+              <span class="text-sm font-medium text-gray-700 flex items-center gap-1">
+                <IconCrown class="size-4 text-amber-500" />
+                VIP
+              </span>
             </label>
           </div>
         </div>
 
-        {/* footer – sticky */}
+        {/* footer */}
         <div class="flex gap-3 px-5 py-4 border-t border-gray-100 shrink-0 bg-white sm:rounded-b-2xl">
           <button
             type="button"
@@ -311,26 +329,8 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
           >
             {saving ? (
               <span class="flex items-center justify-center gap-2">
-                <svg
-                  class="animate-spin w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    class="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    stroke-width="4"
-                  />
-                  <path
-                    class="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                Guardando…
+                <IconLoading class="animate-spin size-5" />
+                Guardando...
               </span>
             ) : isNew ? (
               'Crear producto'
