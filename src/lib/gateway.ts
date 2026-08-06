@@ -46,9 +46,6 @@ async function request<T>(
   return response.text() as Promise<T>;
 }
 
-/**
- * Obtener lista de archivos en un directorio
- */
 export async function listDirectory(
   path: string,
 ): Promise<{ name: string; path: string; type: string }[]> {
@@ -63,9 +60,6 @@ export async function listDirectory(
   }));
 }
 
-/**
- * Obtener contenido de un archivo usando la Git Data API
- */
 export async function getFileContent(path: string): Promise<string> {
   const lastSlash = path.lastIndexOf('/');
   const dir = lastSlash === -1 ? '' : path.substring(0, lastSlash);
@@ -91,9 +85,6 @@ export async function getFileContent(path: string): Promise<string> {
   return blobData.content;
 }
 
-/**
- * Obtener SHA de un archivo
- */
 export async function getFileSha(path: string): Promise<string | null> {
   try {
     const lastSlash = path.lastIndexOf('/');
@@ -113,17 +104,124 @@ export async function getFileSha(path: string): Promise<string | null> {
   }
 }
 
-/**
- * Crear o actualizar un archivo usando la Git Data API
- */
+async function createTreeWithFile(
+  filePath: string,
+  blobSha: string,
+  baseTreeSha: string,
+): Promise<string> {
+  const parts = filePath.split('/').filter(Boolean);
+  const fileName = parts.pop()!;
+
+  async function buildTree(
+    parts: string[],
+    currentBaseSha: string,
+  ): Promise<string> {
+    if (parts.length === 0) {
+      const newTree = await request<{ sha: string }>('/git/trees', {
+        method: 'POST',
+        body: JSON.stringify({
+          base_tree: currentBaseSha,
+          tree: [
+            { path: fileName, mode: '100644', type: 'blob', sha: blobSha },
+          ],
+        }),
+      });
+      return newTree.sha;
+    }
+
+    const currentPart = parts[0];
+    const remainingParts = parts.slice(1);
+
+    const treeData = await request<{
+      tree: { path: string; sha: string; type: string }[];
+    }>(`/git/trees/${currentBaseSha}`);
+    const node = treeData.tree.find(
+      (n) => n.path === currentPart && n.type === 'tree',
+    );
+
+    let childBaseSha = node ? node.sha : null;
+
+    if (!childBaseSha) {
+      const emptyTree = await request<{ sha: string }>('/git/trees', {
+        method: 'POST',
+        body: JSON.stringify({ tree: [] }),
+      });
+      childBaseSha = emptyTree.sha;
+    }
+
+    const newChildSha = await buildTree(remainingParts, childBaseSha);
+
+    const newTree = await request<{ sha: string }>('/git/trees', {
+      method: 'POST',
+      body: JSON.stringify({
+        base_tree: currentBaseSha,
+        tree: [
+          { path: currentPart, mode: '040000', type: 'tree', sha: newChildSha },
+        ],
+      }),
+    });
+    return newTree.sha;
+  }
+
+  return buildTree(parts, baseTreeSha);
+}
+
+async function createTreeWithoutFile(
+  filePath: string,
+  baseTreeSha: string,
+): Promise<string> {
+  const parts = filePath.split('/').filter(Boolean);
+  const fileName = parts.pop()!;
+
+  async function buildTree(
+    parts: string[],
+    currentBaseSha: string,
+  ): Promise<string> {
+    if (parts.length === 0) {
+      const treeData = await request<{ tree: any[] }>(
+        `/git/trees/${currentBaseSha}`,
+      );
+      const newTreeEntries = treeData.tree.filter((n) => n.path !== fileName);
+      const newTree = await request<{ sha: string }>('/git/trees', {
+        method: 'POST',
+        body: JSON.stringify({ tree: newTreeEntries }),
+      });
+      return newTree.sha;
+    }
+
+    const currentPart = parts[0];
+    const remainingParts = parts.slice(1);
+
+    const treeData = await request<{
+      tree: { path: string; sha: string; type: string }[];
+    }>(`/git/trees/${currentBaseSha}`);
+    const node = treeData.tree.find(
+      (n) => n.path === currentPart && n.type === 'tree',
+    );
+    if (!node) throw new Error(`El directorio ${currentPart} no existe`);
+
+    const newChildSha = await buildTree(remainingParts, node.sha);
+
+    const newTree = await request<{ sha: string }>('/git/trees', {
+      method: 'POST',
+      body: JSON.stringify({
+        base_tree: currentBaseSha,
+        tree: [
+          { path: currentPart, mode: '040000', type: 'tree', sha: newChildSha },
+        ],
+      }),
+    });
+    return newTree.sha;
+  }
+
+  return buildTree(parts, baseTreeSha);
+}
+
 export async function updateFile(
   path: string,
   content: string,
   message: string,
 ): Promise<void> {
-  const user = userStore.get();
-  if (!user) throw new Error('No autenticado');
-
   const blobData = await request<{ sha: string }>('/git/blobs', {
     method: 'POST',
     body: JSON.stringify({
@@ -155,93 +253,55 @@ export async function updateFile(
 
   await request(`/git/refs/heads/${encodeURIComponent(BRANCH)}`, {
     method: 'PATCH',
-    body: JSON.stringify({
-      sha: newCommitData.sha,
-    }),
+    body: JSON.stringify({ sha: newCommitData.sha }),
   });
 }
 
 /**
- * Helper recursivo para crear un tree con un archivo actualizado
+ * Subir un archivo binario (imagen) al repositorio.
+ * El contenido debe ser base64 puro (sin data URI prefix).
  */
-async function createTreeWithFile(
-  filePath: string,
-  blobSha: string,
-  baseTreeSha: string,
-): Promise<string> {
-  const parts = filePath.split('/').filter(Boolean);
-  const fileName = parts.pop()!;
+export async function uploadBinaryFile(
+  path: string,
+  base64Content: string,
+  message: string,
+): Promise<void> {
+  const blobData = await request<{ sha: string }>('/git/blobs', {
+    method: 'POST',
+    body: JSON.stringify({
+      content: base64Content,
+      encoding: 'base64',
+    }),
+  });
 
-  async function buildTree(
-    parts: string[],
-    currentBaseSha: string,
-  ): Promise<string> {
-    if (parts.length === 0) {
-      const newTree = await request<{ sha: string }>('/git/trees', {
-        method: 'POST',
-        body: JSON.stringify({
-          base_tree: currentBaseSha,
-          tree: [
-            {
-              path: fileName,
-              mode: '100644',
-              type: 'blob',
-              sha: blobSha,
-            },
-          ],
-        }),
-      });
-      return newTree.sha;
-    }
+  const branchData = await request<{ commit: { sha: string } }>(
+    `/branches/${encodeURIComponent(BRANCH)}`,
+  );
+  const currentCommitSha = branchData.commit.sha;
 
-    const currentPart = parts[0];
-    const remainingParts = parts.slice(1);
+  const commitData = await request<{ tree: { sha: string } }>(
+    `/git/commits/${currentCommitSha}`,
+  );
+  const baseTreeSha = commitData.tree.sha;
 
-    const treeData = await request<{
-      tree: { path: string; sha: string; type: string }[];
-    }>(`/git/trees/${currentBaseSha}`);
-    const node = treeData.tree.find(
-      (n) => n.path === currentPart && n.type === 'tree',
-    );
-    const childBaseSha = node ? node.sha : null;
+  const newTreeSha = await createTreeWithFile(path, blobData.sha, baseTreeSha);
 
-    if (!childBaseSha) {
-      throw new Error(`El directorio ${currentPart} no existe en el tree`);
-    }
+  const newCommitData = await request<{ sha: string }>('/git/commits', {
+    method: 'POST',
+    body: JSON.stringify({
+      message,
+      tree: newTreeSha,
+      parents: [currentCommitSha],
+    }),
+  });
 
-    const newChildSha = await buildTree(remainingParts, childBaseSha);
-
-    const newTree = await request<{ sha: string }>('/git/trees', {
-      method: 'POST',
-      body: JSON.stringify({
-        base_tree: currentBaseSha,
-        tree: [
-          {
-            path: currentPart,
-            mode: '040000',
-            type: 'tree',
-            sha: newChildSha,
-          },
-        ],
-      }),
-    });
-    return newTree.sha;
-  }
-
-  return buildTree(parts, baseTreeSha);
+  await request(`/git/refs/heads/${encodeURIComponent(BRANCH)}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ sha: newCommitData.sha }),
+  });
 }
 
-/**
- * Eliminar un archivo usando la Git Data API
- */
-export async function deleteFile(
-  path: string,
-  message: string,
-  _sha?: string,
-): Promise<void> {
-  const user = userStore.get();
-  if (!user) throw new Error('No autenticado');
-
+export async function deleteFile(path: string, message: string): Promise<void> {
   const branchData = await request<{ commit: { sha: string } }>(
     `/branches/${encodeURIComponent(BRANCH)}`,
   );
@@ -265,70 +325,6 @@ export async function deleteFile(
 
   await request(`/git/refs/heads/${encodeURIComponent(BRANCH)}`, {
     method: 'PATCH',
-    body: JSON.stringify({
-      sha: newCommitData.sha,
-    }),
+    body: JSON.stringify({ sha: newCommitData.sha }),
   });
-}
-
-/**
- * Helper recursivo para crear un tree sin un archivo
- */
-async function createTreeWithoutFile(
-  filePath: string,
-  baseTreeSha: string,
-): Promise<string> {
-  const parts = filePath.split('/').filter(Boolean);
-  const fileName = parts.pop()!;
-
-  async function buildTree(
-    parts: string[],
-    currentBaseSha: string,
-  ): Promise<string> {
-    if (parts.length === 0) {
-      const treeData = await request<{ tree: any[] }>(
-        `/git/trees/${currentBaseSha}`,
-      );
-      const newTreeEntries = treeData.tree.filter((n) => n.path !== fileName);
-
-      const newTree = await request<{ sha: string }>('/git/trees', {
-        method: 'POST',
-        body: JSON.stringify({
-          tree: newTreeEntries,
-        }),
-      });
-      return newTree.sha;
-    }
-
-    const currentPart = parts[0];
-    const remainingParts = parts.slice(1);
-
-    const treeData = await request<{
-      tree: { path: string; sha: string; type: string }[];
-    }>(`/git/trees/${currentBaseSha}`);
-    const node = treeData.tree.find(
-      (n) => n.path === currentPart && n.type === 'tree',
-    );
-    if (!node) throw new Error(`El directorio ${currentPart} no existe`);
-
-    const newChildSha = await buildTree(remainingParts, node.sha);
-
-    const newTree = await request<{ sha: string }>('/git/trees', {
-      method: 'POST',
-      body: JSON.stringify({
-        base_tree: currentBaseSha,
-        tree: [
-          {
-            path: currentPart,
-            mode: '040000',
-            type: 'tree',
-            sha: newChildSha,
-          },
-        ],
-      }),
-    });
-    return newTree.sha;
-  }
-
-  return buildTree(parts, baseTreeSha);
 }

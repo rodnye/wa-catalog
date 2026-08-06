@@ -17,8 +17,8 @@ export default function LoginForm() {
     setLoading(true);
     setError('');
     try {
-      const user = await login(email, password);
-      userStore.set(user);
+      await login(email, password);
+      navigate(resolveUrlBase('/admin/v2'));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
     } finally {
@@ -28,55 +28,53 @@ export default function LoginForm() {
 
   if (user) {
     navigate(resolveUrlBase('/admin/v2'));
-    return;
+    return null;
   }
 
   return (
-    <form class="mt-8 space-y-6" onSubmit={handleSubmit}>
+    <form class="space-y-4" onSubmit={handleSubmit}>
       {error && (
-        <div class="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
+        <div class="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
           {error}
         </div>
       )}
-      <div class="rounded-md shadow-sm -space-y-px">
-        <div>
-          <label for="email" class="sr-only">
-            Correo electrónico
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={email}
-            onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
-            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-            placeholder="Correo electrónico"
-          />
-        </div>
-        <div>
-          <label for="password" class="sr-only">
-            Contraseña
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            value={password}
-            onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
-            class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-            placeholder="Contraseña"
-          />
-        </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+          Correo electrónico
+        </label>
+        <input
+          type="email"
+          required
+          value={email}
+          onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
+          class="input-field"
+          placeholder="admin@ejemplo.com"
+          autocomplete="email"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          required
+          value={password}
+          onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+          class="input-field"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        class="group relative justify-self-end flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full btn-primary py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+        {loading ? 'Iniciando sesión…' : 'Iniciar sesión'}
       </button>
     </form>
   );

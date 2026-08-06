@@ -2,24 +2,23 @@
 import Layout from '@/layouts/_Layout.astro';
 import LoginForm from '@/components/admin/LoginForm';
 import Logo from '@/components/Logo.astro';
-import Footer from '@/components/Footer.astro';
 ---
 
-<Layout title="Iniciar sesión — Dashboard">
+<Layout title="Iniciar sesión — Admin">
   <div
-    class="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+    class="min-h-dvh flex flex-col items-center justify-center bg-gray-50 px-4 py-12"
   >
-    <div class="max-w-md w-full space-y-8">
-      <div class="flex flex-col items-center">
-        <h2 class="mt-6 max-w-64 flex items-center">
-          <Logo />
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-          Acceso restringido, solo administradores
+    <div class="w-full max-w-sm space-y-8">
+      <div class="flex flex-col items-center gap-3">
+        <Logo />
+        <p class="text-sm text-gray-500 text-center">
+          Acceso restringido · Solo administradores
         </p>
       </div>
 
-      <LoginForm client:only />
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <LoginForm client:only />
+      </div>
     </div>
   </div>
 </Layout>

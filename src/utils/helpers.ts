@@ -20,49 +20,40 @@ export const STORE_LOCATION =
 export const STORE_HOURS =
   import.meta.env.PUBLIC_STORE_HOURS || 'Lunes a Domingo: 11am - 8pm';
 
-/**
- *
- */
 export const isBaseUrl = (path: string) => path.startsWith(BASE_URL);
 
-/**
- * Return true if is a /vip url
- */
 export const isVipUrl = (path: string) =>
   clearUrlBase(path).split('/')[1] === 'vip';
 
-/**
- *
- */
 export const resolveUrlBase = (path: string) => {
   if (!path.startsWith('/') || isBaseUrl(path)) return path;
-
   return BASE_URL.replace(/\/$/, '') + path;
 };
 
-/**
- * Resolve the url with BASE_URL and VIP url
- *
- * @param from Assign `Astro.url.pathname`
- * @param to - Target url to parse
- */
 export const resolveUrlFrom = (from: string, to: string) => {
   let resolved = to;
-
   if (!to.startsWith('/')) return resolved;
   if (isBaseUrl(to)) resolved = clearUrlBase(resolved);
   if (isVipUrl(from)) resolved = '/vip/' + APP_VIP_CODE + resolved;
-
   return resolveUrlBase(resolved);
 };
 
-/**
- *
- */
 export const clearUrlBase = (path: string) =>
   path.replace(new RegExp('^' + BASE_URL.replace(/\/$/, '')), '');
 
-export function formatPrice(price: number): string {
+export function formatPrice(
+  price: number,
+  currency: 'CUP' | 'USD' = 'CUP',
+): string {
+  if (currency === 'USD') {
+    return (
+      '$' +
+      price.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })
+    );
+  }
   return price.toLocaleString('es-CU') + ' CUP';
 }
 
