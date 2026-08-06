@@ -1,220 +1,69 @@
-import { userStore } from '@/stores/authStore';
-import { refreshToken } from './auth';
+import { DecapGateway } from '@rodny/decap-gateway';
+import type { AuthUser } from '@rodny/decap-gateway';
+
+const IDENTITY_URL = import.meta.env.PUBLIC_DECAPBRIDGE_ID
+  ? `https://auth.decapbridge.com/sites/${import.meta.env.PUBLIC_DECAPBRIDGE_ID}`
+  : 'https://auth.decapbridge.com/sites/b24d4304-f503-45ca-b408-da24db405ebb';
 
 const GATEWAY_URL =
   import.meta.env.PUBLIC_GATEWAY_URL || 'https://gateway.decapbridge.com';
+
+const REPO = import.meta.env.PUBLIC_REPO || 'rodnye/wa-catalog';
+
 const BRANCH = import.meta.env.PUBLIC_REPO_BRANCH || 'maite/data';
-const API_ROOT = `${GATEWAY_URL}/github`;
 
-async function request<T>(
-  path: string,
-  options: RequestInit = {},
-  retry = true,
-): Promise<T> {
-  const user = userStore.get();
-  if (!user) throw new Error('No autenticado');
+let gatewayInstance: DecapGateway | null = null;
 
-  const url = `${API_ROOT}${path}`;
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${user.access_token}`,
-    ...options.headers,
-  };
-
-  const response = await fetch(url, { ...options, headers });
-
-  if (response.status === 401 && retry) {
-    const newUser = await refreshToken();
-    if (newUser) {
-      return request<T>(path, options, false);
-    } else {
-      throw new Error('Sesión expirada, inicia sesión nuevamente');
-    }
+export function getGateway(): DecapGateway {
+  if (!gatewayInstance) {
+    gatewayInstance = new DecapGateway({
+      identityUrl: IDENTITY_URL,
+      gatewayUrl: GATEWAY_URL,
+      repo: REPO,
+      branch: BRANCH,
+    });
   }
+  return gatewayInstance;
+}
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Error ${response.status}: ${text}`);
-  }
+export async function gatewayLogin(
+  email: string,
+  password: string,
+): Promise<AuthUser> {
+  const gw = getGateway();
+  return gw.login(email, password);
+}
 
-  if (response.status === 204) return null as T;
+export async function gatewayRestore(): Promise<AuthUser | null> {
+  const gw = getGateway();
+  return gw.restore();
+}
 
-  const contentType = response.headers.get('content-type');
-  if (contentType?.includes('application/json')) {
-    return response.json() as Promise<T>;
-  }
-  return response.text() as Promise<T>;
+export async function gatewayLogout(): Promise<void> {
+  const gw = getGateway();
+  gw.logout();
 }
 
 export async function listDirectory(
   path: string,
 ): Promise<{ name: string; path: string; type: string }[]> {
-  const treeUrl = `/git/trees/${BRANCH}:${path}`;
-  const treeData = await request<{
-    tree: { path: string; sha: string; type: string }[];
-  }>(treeUrl);
-  return treeData.tree.map((node) => ({
-    name: node.path,
-    path: path ? `${path}/${node.path}` : node.path,
-    type: node.type === 'tree' ? 'dir' : 'file',
+  const gw = getGateway();
+  const files = await gw.operations.listFiles(path);
+  return files.map((f) => ({
+    name: f.path.split('/').pop() || f.path,
+    path: f.path,
+    type: 'file',
   }));
 }
 
 export async function getFileContent(path: string): Promise<string> {
-  const lastSlash = path.lastIndexOf('/');
-  const dir = lastSlash === -1 ? '' : path.substring(0, lastSlash);
-  const fileName = lastSlash === -1 ? path : path.substring(lastSlash + 1);
-
-  const treeUrl = `/git/trees/${BRANCH}:${dir}`;
-  const treeData = await request<{
-    tree: { path: string; sha: string; type: string }[];
-  }>(treeUrl);
-
-  const fileNode = treeData.tree.find(
-    (node) => node.path === fileName && node.type === 'blob',
-  );
-  if (!fileNode) throw new Error(`Archivo no encontrado: ${path}`);
-
-  const blobData = await request<{ content: string; encoding: string }>(
-    `/git/blobs/${fileNode.sha}`,
-  );
-
-  if (blobData.encoding === 'base64') {
-    return atob(blobData.content.replace(/\n/g, ''));
-  }
-  return blobData.content;
+  const gw = getGateway();
+  return gw.operations.readFile(path);
 }
 
 export async function getFileSha(path: string): Promise<string | null> {
-  try {
-    const lastSlash = path.lastIndexOf('/');
-    const dir = lastSlash === -1 ? '' : path.substring(0, lastSlash);
-    const fileName = lastSlash === -1 ? path : path.substring(lastSlash + 1);
-
-    const treeUrl = `/git/trees/${BRANCH}:${dir}`;
-    const treeData = await request<{
-      tree: { path: string; sha: string; type: string }[];
-    }>(treeUrl);
-    const fileNode = treeData.tree.find(
-      (node) => node.path === fileName && node.type === 'blob',
-    );
-    return fileNode ? fileNode.sha : null;
-  } catch {
-    return null;
-  }
-}
-
-async function createTreeWithFile(
-  filePath: string,
-  blobSha: string,
-  baseTreeSha: string,
-): Promise<string> {
-  const parts = filePath.split('/').filter(Boolean);
-  const fileName = parts.pop()!;
-
-  async function buildTree(
-    parts: string[],
-    currentBaseSha: string,
-  ): Promise<string> {
-    if (parts.length === 0) {
-      const newTree = await request<{ sha: string }>('/git/trees', {
-        method: 'POST',
-        body: JSON.stringify({
-          base_tree: currentBaseSha,
-          tree: [
-            { path: fileName, mode: '100644', type: 'blob', sha: blobSha },
-          ],
-        }),
-      });
-      return newTree.sha;
-    }
-
-    const currentPart = parts[0];
-    const remainingParts = parts.slice(1);
-
-    const treeData = await request<{
-      tree: { path: string; sha: string; type: string }[];
-    }>(`/git/trees/${currentBaseSha}`);
-    const node = treeData.tree.find(
-      (n) => n.path === currentPart && n.type === 'tree',
-    );
-
-    let childBaseSha = node ? node.sha : null;
-
-    if (!childBaseSha) {
-      const emptyTree = await request<{ sha: string }>('/git/trees', {
-        method: 'POST',
-        body: JSON.stringify({ tree: [] }),
-      });
-      childBaseSha = emptyTree.sha;
-    }
-
-    const newChildSha = await buildTree(remainingParts, childBaseSha);
-
-    const newTree = await request<{ sha: string }>('/git/trees', {
-      method: 'POST',
-      body: JSON.stringify({
-        base_tree: currentBaseSha,
-        tree: [
-          { path: currentPart, mode: '040000', type: 'tree', sha: newChildSha },
-        ],
-      }),
-    });
-    return newTree.sha;
-  }
-
-  return buildTree(parts, baseTreeSha);
-}
-
-async function createTreeWithoutFile(
-  filePath: string,
-  baseTreeSha: string,
-): Promise<string> {
-  const parts = filePath.split('/').filter(Boolean);
-  const fileName = parts.pop()!;
-
-  async function buildTree(
-    parts: string[],
-    currentBaseSha: string,
-  ): Promise<string> {
-    if (parts.length === 0) {
-      const treeData = await request<{ tree: any[] }>(
-        `/git/trees/${currentBaseSha}`,
-      );
-      const newTreeEntries = treeData.tree.filter((n) => n.path !== fileName);
-      const newTree = await request<{ sha: string }>('/git/trees', {
-        method: 'POST',
-        body: JSON.stringify({ tree: newTreeEntries }),
-      });
-      return newTree.sha;
-    }
-
-    const currentPart = parts[0];
-    const remainingParts = parts.slice(1);
-
-    const treeData = await request<{
-      tree: { path: string; sha: string; type: string }[];
-    }>(`/git/trees/${currentBaseSha}`);
-    const node = treeData.tree.find(
-      (n) => n.path === currentPart && n.type === 'tree',
-    );
-    if (!node) throw new Error(`El directorio ${currentPart} no existe`);
-
-    const newChildSha = await buildTree(remainingParts, node.sha);
-
-    const newTree = await request<{ sha: string }>('/git/trees', {
-      method: 'POST',
-      body: JSON.stringify({
-        base_tree: currentBaseSha,
-        tree: [
-          { path: currentPart, mode: '040000', type: 'tree', sha: newChildSha },
-        ],
-      }),
-    });
-    return newTree.sha;
-  }
-
-  return buildTree(parts, baseTreeSha);
+  const gw = getGateway();
+  return gw.operations.readFileSha(path);
 }
 
 export async function updateFile(
@@ -222,109 +71,31 @@ export async function updateFile(
   content: string,
   message: string,
 ): Promise<void> {
-  const blobData = await request<{ sha: string }>('/git/blobs', {
-    method: 'POST',
-    body: JSON.stringify({
-      content: btoa(encodeURIComponent(content)),
-      encoding: 'base64',
-    }),
-  });
-
-  const branchData = await request<{ commit: { sha: string } }>(
-    `/branches/${encodeURIComponent(BRANCH)}`,
-  );
-  const currentCommitSha = branchData.commit.sha;
-
-  const commitData = await request<{ tree: { sha: string } }>(
-    `/git/commits/${currentCommitSha}`,
-  );
-  const baseTreeSha = commitData.tree.sha;
-
-  const newTreeSha = await createTreeWithFile(path, blobData.sha, baseTreeSha);
-
-  const newCommitData = await request<{ sha: string }>('/git/commits', {
-    method: 'POST',
-    body: JSON.stringify({
-      message,
-      tree: newTreeSha,
-      parents: [currentCommitSha],
-    }),
-  });
-
-  await request(`/git/refs/heads/${encodeURIComponent(BRANCH)}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: newCommitData.sha }),
+  const gw = getGateway();
+  await gw.operations.persistFiles([{ path, content }], [], {
+    commitMessage: message,
+    author: { name: 'Admin', email: 'admin@lagitana.shop' },
+    branch: BRANCH,
   });
 }
 
-/**
- * Subir un archivo binario (imagen) al repositorio.
- * El contenido debe ser base64 puro (sin data URI prefix).
- */
 export async function uploadBinaryFile(
   path: string,
   base64Content: string,
   message: string,
 ): Promise<void> {
-  const blobData = await request<{ sha: string }>('/git/blobs', {
-    method: 'POST',
-    body: JSON.stringify({
-      content: base64Content,
-      encoding: 'base64',
-    }),
-  });
-
-  const branchData = await request<{ commit: { sha: string } }>(
-    `/branches/${encodeURIComponent(BRANCH)}`,
-  );
-  const currentCommitSha = branchData.commit.sha;
-
-  const commitData = await request<{ tree: { sha: string } }>(
-    `/git/commits/${currentCommitSha}`,
-  );
-  const baseTreeSha = commitData.tree.sha;
-
-  const newTreeSha = await createTreeWithFile(path, blobData.sha, baseTreeSha);
-
-  const newCommitData = await request<{ sha: string }>('/git/commits', {
-    method: 'POST',
-    body: JSON.stringify({
-      message,
-      tree: newTreeSha,
-      parents: [currentCommitSha],
-    }),
-  });
-
-  await request(`/git/refs/heads/${encodeURIComponent(BRANCH)}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: newCommitData.sha }),
+  const gw = getGateway();
+  await gw.operations.persistFiles([{ path, content: base64Content }], [], {
+    commitMessage: message,
+    author: { name: 'Admin', email: 'admin@lagitana.shop' },
+    branch: BRANCH,
   });
 }
 
 export async function deleteFile(path: string, message: string): Promise<void> {
-  const branchData = await request<{ commit: { sha: string } }>(
-    `/branches/${encodeURIComponent(BRANCH)}`,
-  );
-  const currentCommitSha = branchData.commit.sha;
-
-  const commitData = await request<{ tree: { sha: string } }>(
-    `/git/commits/${currentCommitSha}`,
-  );
-  const baseTreeSha = commitData.tree.sha;
-
-  const newTreeSha = await createTreeWithoutFile(path, baseTreeSha);
-
-  const newCommitData = await request<{ sha: string }>('/git/commits', {
-    method: 'POST',
-    body: JSON.stringify({
-      message,
-      tree: newTreeSha,
-      parents: [currentCommitSha],
-    }),
-  });
-
-  await request(`/git/refs/heads/${encodeURIComponent(BRANCH)}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ sha: newCommitData.sha }),
+  const gw = getGateway();
+  await gw.operations.deleteFiles([path], {
+    commitMessage: message,
+    author: { name: 'Admin', email: 'admin@lagitana.shop' },
   });
 }

@@ -12,7 +12,7 @@ import IconTrashCanOutline from '~icons/mdi/trash-can-outline';
 import IconAlertCircle from '~icons/mdi/alert-circle';
 
 const EMOJI_POOL = [
-  '💎',
+  '🎁',
   '🎨',
   '🎧',
   '✨',
@@ -26,40 +26,40 @@ const EMOJI_POOL = [
   '👕',
   '📱',
   '🎮',
-  '📚',
   '🧴',
-  '🍳',
-  '🎁',
-  '🧸',
-  '🔧',
-  '💡',
-  '🎵',
-  '🏋️',
-  '🧹',
+  '🧶',
   '🪴',
-  '🛋️',
-  '📷',
+  '🕯️',
+  '🧸',
   '🎒',
-  '👟',
-  '🧢',
-  '🕶️',
-  '💻',
-  '⌚',
-  '🔌',
+  '👡',
+  '🎵',
+  '🏺',
+  '🧹',
   '🪞',
+  '🏖️',
+  '🎒',
+  '🧢',
+  '👒',
+  '🧣',
+  '👶',
+  '🏻',
+  '❄️',
+  '🌸',
+  '🪐',
   '🧵',
   '🎀',
   '🧺',
-  '🛍️',
+  '🏷️',
   '🧶',
   '🪑',
-  '🚗',
-  '🐾',
-  '🍽️',
-  '☕',
-  '🧊',
+  '🎽',
+  '🏾',
+  '🎽',
+  '☀️',
+  '🧁',
   '🩴',
-  '👒',
+  '🎀',
   '🧣',
   '🩱',
 ];
@@ -259,6 +259,7 @@ export default function CategoryManager() {
                     />
                   </div>
                 </div>
+
                 {showEmojiFor === idx && (
                   <div class="grid grid-cols-8 sm:grid-cols-10 gap-1 p-3 bg-gray-50 rounded-xl max-h-36 overflow-y-auto">
                     {EMOJI_POOL.map((e) => (
@@ -280,6 +281,7 @@ export default function CategoryManager() {
                     ))}
                   </div>
                 )}
+
                 <div class="flex gap-2 justify-end">
                   <button
                     type="button"

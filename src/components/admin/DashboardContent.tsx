@@ -51,8 +51,8 @@ export default function DashboardContent() {
   const [editingProduct, setEditingProduct] = useState<IProduct | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
 
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
   const categories = getCategories();
 
   useEffect(() => {
@@ -68,6 +68,7 @@ export default function DashboardContent() {
   /* ── filtering ── */
   const filtered = useMemo(() => {
     let list = products;
+
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -76,9 +77,11 @@ export default function DashboardContent() {
           p.description.toLowerCase().includes(q),
       );
     }
+
     if (activeCat) {
       list = list.filter((p) => p.categories.includes(activeCat));
     }
+
     switch (statusFilter) {
       case 'available':
         list = list.filter((p) => p.available);
@@ -93,6 +96,7 @@ export default function DashboardContent() {
         list = list.filter((p) => p.featured);
         break;
     }
+
     return list;
   }, [products, search, activeCat, statusFilter]);
 
@@ -104,6 +108,7 @@ export default function DashboardContent() {
   );
 
   /* ── handlers ── */
+
   const handleSearch = (e: Event) => {
     const v = (e.target as HTMLInputElement).value;
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
@@ -135,6 +140,7 @@ export default function DashboardContent() {
       )
     )
       return;
+
     setDeletingId(p.id);
     try {
       await deleteProduct(p.id);
@@ -152,7 +158,6 @@ export default function DashboardContent() {
 
   const handleLogout = async () => {
     await logout();
-    userStore.set(null);
     navigate(resolveUrlBase('/admin/v2/login'));
   };
 
@@ -363,6 +368,7 @@ export default function DashboardContent() {
                       <p class="text-sm font-bold text-primary-600 mt-0.5">
                         {formatPrice(p.price, p.currency)}
                       </p>
+
                       <div class="flex flex-wrap gap-1 mt-1.5">
                         {p.categories.slice(0, 2).map((c) => (
                           <span

@@ -16,6 +16,7 @@ export default function LoginForm() {
     e.preventDefault();
     setLoading(true);
     setError('');
+
     try {
       await login(email, password);
       navigate(resolveUrlBase('/admin/v2'));

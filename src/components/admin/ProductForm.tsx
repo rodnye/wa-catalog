@@ -79,6 +79,7 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
 
   const handleSave = async () => {
     setError('');
+
     if (!name.trim()) return setError('El nombre es obligatorio');
     if (!description.trim()) return setError('La descripción es obligatoria');
     if (price <= 0) return setError('El precio debe ser mayor a 0');
