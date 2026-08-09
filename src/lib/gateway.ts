@@ -1,5 +1,4 @@
 import { DecapGateway } from '@rodny/decap-gateway';
-import type { AuthUser } from '@rodny/decap-gateway';
 
 const IDENTITY_URL = import.meta.env.PUBLIC_DECAPBRIDGE_ID
   ? `https://auth.decapbridge.com/sites/${import.meta.env.PUBLIC_DECAPBRIDGE_ID}`
@@ -26,15 +25,12 @@ export function getGateway(): DecapGateway {
   return gatewayInstance;
 }
 
-export async function gatewayLogin(
-  email: string,
-  password: string,
-): Promise<AuthUser> {
+export async function gatewayLogin(email: string, password: string) {
   const gw = getGateway();
-  return gw.login(email, password);
+  return gw.login(email, password, true);
 }
 
-export async function gatewayRestore(): Promise<AuthUser | null> {
+export async function gatewayRestore() {
   const gw = getGateway();
   return gw.restore();
 }
@@ -72,7 +68,7 @@ export async function updateFile(
   message: string,
 ): Promise<void> {
   const gw = getGateway();
-  await gw.operations.persistFiles([{ path, content }], [], {
+  await gw.operations.writeFiles([{ path, content }], {
     commitMessage: message,
     author: { name: 'Admin', email: 'admin@lagitana.shop' },
     branch: BRANCH,
