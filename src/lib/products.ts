@@ -1,6 +1,5 @@
 import { productSchema } from '@/schemas';
 import type { IProduct } from '../types';
-import { getCategoryByKey } from './categories';
 
 /**
  *  Validate json

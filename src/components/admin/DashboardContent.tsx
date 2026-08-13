@@ -6,7 +6,7 @@ import {
   errorStore,
   loadingProgress,
   loadProducts,
-  deleteProduct,
+  deleteProducts,
 } from '@/stores/productStore';
 import { logout, restoreSession } from '@/lib/auth';
 import { userStore } from '@/stores/authStore';
@@ -146,7 +146,7 @@ export default function DashboardContent() {
 
     setDeletingId(p.id);
     try {
-      await deleteProduct(p.id);
+      await deleteProducts([p.id]);
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Error al eliminar');
     } finally {

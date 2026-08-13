@@ -4,10 +4,10 @@ import {
   listDirectory,
   getFileContent,
   updateFile,
-  deleteFile,
-  getFileSha,
-  uploadBinaryFile,
+  getGateway,
+  getCommitAuthor,
 } from '@/lib/gateway';
+import type { FileEntry } from '@rodny/decap-gateway';
 
 export const productsStore = atom<IProduct[]>([]);
 export const loadingStore = atom<boolean>(false);
@@ -17,14 +17,14 @@ export const savingStore = atom<boolean>(false);
 
 /* ── helpers ─────────────────────────────────────────── */
 
-function fileToBase64(file: File): Promise<string> {
+function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      resolve((reader.result as string).split(',')[1]);
+      resolve(reader.result as ArrayBuffer);
     };
     reader.onerror = reject;
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   });
 }
 
@@ -79,91 +79,97 @@ export async function loadProducts() {
   }
 }
 
-/* ── create / update / delete product ────────────────── */
+/* ── save  ────────────────────────────────── */
 
-export async function createProduct(product: IProduct) {
-  const path = `src/data/products/${product.id}.json`;
-  const sha = await getFileSha(path);
-  if (sha) throw new Error('Ya existe un producto con ese ID');
-  await updateFile(
-    path,
-    JSON.stringify(product, null, 2),
-    `data: create "${product.name}" via Admin`,
-  );
-}
-
-export async function updateProduct(product: IProduct) {
-  const path = `src/data/products/${product.id}.json`;
-  await updateFile(
-    path,
-    JSON.stringify(product, null, 2),
-    `data: update "${product.name}" via Admin`,
-  );
-}
-
-export async function deleteProduct(id: string) {
-  const path = `src/data/products/${id}.json`;
-  await deleteFile(path, `data: delete "${id}" via Admin`);
-  productsStore.set(productsStore.get().filter((p) => p.id !== id));
-}
-
-/* ── save with images ────────────────────────────────── */
-
-export async function saveProductWithImages(opts: {
+export async function saveProductWithImages({
+  product,
+  newFiles,
+  removedImages,
+}: {
   product: IProduct;
-  isNew: boolean;
   newFiles: File[];
   removedImages: string[];
 }): Promise<void> {
   savingStore.set(true);
-  const { product, isNew, newFiles, removedImages } = opts;
 
   try {
     /* 1. upload new images */
-    const uploadedPaths: string[] = [];
+    const persistImages: FileEntry[] = [];
+
     for (let i = 0; i < newFiles.length; i++) {
       const file = newFiles[i];
       const ext = file.name.split('.').pop() || 'webp';
       const fileName = `${slugify(product.id)}-${Date.now()}-${i}.${ext}`;
       const repoPath = `public/images/products/${fileName}`;
-      const b64 = await fileToBase64(file);
-      await uploadBinaryFile(
-        repoPath,
-        b64,
-        `data: upload "${fileName}" via Admin`,
-      );
-      uploadedPaths.push(`/images/products/${fileName}`);
+      persistImages.push({
+        content: await fileToArrayBuffer(file),
+        path: repoPath,
+      });
     }
 
-    /* 2. delete removed images from repo */
-    for (const imgUrl of removedImages) {
-      try {
-        const repoPath = imgUrl.replace(/^\/images\//, 'public/images/');
-        await deleteFile(repoPath, `data: delete "${repoPath}" via Admin`);
-      } catch {
-        /* image may already be gone – ignore */
-      }
-    }
+    /* 2. remove images */
+    const persistRemoved = removedImages.map((relativePath) =>
+      relativePath.replace(/^\/images\//, 'public/images/'),
+    );
 
-    /* 3. build final images array */
+    /* 3. prepare final product */
     const keptImages = product.images.filter(
       (img) => !removedImages.includes(img),
     );
-    const finalImages = [...keptImages, ...uploadedPaths];
+    const finalImages = [
+      ...keptImages,
+      ...persistImages.map(
+        ({ path }) => `/images/products/${path.split('/').pop()}`,
+      ),
+    ];
+    const newProduct: IProduct = {
+      ...product,
+      images: finalImages,
+    };
 
-    const payload: IProduct = { ...product, images: finalImages };
+    const persistUpdated = [
+      ...persistImages,
+      {
+        path: `src/data/products/${product.id}.json`,
+        content: JSON.stringify(newProduct, null, 2),
+      },
+    ];
 
-    /* 4. write JSON */
-    if (isNew) {
-      await createProduct(payload);
-    } else {
-      await updateProduct(payload);
-    }
+    await getGateway().operations.persistFiles(persistUpdated, persistRemoved, {
+      author: getCommitAuthor(),
+      commitMessage: `data: updated ${product.id} from Admin`,
+    });
 
+    // reload
     await loadProducts();
   } finally {
     savingStore.set(false);
   }
+}
+
+export async function deleteProducts(ids: string[]) {
+  const persistRemoved: string[] = [];
+  const products = productsStore.get();
+
+  for (const id of ids) {
+    const product = products.find((p) => p.id === id);
+    if (!product) {
+      console.warn('delete products ' + id + ' not found');
+      continue;
+    }
+
+    persistRemoved.push(
+      `src/data/products/${product.id}.json`,
+      ...product.images.map((relativePath) =>
+        relativePath.replace(/^\/images\//, 'public/images/'),
+      ),
+    );
+  }
+
+  return getGateway().operations.deleteFiles(persistRemoved, {
+    author: getCommitAuthor(),
+    commitMessage: 'data: removed ' + ids.join(', ') + ' from Admin',
+  });
 }
 
 /* ── categories (read / write categories.json) ───────── */
