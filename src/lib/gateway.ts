@@ -1,5 +1,5 @@
-import { DecapGateway } from '@rodny/decap-gateway';
-import type { AuthUser } from '@rodny/decap-gateway';
+import { userStore } from '@/stores/authStore';
+import { DecapGateway, type FileEntry } from '@rodny/decap-gateway';
 
 const IDENTITY_URL = import.meta.env.PUBLIC_DECAPBRIDGE_ID
   ? `https://auth.decapbridge.com/sites/${import.meta.env.PUBLIC_DECAPBRIDGE_ID}`
@@ -14,6 +14,13 @@ const BRANCH = import.meta.env.PUBLIC_REPO_BRANCH || 'maite/data';
 
 let gatewayInstance: DecapGateway | null = null;
 
+export function getCommitAuthor() {
+  const user = userStore.get();
+  if (!user) throw new Error('User is not logued');
+
+  return { name: user.userMetadata.fullName!, email: user.email! };
+}
+
 export function getGateway(): DecapGateway {
   if (!gatewayInstance) {
     gatewayInstance = new DecapGateway({
@@ -26,15 +33,12 @@ export function getGateway(): DecapGateway {
   return gatewayInstance;
 }
 
-export async function gatewayLogin(
-  email: string,
-  password: string,
-): Promise<AuthUser> {
+export async function gatewayLogin(email: string, password: string) {
   const gw = getGateway();
-  return gw.login(email, password);
+  return gw.login(email, password, true);
 }
 
-export async function gatewayRestore(): Promise<AuthUser | null> {
+export async function gatewayRestore() {
   const gw = getGateway();
   return gw.restore();
 }
@@ -72,30 +76,32 @@ export async function updateFile(
   message: string,
 ): Promise<void> {
   const gw = getGateway();
-  await gw.operations.persistFiles([{ path, content }], [], {
+  await gw.operations.writeFiles([{ path, content }], {
     commitMessage: message,
-    author: { name: 'Admin', email: 'admin@lagitana.shop' },
+    author: getCommitAuthor(),
     branch: BRANCH,
   });
 }
 
-export async function uploadBinaryFile(
-  path: string,
-  base64Content: string,
+export async function uploadBinaryFiles(
+  entries: FileEntry[],
   message: string,
 ): Promise<void> {
   const gw = getGateway();
-  await gw.operations.persistFiles([{ path, content: base64Content }], [], {
+  await gw.operations.writeFiles(entries, {
     commitMessage: message,
-    author: { name: 'Admin', email: 'admin@lagitana.shop' },
+    author: getCommitAuthor(),
     branch: BRANCH,
   });
 }
 
-export async function deleteFile(path: string, message: string): Promise<void> {
+export async function deleteFiles(
+  paths: string[],
+  message: string,
+): Promise<void> {
   const gw = getGateway();
-  await gw.operations.deleteFiles([path], {
+  await gw.operations.deleteFiles(paths, {
     commitMessage: message,
-    author: { name: 'Admin', email: 'admin@lagitana.shop' },
+    author: getCommitAuthor(),
   });
 }

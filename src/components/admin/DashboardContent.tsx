@@ -6,9 +6,9 @@ import {
   errorStore,
   loadingProgress,
   loadProducts,
-  deleteProduct,
+  deleteProducts,
 } from '@/stores/productStore';
-import { logout } from '@/lib/auth';
+import { logout, restoreSession } from '@/lib/auth';
 import { userStore } from '@/stores/authStore';
 import { navigate } from 'astro:transitions/client';
 import { getCategories } from '@/lib/categories';
@@ -56,7 +56,10 @@ export default function DashboardContent() {
   const categories = getCategories();
 
   useEffect(() => {
-    loadProducts();
+    (async () => {
+      await restoreSession();
+      await loadProducts();
+    })();
   }, []);
 
   /* ── auth guard ── */
@@ -143,7 +146,7 @@ export default function DashboardContent() {
 
     setDeletingId(p.id);
     try {
-      await deleteProduct(p.id);
+      await deleteProducts([p.id]);
     } catch (e) {
       alert(e instanceof Error ? e.message : 'Error al eliminar');
     } finally {

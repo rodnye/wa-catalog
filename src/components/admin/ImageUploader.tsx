@@ -1,6 +1,4 @@
 import { useRef, useState, useEffect, useCallback } from 'preact/hooks';
-import IconClose from '~icons/mdi/close';
-import IconPlus from '~icons/mdi/plus';
 
 interface Props {
   images: string[];
@@ -26,11 +24,12 @@ export default function ImageUploader({
   onImagesChange,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
   const [localItems, setLocalItems] = useState<LocalItem[]>([]);
   const [removed, setRemoved] = useState<string[]>([]);
   const [previews, setPreviews] = useState<Map<string, string>>(new Map());
+
   const prevProductId = useRef(productId);
-  const imagesJson = JSON.stringify(images);
 
   useEffect(() => {
     if (prevProductId.current !== productId) {
@@ -44,17 +43,20 @@ export default function ImageUploader({
       setPreviews(new Map());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId, imagesJson]);
+  }, [productId]);
 
   useEffect(() => {
+    setLoading(true);
     const newPreviews = new Map(previews);
     let changed = false;
+
     for (const item of localItems) {
       if (item.source instanceof File && !newPreviews.has(item.id)) {
         newPreviews.set(item.id, URL.createObjectURL(item.source));
         changed = true;
       }
     }
+
     for (const key of newPreviews.keys()) {
       if (!localItems.some((i) => i.id === key)) {
         URL.revokeObjectURL(newPreviews.get(key)!);
@@ -62,14 +64,16 @@ export default function ImageUploader({
         changed = true;
       }
     }
+
     if (changed) setPreviews(newPreviews);
+    setLoading(false);
   }, [localItems]);
 
-  useEffect(() => {
-    return () => {
-      previews.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     previews.forEach((url) => URL.revokeObjectURL(url));
+  //   };
+  // }, []);
 
   const notifyParent = useCallback(
     (items: LocalItem[], rem: string[]) => {
@@ -79,10 +83,7 @@ export default function ImageUploader({
         )
         .map((i) => i.source as File);
       const kept = items
-        .filter(
-          (i): i is LocalItem & { source: string } =>
-            typeof i.source === 'string',
-        )
+        .filter((i) => typeof i.source === 'string')
         .map((i) => i.source as string);
       onImagesChange(kept, files, rem);
     },
@@ -94,25 +95,30 @@ export default function ImageUploader({
     const input = e.target as HTMLInputElement;
     const files = Array.from(input.files || []);
     if (!files.length) return;
+
     const newItems: LocalItem[] = files.map((f) => ({
       id: nextId(),
       source: f,
     }));
+
     const next = [...localItems, ...newItems];
     setLocalItems(next);
     notifyParent(next, removed);
-    input.value = '';
+    // input.value = '';
   };
 
   const handleRemove = (id: string) => {
     const item = localItems.find((i) => i.id === id);
     if (!item) return;
+
     const newRemoved = [...removed];
     if (typeof item.source === 'string') {
       newRemoved.push(item.source);
     }
+
     const url = previews.get(id);
     if (url) URL.revokeObjectURL(url);
+
     const next = localItems.filter((i) => i.id !== id);
     setLocalItems(next);
     setRemoved(newRemoved);
@@ -123,6 +129,8 @@ export default function ImageUploader({
     if (typeof item.source === 'string') return item.source;
     return previews.get(item.id) || '';
   };
+
+  if (loading) return <div>Cargando...</div>;
 
   return (
     <div>
@@ -143,22 +151,36 @@ export default function ImageUploader({
             <button
               type="button"
               onClick={() => handleRemove(item.id)}
-              class="absolute top-1 right-1 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center opacity-80 hover:opacity-100 active:scale-90 transition-all"
+              class="absolute top-1 right-1 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center text-sm opacity-80 hover:opacity-100 active:scale-90 transition-all"
               aria-label="Eliminar imagen"
             >
-              <IconClose class="size-4" />
+              ✕
             </button>
           </div>
         ))}
+
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           class="aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-primary-400 hover:text-primary-500 hover:bg-primary-50/50 active:scale-95 transition-all"
         >
-          <IconPlus class="size-7 mb-1" />
+          <svg
+            class="w-7 h-7 mb-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
           <span class="text-[11px] font-medium">Agregar</span>
         </button>
       </div>
+
       <input
         ref={fileInputRef}
         type="file"
