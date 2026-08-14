@@ -111,7 +111,6 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
     try {
       await saveProductWithImages({
         product: payload,
-        isNew,
         newFiles,
         removedImages,
       });

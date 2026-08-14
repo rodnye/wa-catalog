@@ -30,7 +30,7 @@ export default function ImageUploader({
   const [previews, setPreviews] = useState<Map<string, string>>(new Map());
 
   const prevProductId = useRef(productId);
-  const imagesJson = JSON.stringify(images);
+
   useEffect(() => {
     if (prevProductId.current !== productId) {
       prevProductId.current = productId;
@@ -43,7 +43,7 @@ export default function ImageUploader({
       setPreviews(new Map());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId, imagesJson]);
+  }, [productId]);
 
   useEffect(() => {
     setLoading(true);
