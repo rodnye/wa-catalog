@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
-import { saveProductWithImages, savingStore } from '@/stores/productStore';
 import { getCategories } from '@/lib/categories';
 import type { IProduct } from '@/types';
 import ImageUploader from './ImageUploader';
@@ -11,6 +10,7 @@ import IconStar from '~icons/mdi/star';
 import IconCrown from '~icons/mdi/crown';
 import IconLoading from '~icons/mdi/loading';
 import logger from '@/utils/logger';
+import { useUpdateProductMutation } from '@/hooks/preact/useProduct';
 
 interface Props {
   product: IProduct | null;
@@ -20,7 +20,7 @@ interface Props {
 
 export default function ProductForm({ product, onClose, onSuccess }: Props) {
   const categories = getCategories();
-  const saving = useStore(savingStore);
+  const updateProductMtt = useUpdateProductMutation();
   const isNew = !product;
 
   const [name, setName] = useState('');
@@ -132,7 +132,7 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
     );
 
     try {
-      await saveProductWithImages({
+      await updateProductMtt.mutateAsync({
         product: payload,
         newFiles,
         removedImages,
@@ -353,10 +353,10 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
           <button
             type="button"
             onClick={handleSave}
-            disabled={saving}
+            disabled={updateProductMtt.isPending}
             class="flex-1 py-3 rounded-xl bg-primary-500 text-white font-semibold hover:bg-primary-600 active:scale-[.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {saving ? (
+            {updateProductMtt.isPending ? (
               <span class="flex items-center justify-center gap-2">
                 <IconLoading class="animate-spin size-5" />
                 Guardando...

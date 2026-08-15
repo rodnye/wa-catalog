@@ -134,7 +134,7 @@ export default function ImageUploader({
 
   if (loading) return <div>Cargando...</div>;
 
-  logger.trace(localItems, "ImageUploader.localItems")
+  logger.trace(localItems, 'ImageUploader.localItems');
   return (
     <div>
       <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">

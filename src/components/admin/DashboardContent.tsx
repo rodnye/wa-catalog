@@ -1,13 +1,5 @@
 import { useEffect, useState, useMemo, useRef } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
-import {
-  productsStore,
-  loadingStore,
-  errorStore,
-  loadingProgress,
-  loadProducts,
-  deleteProducts,
-} from '@/stores/productStore';
 import { logout, restoreSession } from '@/lib/auth';
 import { userStore } from '@/stores/authStore';
 import { navigate } from 'astro:transitions/client';
@@ -33,6 +25,11 @@ import IconAlertCircle from '~icons/mdi/alert-circle';
 import logger from '@/utils/logger';
 import { QueryClientProvider } from '@tanstack/preact-query';
 import { queryClient } from '@/lib/query';
+import {
+  useDeleteProductMutation,
+  useProducts,
+  useProductsList,
+} from '@/hooks/preact/useProduct';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -48,10 +45,20 @@ export default function Dashboard() {
 }
 
 export function DashboardContent() {
-  const products = useStore(productsStore);
-  const loading = useStore(loadingStore);
-  const error = useStore(errorStore);
-  const progress = useStore(loadingProgress);
+  const { isLoading, error } = useProductsList();
+  const products = useProducts();
+  const progress = useMemo(
+    () =>
+      isLoading
+        ? 0
+        : products.reduce(
+            (acc, { data }) => (!data ? acc : acc + 100 / products.length),
+            0,
+          ),
+    [products],
+  );
+
+  const deleteProductsMtt = useDeleteProductMutation();
   const user = useStore(userStore);
 
   const [tab, setTab] = useState<Tab>('products');
@@ -67,10 +74,9 @@ export function DashboardContent() {
   const categories = getCategories();
 
   useEffect(() => {
-    logger.info('Dashboard mounted, initializing session and loading products');
+    logger.info('Dashboard mounted, initializing session');
     (async () => {
       await restoreSession();
-      await loadProducts();
     })();
   }, []);
 
@@ -89,27 +95,27 @@ export function DashboardContent() {
       const q = search.toLowerCase();
       list = list.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q),
+          p.data?.name.toLowerCase().includes(q) ||
+          p.data?.description.toLowerCase().includes(q),
       );
     }
 
     if (activeCat) {
-      list = list.filter((p) => p.categories.includes(activeCat));
+      list = list.filter((p) => p.data?.categories.includes(activeCat));
     }
 
     switch (statusFilter) {
       case 'available':
-        list = list.filter((p) => p.available);
+        list = list.filter((p) => p.data?.available);
         break;
       case 'unavailable':
-        list = list.filter((p) => !p.available);
+        list = list.filter((p) => !p.data?.available);
         break;
       case 'vip':
-        list = list.filter((p) => p.vip);
+        list = list.filter((p) => p.data?.vip);
         break;
       case 'featured':
-        list = list.filter((p) => p.featured);
+        list = list.filter((p) => p.data?.featured);
         break;
     }
 
@@ -165,7 +171,7 @@ export function DashboardContent() {
     );
     setDeletingId(p.id);
     try {
-      await deleteProducts([p.id]);
+      await deleteProductsMtt.mutateAsync([p.id]);
       logger.info({ productId: p.id }, 'Product deleted successfully');
     } catch (e) {
       const errorMsg = e instanceof Error ? e.message : 'Error al eliminar';
@@ -191,8 +197,24 @@ export function DashboardContent() {
     navigate(resolveUrlBase('/admin/v2/login'));
   };
 
+  /* ── error ── */
+  if (error) {
+    logger.error({ error }, 'Dashboard error state');
+    return (
+      <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl border border-red-200 p-6 max-w-md w-full text-center">
+          <IconAlertCircle class="size-12 text-red-400 mx-auto mb-3" />
+          <p class="text-red-600 font-medium mb-4">{error}</p>
+          <button onClick={() => window.location.reload()} class="btn-primary">
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   /* ── loading ── */
-  if (loading) {
+  if (progress < 95) {
     logger.debug({ progress }, 'Dashboard is loading products');
     return (
       <div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4 px-4">
@@ -206,22 +228,6 @@ export function DashboardContent() {
           <p class="text-sm text-gray-500 mt-2 text-center">
             Cargando productos… {progress}%
           </p>
-        </div>
-      </div>
-    );
-  }
-
-  /* ── error ── */
-  if (error) {
-    logger.error({ error }, 'Dashboard error state');
-    return (
-      <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div class="bg-white rounded-2xl border border-red-200 p-6 max-w-md w-full text-center">
-          <IconAlertCircle class="size-12 text-red-400 mx-auto mb-3" />
-          <p class="text-red-600 font-medium mb-4">{error}</p>
-          <button onClick={loadProducts} class="btn-primary">
-            Reintentar
-          </button>
         </div>
       </div>
     );
@@ -364,92 +370,95 @@ export function DashboardContent() {
             {/* product grid */}
             {paginated.length > 0 ? (
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {paginated.map((p) => (
-                  <div
-                    key={p.id}
-                    class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex"
-                  >
-                    {/* thumb */}
-                    <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-gray-100 relative">
-                      {p.images.length > 0 ? (
-                        <img
-                          src={p.images[0]}
-                          alt={p.name}
-                          loading="lazy"
-                          class="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div class="w-full h-full flex items-center justify-center text-gray-300">
-                          <IconCamera class="size-8" />
-                        </div>
-                      )}
-                      {!p.available && (
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                          <span class="bg-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                            Agotado
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* info */}
-                    <div class="flex-1 p-3 flex flex-col min-w-0">
-                      <h3 class="text-sm font-semibold text-gray-800 truncate">
-                        {p.name}
-                      </h3>
-                      <p class="text-sm font-bold text-primary-600 mt-0.5">
-                        {formatPrice(p.price, p.currency)}
-                      </p>
-
-                      <div class="flex flex-wrap gap-1 mt-1.5">
-                        {p.categories.slice(0, 2).map((c) => (
-                          <span
-                            key={c}
-                            class="text-[10px] bg-primary-50 text-primary-600 px-1.5 py-0.5 rounded-full"
-                          >
-                            {c}
-                          </span>
-                        ))}
-                        {p.vip && (
-                          <span class="text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5">
-                            <IconCrown class="size-3" />
-                            VIP
-                          </span>
+                {paginated.map(({ data: p }) => {
+                  if (!p) return;
+                  return (
+                    <div
+                      key={p.id}
+                      class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex"
+                    >
+                      {/* thumb */}
+                      <div class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-gray-100 relative">
+                        {p.images.length > 0 ? (
+                          <img
+                            src={p.images[0]}
+                            alt={p.name}
+                            loading="lazy"
+                            class="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div class="w-full h-full flex items-center justify-center text-gray-300">
+                            <IconCamera class="size-8" />
+                          </div>
                         )}
-                        {p.featured && (
-                          <span class="text-[10px] bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5">
-                            <IconStar class="size-3" />
-                          </span>
+                        {!p.available && (
+                          <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                            <span class="bg-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                              Agotado
+                            </span>
+                          </div>
                         )}
                       </div>
 
-                      {/* actions */}
-                      <div class="flex gap-2 mt-auto pt-2">
-                        <button
-                          onClick={() => handleEdit(p)}
-                          class="flex-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg py-2 hover:bg-blue-100 active:scale-95 transition-all flex items-center justify-center gap-1"
-                        >
-                          <IconPencil class="size-3.5" />
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => handleDelete(p)}
-                          disabled={deletingId === p.id}
-                          class="flex-1 text-xs font-medium text-red-500 bg-red-50 rounded-lg py-2 hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-1"
-                        >
-                          {deletingId === p.id ? (
-                            '…'
-                          ) : (
-                            <>
-                              <IconTrashCanOutline class="size-3.5" />
-                              Borrar
-                            </>
+                      {/* info */}
+                      <div class="flex-1 p-3 flex flex-col min-w-0">
+                        <h3 class="text-sm font-semibold text-gray-800 truncate">
+                          {p.name}
+                        </h3>
+                        <p class="text-sm font-bold text-primary-600 mt-0.5">
+                          {formatPrice(p.price, p.currency)}
+                        </p>
+
+                        <div class="flex flex-wrap gap-1 mt-1.5">
+                          {p.categories.slice(0, 2).map((c) => (
+                            <span
+                              key={c}
+                              class="text-[10px] bg-primary-50 text-primary-600 px-1.5 py-0.5 rounded-full"
+                            >
+                              {c}
+                            </span>
+                          ))}
+                          {p.vip && (
+                            <span class="text-[10px] bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5">
+                              <IconCrown class="size-3" />
+                              VIP
+                            </span>
                           )}
-                        </button>
+                          {p.featured && (
+                            <span class="text-[10px] bg-yellow-50 text-yellow-600 px-1.5 py-0.5 rounded-full inline-flex items-center gap-0.5">
+                              <IconStar class="size-3" />
+                            </span>
+                          )}
+                        </div>
+
+                        {/* actions */}
+                        <div class="flex gap-2 mt-auto pt-2">
+                          <button
+                            onClick={() => handleEdit(p)}
+                            class="flex-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg py-2 hover:bg-blue-100 active:scale-95 transition-all flex items-center justify-center gap-1"
+                          >
+                            <IconPencil class="size-3.5" />
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p)}
+                            disabled={deletingId === p.id}
+                            class="flex-1 text-xs font-medium text-red-500 bg-red-50 rounded-lg py-2 hover:bg-red-100 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-1"
+                          >
+                            {deletingId === p.id ? (
+                              '…'
+                            ) : (
+                              <>
+                                <IconTrashCanOutline class="size-3.5" />
+                                Borrar
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div class="text-center py-16">
