@@ -26,6 +26,9 @@ importers:
       '@rodny/repo-sync':
         specifier: ^1.3.0
         version: 1.3.0
+      '@tanstack/preact-query':
+        specifier: ^5.101.4
+        version: 5.101.4(preact@10.29.2)
       astro:
         specifier: ^6.3.6
         version: 6.3.6(@types/node@25.9.1)(jiti@1.21.7)(rollup@4.60.4)(yaml@2.9.0)
@@ -883,6 +886,14 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@svgr/core': '*'
+
+  '@tanstack/preact-query@5.101.4':
+    resolution: {integrity: sha512-+nUoHsHQHd2yKoGfYTYj7gDgnU2csUQ+aljP1ThMjKFVwmbQo3BjsbxAFGgV9DrO4P0hjynGKth2WtxhPzuVHQ==}
+    peerDependencies:
+      preact: ^10.0.0
+
+  '@tanstack/query-core@5.101.4':
+    resolution: {integrity: sha512-gNwcvOJcRbLWPOLG/2OBm+zM+Yv+MKsXKEOWC57USuZDEsI71hEErQsiEGx5wX9rzWWkfwM0fVSPoiIFSsxfiw==}
 
   '@types/debug@4.1.13':
     resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
@@ -3067,6 +3078,13 @@ snapshots:
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/preact-query@5.101.4(preact@10.29.2)':
+    dependencies:
+      '@tanstack/query-core': 5.101.4
+      preact: 10.29.2
+
+  '@tanstack/query-core@5.101.4': {}
 
   '@types/debug@4.1.13':
     dependencies:
