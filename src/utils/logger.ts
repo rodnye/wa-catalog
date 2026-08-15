@@ -4,7 +4,7 @@ import pino from 'pino';
  *
  */
 const logger = pino({
-  level: import.meta.env.LOG_LEVEL || 'info',
+  level: import.meta.env.PUBLIC_LOG_LEVEL || 'info',
   transport: {
     target: 'pino-pretty',
     options: {
