@@ -31,13 +31,23 @@ import IconChevronRight from '~icons/mdi/chevron-right';
 import IconPlus from '~icons/mdi/plus';
 import IconAlertCircle from '~icons/mdi/alert-circle';
 import logger from '@/utils/logger';
+import { QueryClientProvider } from '@tanstack/preact-query';
+import { queryClient } from '@/lib/query';
 
 const ITEMS_PER_PAGE = 20;
 
 type Tab = 'products' | 'settings';
 type StatusFilter = 'all' | 'available' | 'unavailable' | 'vip' | 'featured';
 
-export default function DashboardContent() {
+export default function Dashboard() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <DashboardContent />
+    </QueryClientProvider>
+  );
+}
+
+export function DashboardContent() {
   const products = useStore(productsStore);
   const loading = useStore(loadingStore);
   const error = useStore(errorStore);
