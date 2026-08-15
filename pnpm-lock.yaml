@@ -21,8 +21,8 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(nanostores@1.3.0)(preact@10.29.2)
       '@rodny/decap-gateway':
-        specifier: github:rodnye/decap-gateway#v0.2.0
-        version: https://codeload.github.com/rodnye/decap-gateway/tar.gz/192cfe2bd6bf4fc0efea8bcf7ff5c845125b754f
+        specifier: github:rodnye/decap-gateway#v0.2.1
+        version: https://codeload.github.com/rodnye/decap-gateway/tar.gz/35b3de12c300c1187c7c6c4177ce7341d906c67a
       '@rodny/repo-sync':
         specifier: ^1.3.0
         version: 1.3.0
@@ -618,9 +618,9 @@ packages:
       preact: ^10.4.0 || ^11.0.0-0
       vite: '>=2.0.0'
 
-  '@rodny/decap-gateway@https://codeload.github.com/rodnye/decap-gateway/tar.gz/192cfe2bd6bf4fc0efea8bcf7ff5c845125b754f':
-    resolution: {tarball: https://codeload.github.com/rodnye/decap-gateway/tar.gz/192cfe2bd6bf4fc0efea8bcf7ff5c845125b754f}
-    version: 0.2.0
+  '@rodny/decap-gateway@https://codeload.github.com/rodnye/decap-gateway/tar.gz/35b3de12c300c1187c7c6c4177ce7341d906c67a':
+    resolution: {tarball: https://codeload.github.com/rodnye/decap-gateway/tar.gz/35b3de12c300c1187c7c6c4177ce7341d906c67a}
+    version: 0.2.1
     engines: {node: '>= 24'}
 
   '@rodny/repo-sync@1.3.0':
@@ -2854,7 +2854,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@rodny/decap-gateway@https://codeload.github.com/rodnye/decap-gateway/tar.gz/192cfe2bd6bf4fc0efea8bcf7ff5c845125b754f': {}
+  '@rodny/decap-gateway@https://codeload.github.com/rodnye/decap-gateway/tar.gz/35b3de12c300c1187c7c6c4177ce7341d906c67a': {}
 
   '@rodny/repo-sync@1.3.0':
     dependencies:
