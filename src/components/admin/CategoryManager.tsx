@@ -10,6 +10,7 @@ import IconContentSave from '~icons/mdi/content-save';
 import IconPencil from '~icons/mdi/pencil';
 import IconTrashCanOutline from '~icons/mdi/trash-can-outline';
 import IconAlertCircle from '~icons/mdi/alert-circle';
+import logger from '@/utils/logger';
 
 const EMOJI_POOL = [
   '🎁',
@@ -83,27 +84,51 @@ export default function CategoryManager() {
   }, []);
 
   const load = async () => {
+    logger.info('Loading categories in CategoryManager');
     setLoading(true);
     try {
       const cats = await loadCategoriesFromRepo();
       setCategories(cats);
+      logger.info(
+        { categoryCount: cats.length },
+        'Categories loaded in CategoryManager',
+      );
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error al cargar categorías');
+      const errorMsg =
+        e instanceof Error ? e.message : 'Error al cargar categorías';
+      logger.error(
+        { error: errorMsg },
+        'Failed to load categories in CategoryManager',
+      );
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
   const handleSaveAll = async () => {
+    logger.info(
+      { categoryCount: categories.length },
+      'Saving all categories from CategoryManager',
+    );
     setSaving(true);
     setError('');
     setSuccess('');
     try {
       await saveCategoriesToRepo(categories);
       setSuccess('Categorías guardadas correctamente');
+      logger.info(
+        { categoryCount: categories.length },
+        'All categories saved successfully from CategoryManager',
+      );
       setTimeout(() => setSuccess(''), 3000);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error al guardar');
+      const errorMsg = e instanceof Error ? e.message : 'Error al guardar';
+      logger.error(
+        { error: errorMsg },
+        'Failed to save categories from CategoryManager',
+      );
+      setError(errorMsg);
     } finally {
       setSaving(false);
     }
@@ -116,27 +141,45 @@ export default function CategoryManager() {
   };
 
   const handleDelete = (idx: number) => {
-    if (!window.confirm(`¿Eliminar la categoría "${categories[idx].label}"?`))
+    const category = categories[idx];
+    if (!window.confirm(`¿Eliminar la categoría "${category.label}"?`)) {
+      logger.debug({ categoryId: category.key }, 'Category deletion cancelled');
       return;
+    }
+    logger.info(
+      { categoryId: category.key, categoryLabel: category.label },
+      'Deleting category',
+    );
     setCategories((prev) => prev.filter((_, i) => i !== idx));
     if (editingIdx === idx) setEditingIdx(null);
+    logger.info({ categoryId: category.key }, 'Category deleted locally');
   };
 
   const handleAdd = () => {
     const label = newLabel.trim();
-    if (!label) return;
+    if (!label) {
+      logger.warn('Add category failed: label is empty');
+      return;
+    }
     const key = label;
     if (categories.some((c) => c.key === key)) {
+      logger.warn(
+        { key },
+        'Add category failed: category with this key already exists',
+      );
       setError('Ya existe una categoría con ese nombre');
       return;
     }
+    logger.info({ label, emoji: newEmoji }, 'Adding new category');
     setCategories((prev) => [...prev, { label, key, emoji: newEmoji }]);
     setNewLabel('');
     setNewEmoji('🌿');
     setError('');
+    logger.info({ label }, 'Category added successfully');
   };
 
   if (loading) {
+    logger.debug('CategoryManager loading state');
     return (
       <div class="text-center py-12 text-gray-400">Cargando categorías…</div>
     );

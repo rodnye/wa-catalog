@@ -10,6 +10,7 @@ import IconPencil from '~icons/mdi/pencil';
 import IconStar from '~icons/mdi/star';
 import IconCrown from '~icons/mdi/crown';
 import IconLoading from '~icons/mdi/loading';
+import logger from '@/utils/logger';
 
 interface Props {
   product: IProduct | null;
@@ -37,6 +38,10 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
 
   useEffect(() => {
     if (product) {
+      logger.debug(
+        { productId: product.id },
+        'ProductForm editing existing product',
+      );
       setName(product.name);
       setDescription(product.description);
       setPrice(product.price);
@@ -47,6 +52,7 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
       setAvailable(product.available !== false);
       setImages([...product.images]);
     } else {
+      logger.debug('ProductForm creating new product');
       setName('');
       setDescription('');
       setPrice(0);
@@ -80,11 +86,26 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
   const handleSave = async () => {
     setError('');
 
-    if (!name.trim()) return setError('El nombre es obligatorio');
-    if (!description.trim()) return setError('La descripción es obligatoria');
-    if (price <= 0) return setError('El precio debe ser mayor a 0');
-    if (selectedCats.length === 0)
+    if (!name.trim()) {
+      logger.warn('Product form validation failed: name is required');
+      return setError('El nombre es obligatorio');
+    }
+    if (!description.trim()) {
+      logger.warn('Product form validation failed: description is required');
+      return setError('La descripción es obligatoria');
+    }
+    if (price <= 0) {
+      logger.warn(
+        'Product form validation failed: price must be greater than 0',
+      );
+      return setError('El precio debe ser mayor a 0');
+    }
+    if (selectedCats.length === 0) {
+      logger.warn(
+        'Product form validation failed: at least one category is required',
+      );
       return setError('Selecciona al menos una categoría');
+    }
 
     const id =
       product?.id ||
@@ -108,15 +129,26 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
       available,
     };
 
+    logger.info(
+      { productId: id, isNew, featured, vip, available },
+      'Saving product from form',
+    );
+
     try {
       await saveProductWithImages({
         product: payload,
         newFiles,
         removedImages,
       });
+      logger.info({ productId: id }, 'Product saved successfully from form');
       onSuccess();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error al guardar');
+      const errorMsg = e instanceof Error ? e.message : 'Error al guardar';
+      logger.error(
+        { productId: id, error: errorMsg },
+        'Failed to save product from form',
+      );
+      setError(errorMsg);
     }
   };
 

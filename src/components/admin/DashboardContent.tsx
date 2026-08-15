@@ -30,6 +30,7 @@ import IconChevronLeft from '~icons/mdi/chevron-left';
 import IconChevronRight from '~icons/mdi/chevron-right';
 import IconPlus from '~icons/mdi/plus';
 import IconAlertCircle from '~icons/mdi/alert-circle';
+import logger from '@/utils/logger';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -56,6 +57,7 @@ export default function DashboardContent() {
   const categories = getCategories();
 
   useEffect(() => {
+    logger.info('Dashboard mounted, initializing session and loading products');
     (async () => {
       await restoreSession();
       await loadProducts();
@@ -64,6 +66,7 @@ export default function DashboardContent() {
 
   /* ── auth guard ── */
   if (!user) {
+    logger.debug('No authenticated user, redirecting to login');
     navigate(resolveUrlBase('/admin/v2/login'));
     return null;
   }
@@ -127,11 +130,13 @@ export default function DashboardContent() {
   };
 
   const handleEdit = (p: IProduct) => {
+    logger.info({ productId: p.id, productName: p.name }, 'Editing product');
     setEditingProduct(p);
     setShowForm(true);
   };
 
   const handleCreate = () => {
+    logger.info('Creating new product');
     setEditingProduct(null);
     setShowForm(true);
   };
@@ -144,28 +149,41 @@ export default function DashboardContent() {
     )
       return;
 
+    logger.info(
+      { productId: p.id, productName: p.name },
+      'Product deletion confirmed',
+    );
     setDeletingId(p.id);
     try {
       await deleteProducts([p.id]);
+      logger.info({ productId: p.id }, 'Product deleted successfully');
     } catch (e) {
-      alert(e instanceof Error ? e.message : 'Error al eliminar');
+      const errorMsg = e instanceof Error ? e.message : 'Error al eliminar';
+      logger.error(
+        { productId: p.id, error: errorMsg },
+        'Failed to delete product',
+      );
+      alert(errorMsg);
     } finally {
       setDeletingId(null);
     }
   };
 
   const handleFormClose = () => {
+    logger.debug('Product form closed');
     setShowForm(false);
     setEditingProduct(null);
   };
 
   const handleLogout = async () => {
+    logger.info('Logout requested from dashboard');
     await logout();
     navigate(resolveUrlBase('/admin/v2/login'));
   };
 
   /* ── loading ── */
   if (loading) {
+    logger.debug({ progress }, 'Dashboard is loading products');
     return (
       <div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4 px-4">
         <div class="w-full max-w-xs">
@@ -185,6 +203,7 @@ export default function DashboardContent() {
 
   /* ── error ── */
   if (error) {
+    logger.error({ error }, 'Dashboard error state');
     return (
       <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div class="bg-white rounded-2xl border border-red-200 p-6 max-w-md w-full text-center">
