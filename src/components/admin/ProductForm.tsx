@@ -39,7 +39,7 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
   useEffect(() => {
     if (product) {
       logger.debug(
-        { productId: product.id },
+        product,
         'ProductForm editing existing product',
       );
       setName(product.name);
@@ -275,11 +275,10 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
                     key={cat.key}
                     type="button"
                     onClick={() => toggleCat(cat.key)}
-                    class={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border transition-all active:scale-95 ${
-                      active
-                        ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
-                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-primary-300 hover:bg-primary-50'
-                    }`}
+                    class={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border transition-all active:scale-95 ${active
+                      ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
+                      : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-primary-300 hover:bg-primary-50'
+                      }`}
                   >
                     <span>{cat.emoji}</span>
                     <span>{cat.label}</span>

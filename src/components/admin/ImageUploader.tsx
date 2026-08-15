@@ -1,3 +1,4 @@
+import logger from '@/utils/logger';
 import { useRef, useState, useEffect, useCallback } from 'preact/hooks';
 
 interface Props {
@@ -29,7 +30,7 @@ export default function ImageUploader({
   const [removed, setRemoved] = useState<string[]>([]);
   const [previews, setPreviews] = useState<Map<string, string>>(new Map());
 
-  const prevProductId = useRef(productId);
+  const prevProductId = useRef<string | null>(null);
 
   useEffect(() => {
     if (prevProductId.current !== productId) {
@@ -126,12 +127,14 @@ export default function ImageUploader({
   };
 
   const getSrc = (item: LocalItem): string => {
+    logger.info(item);
     if (typeof item.source === 'string') return item.source;
     return previews.get(item.id) || '';
   };
 
   if (loading) return <div>Cargando...</div>;
 
+  logger.trace(localItems, "ImageUploader.localItems")
   return (
     <div>
       <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
