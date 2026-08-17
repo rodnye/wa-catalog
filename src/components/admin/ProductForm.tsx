@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'preact/hooks';
 import { getCategories } from '@/lib/categories';
 import type { IProduct } from '@/types';
 import ImageUploader from './ImageUploader';
-import { useStore } from '@nanostores/preact';
 import IconClose from '~icons/mdi/close';
 import IconSparkles from '~icons/mdi/sparkles';
 import IconPencil from '~icons/mdi/pencil';

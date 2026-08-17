@@ -1,9 +1,4 @@
-import { useState, useEffect } from 'preact/hooks';
-import {
-  loadCategoriesFromRepo,
-  saveCategoriesToRepo,
-  type ICategory,
-} from '@/stores/productStore';
+import { useEffect, useState } from 'preact/hooks';
 import IconPlus from '~icons/mdi/plus';
 import IconCheckCircle from '~icons/mdi/check-circle';
 import IconContentSave from '~icons/mdi/content-save';
@@ -11,6 +6,11 @@ import IconPencil from '~icons/mdi/pencil';
 import IconTrashCanOutline from '~icons/mdi/trash-can-outline';
 import IconAlertCircle from '~icons/mdi/alert-circle';
 import logger from '@/utils/logger';
+import {
+  useCategories,
+  useUpdateCategoriesMutation,
+  type ICategory,
+} from '@/hooks/preact/useCategories';
 
 const EMOJI_POOL = [
   '🎁',
@@ -66,9 +66,9 @@ const EMOJI_POOL = [
 ];
 
 export default function CategoryManager() {
+  const { isLoading, data: storedCategories } = useCategories();
+  const updateCategoriesMtt = useUpdateCategoriesMutation();
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
@@ -80,42 +80,18 @@ export default function CategoryManager() {
   const [showNewEmoji, setShowNewEmoji] = useState(false);
 
   useEffect(() => {
-    load();
-  }, []);
-
-  const load = async () => {
-    logger.info('Loading categories in CategoryManager');
-    setLoading(true);
-    try {
-      const cats = await loadCategoriesFromRepo();
-      setCategories(cats);
-      logger.info(
-        { categoryCount: cats.length },
-        'Categories loaded in CategoryManager',
-      );
-    } catch (e) {
-      const errorMsg =
-        e instanceof Error ? e.message : 'Error al cargar categorías';
-      logger.error(
-        { error: errorMsg },
-        'Failed to load categories in CategoryManager',
-      );
-      setError(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (storedCategories) setCategories(storedCategories);
+  }, [storedCategories]);
 
   const handleSaveAll = async () => {
     logger.info(
       { categoryCount: categories.length },
       'Saving all categories from CategoryManager',
     );
-    setSaving(true);
     setError('');
     setSuccess('');
     try {
-      await saveCategoriesToRepo(categories);
+      await updateCategoriesMtt.mutateAsync(categories);
       setSuccess('Categorías guardadas correctamente');
       logger.info(
         { categoryCount: categories.length },
@@ -129,8 +105,6 @@ export default function CategoryManager() {
         'Failed to save categories from CategoryManager',
       );
       setError(errorMsg);
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -178,7 +152,7 @@ export default function CategoryManager() {
     logger.info({ label }, 'Category added successfully');
   };
 
-  if (loading) {
+  if (isLoading) {
     logger.debug('CategoryManager loading state');
     return (
       <div class="text-center py-12 text-gray-400">Cargando categorías…</div>
@@ -375,11 +349,11 @@ export default function CategoryManager() {
       {/* save button */}
       <button
         onClick={handleSaveAll}
-        disabled={saving}
+        disabled={updateCategoriesMtt.isPending}
         class="w-full btn-primary py-3.5 text-base disabled:opacity-50 flex items-center justify-center gap-2"
       >
         <IconContentSave class="size-5" />
-        {saving ? 'Guardando…' : 'Guardar categorías'}
+        {updateCategoriesMtt.isPending ? 'Guardando...' : 'Guardar categorías'}
       </button>
     </div>
   );
