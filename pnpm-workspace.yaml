@@ -1,2 +1,5 @@
+packages:
+  - packages/*
+
 onlyBuiltDependencies:
   - '@rodny/decap-gateway'
