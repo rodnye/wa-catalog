@@ -1,12 +1,12 @@
 import { useMemo } from 'preact/hooks';
 import { searchQuery } from '@/stores/searchStore';
-import type { IProduct } from '@/types';
 import { BANNER_CONTENT, BANNER_TITLE, WHATSAPP_LINK } from '@/utils/helpers';
 import BaseLink from './BaseLink';
 import { useUrlStore } from '@/hooks/preact/useUrlStore';
 import IconShopBag from '~icons/mdi/shopping';
 import IconStar from '~icons/mdi/star';
 import ProductCard from './ProductCard';
+import type { IProduct } from '@catalog/shared';
 
 interface ProductCatalogProps {
   products: IProduct[];

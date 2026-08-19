@@ -1,4 +1,4 @@
-import { z } from 'astro/zod';
+import z from "zod";
 
 export const productSchema = z.object({
   id: z.string().min(1, 'ID is required'),
@@ -15,3 +15,16 @@ export const productSchema = z.object({
   featured: z.boolean().default(false),
   available: z.boolean().default(true),
 });
+
+export const categorySchema = z.object({
+  label: z.string(),
+  key: z.string(),
+  emoji: z.string(),
+})
+
+/**
+ * `src/data/categories.json` structure
+ */
+export const categoriesDataSchema = z.object({
+  categories: z.array(categorySchema),
+})

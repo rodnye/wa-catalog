@@ -1,5 +1,5 @@
-import { productSchema } from '@/schemas';
-import type { IProduct } from '../types';
+import { productSchema } from '@catalog/shared/src/schemas';
+import type { IProduct } from '@catalog/shared/src/types';
 import logger from '@/utils/logger';
 
 /**

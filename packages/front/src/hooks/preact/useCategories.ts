@@ -1,12 +1,8 @@
 import { getFileContent, updateFile } from '@/lib/gateway';
 import logger from '@/utils/logger';
+import type { ICategory } from '@catalog/shared';
 import { queryOptions, useMutation, useQuery } from '@tanstack/preact-query';
 
-export interface ICategory {
-  label: string;
-  key: string;
-  emoji: string;
-}
 export const categoriesOptions = () =>
   queryOptions({
     queryKey: ['categories'],

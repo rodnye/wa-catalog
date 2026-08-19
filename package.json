@@ -11,7 +11,7 @@
     "dev": "pnpm --filter front dev",
     "dev:front": "pnpm --filter front dev",
     "dev:bot": "pnpm --filter bot dev",
-    "build": "pnpm --filter front build",
+    "build": "pnpm -r build",
     "build:front": "pnpm --filter front build",
     "build:bot": "pnpm --filter bot build",
     "preview": "pnpm --filter front astro preview",

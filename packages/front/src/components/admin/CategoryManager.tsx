@@ -9,8 +9,8 @@ import logger from '@/utils/logger';
 import {
   useCategories,
   useUpdateCategoriesMutation,
-  type ICategory,
 } from '@/hooks/preact/useCategories';
+import type { ICategory } from '@catalog/shared';
 
 const EMOJI_POOL = [
   '🎁',

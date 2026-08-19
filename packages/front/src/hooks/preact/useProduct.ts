@@ -5,8 +5,8 @@ import {
   listDirectory,
 } from '@/lib/gateway';
 import { fileToArrayBuffer, slugify } from '@/stores/productStore';
-import type { IProduct } from '@/types';
 import logger from '@/utils/logger';
+import type { IProduct } from '@catalog/shared';
 import type { FileEntry } from '@rodny/decap-gateway';
 import {
   queryOptions,

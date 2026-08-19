@@ -1,5 +1,6 @@
 import { categories } from '@/data/categories.json';
 import logger from '@/utils/logger';
+import type { ICategory } from '@catalog/shared/src/types';
 
 const record = Object.fromEntries(
   categories.map(({ key, label, emoji }) => [
@@ -22,7 +23,7 @@ export function getCategories() {
   return result;
 }
 
-export function getCategoryByKey(key: string) {
+export function getCategoryByKey(key: string): ICategory {
   const result = record[key];
   if (result) {
     logger.debug({ key }, 'Category retrieved by key');

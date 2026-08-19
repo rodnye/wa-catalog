@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { getCategories } from '@/lib/categories';
-import type { IProduct } from '@/types';
 import ImageUploader from './ImageUploader';
 import IconClose from '~icons/mdi/close';
 import IconSparkles from '~icons/mdi/sparkles';
@@ -10,6 +9,7 @@ import IconCrown from '~icons/mdi/crown';
 import IconLoading from '~icons/mdi/loading';
 import logger from '@/utils/logger';
 import { useUpdateProductMutation } from '@/hooks/preact/useProduct';
+import type { IProduct } from '@catalog/shared';
 
 interface Props {
   product: IProduct | null;

@@ -1,10 +1,10 @@
 import { getCategoryByKey } from '@/lib/categories';
 import AddToCartButton from '@/components/preact/AddToCartButton';
 import IconStar from '~icons/mdi/star';
-import type { IProduct } from '@/types';
 import { formatPrice, resolveUrlFrom } from '@/utils/helpers';
 import BaseImg from './BaseImg';
 import BaseLink from './BaseLink';
+import type { IProduct } from '@catalog/shared';
 
 interface Props {
   product: IProduct;

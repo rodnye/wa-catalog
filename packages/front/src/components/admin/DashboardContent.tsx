@@ -5,7 +5,6 @@ import { userStore } from '@/stores/authStore';
 import { navigate } from 'astro:transitions/client';
 import { getCategories } from '@/lib/categories';
 import { formatPrice, resolveUrlBase } from '@/utils/helpers';
-import type { IProduct } from '@/types';
 import ProductForm from './ProductForm';
 import CategoryManager from './CategoryManager';
 import IconCog from '~icons/mdi/cog';
@@ -30,6 +29,7 @@ import {
   useProducts,
   useProductsList,
 } from '@/hooks/preact/useProduct';
+import type { IProduct } from '@catalog/shared';
 
 const ITEMS_PER_PAGE = 20;
 
