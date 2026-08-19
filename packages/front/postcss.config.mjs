@@ -1,6 +1,4 @@
-export default {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-};
+import globalPostcss from "@catalog/shared/src/styles/postcss.config.mjs";
+
+export default globalPostcss;
+
