@@ -10,7 +10,7 @@
   "scripts": {
     "evennode": "npx http-server ./dist",
     "dev": "astro dev --host 0.0.0.0",
-    "build": "repo-sync -f products.config.cjs && astro build",
+    "build": "pnpm --filter admin build && (repo-sync -f products.config.cjs ; astro build)",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write ."
@@ -38,7 +38,10 @@
   "devDependencies": {
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.9.1",
+    "dotenv": "^17.4.2",
+    "fs-extra": "^11.4.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1"
   }

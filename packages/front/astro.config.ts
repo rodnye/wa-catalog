@@ -1,29 +1,47 @@
 // @ts-check
 import preact from '@astrojs/preact';
 import { defineConfig } from 'astro/config';
+import dotenv from 'dotenv';
+import path from 'path';
+import { copy, ensureDir } from 'fs-extra';
 import Icons from 'unplugin-icons/vite';
-import type { Options } from 'unplugin-icons';
 import { FileSystemIconLoader } from 'unplugin-icons/loaders';
-import { loadEnvFile } from 'node:process';
+const __dirname = import.meta.dirname;
 
-try {
-  loadEnvFile('./.env');
-} catch { }
+dotenv.config({ path: ['../../.env', '.env'] });
 
-const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || '/';
-const PUBLIC_SITE = process.env.PUBLIC_SITE;
+const isDev = process.env.NODE_ENV !== 'production';
 
-const customCollections: Options['customCollections'] = {
-  assets: FileSystemIconLoader('./src/assets'),
-};
-
+const BASE_URL = process.env.PUBLIC_BASE_URL || '/';
+const SITE = process.env.PUBLIC_SITE || 'http://0.0.0.0';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [preact()],
+  integrations: [
+    preact(),
+    {
+      name: 'post-build-actions',
+      hooks: {
+        async 'astro:build:done'() {
+          if (isDev) return;
 
-  site: PUBLIC_SITE || 'http://0.0.0.0',
-  base: PUBLIC_BASE_URL || '/',
+          const adminDir = path.resolve(__dirname, '../admin');
+          const adminDist = path.join(adminDir, 'dist');
+          const destDir = path.join(__dirname, 'dist');
+          console.log(adminDir, adminDist, destDir);
+          try {
+            await ensureDir(destDir);
+            await copy(adminDist, destDir, { overwrite: true });
+          } catch (error) {
+            console.error('astro post-build error:', error);
+          }
+        },
+      },
+    },
+  ],
+
+  site: SITE,
+  base: BASE_URL,
   build: {
     assets: 'assets',
   },
@@ -32,7 +50,9 @@ export default defineConfig({
       Icons({
         compiler: 'jsx',
         jsx: 'preact',
-        customCollections,
+        customCollections: {
+          assets: FileSystemIconLoader('./src/assets'),
+        },
       }) as any,
     ],
     resolve: {

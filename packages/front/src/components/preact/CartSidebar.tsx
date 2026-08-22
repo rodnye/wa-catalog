@@ -8,7 +8,8 @@ import {
   removeFromCart,
   updateQuantity,
 } from '@/stores/cartStore';
-import { formatPrice, getWhatsAppUrl } from '@/utils/helpers';
+import { getWhatsAppUrl } from '@/utils/helpers';
+import { formatPrice } from '@catalog/shared/src/helpers';
 import BaseImg from './BaseImg';
 import IconShopCar from '~icons/assets/shop-car';
 import IconClose from '~icons/mdi/close';

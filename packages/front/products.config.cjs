@@ -10,6 +10,10 @@ module.exports = {
   branch: process.env.PUBLIC_REPO_BRANCH || 'root/data',
   mappings: [
     {
+      include: ['src/data/categories.json'],
+      dest: 'src/data/categories.json',
+    },
+    {
       include: ['src/data/products/*.json'],
       dest: 'src/data/products/',
     },
