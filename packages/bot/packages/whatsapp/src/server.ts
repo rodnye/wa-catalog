@@ -1,5 +1,5 @@
 import express, { Express } from 'express';
-import { IChannelAdapter } from '@bot/types';
+import { IChannelAdapter } from '@bot/types/src/index';
 import QRCode from 'qrcode';
 
 export const createServer = (

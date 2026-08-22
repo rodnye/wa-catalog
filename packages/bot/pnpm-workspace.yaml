@@ -1,4 +1,4 @@
 packages:
   - packages/types
   - packages/core
-  - packages/*
+  - packages/whatsapp
