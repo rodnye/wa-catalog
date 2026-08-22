@@ -5,12 +5,12 @@ import IconContentSave from '~icons/mdi/content-save';
 import IconPencil from '~icons/mdi/pencil';
 import IconTrashCanOutline from '~icons/mdi/trash-can-outline';
 import IconAlertCircle from '~icons/mdi/alert-circle';
-import logger from '@/utils/logger';
+import { logger } from '@catalog/shared/src/logger';
 import {
   useCategories,
   useUpdateCategoriesMutation,
-} from '@/hooks/preact/useCategories';
-import type { ICategory } from '@catalog/shared';
+} from '@/hooks/useCategories';
+import type { ICategory } from '@catalog/shared/src/types';
 
 const EMOJI_POOL = [
   '🎁',
@@ -216,9 +216,8 @@ export default function CategoryManager() {
                   setNewEmoji(e);
                   setShowNewEmoji(false);
                 }}
-                class={`text-xl p-1 rounded-lg hover:bg-primary-100 active:scale-90 transition-all ${
-                  newEmoji === e ? 'bg-primary-100 ring-2 ring-primary-400' : ''
-                }`}
+                class={`text-xl p-1 rounded-lg hover:bg-primary-100 active:scale-90 transition-all ${newEmoji === e ? 'bg-primary-100 ring-2 ring-primary-400' : ''
+                  }`}
               >
                 {e}
               </button>
@@ -287,11 +286,10 @@ export default function CategoryManager() {
                           updateField(idx, 'emoji', e);
                           setShowEmojiFor(null);
                         }}
-                        class={`text-xl p-1 rounded-lg hover:bg-primary-100 active:scale-90 transition-all ${
-                          cat.emoji === e
-                            ? 'bg-primary-100 ring-2 ring-primary-400'
-                            : ''
-                        }`}
+                        class={`text-xl p-1 rounded-lg hover:bg-primary-100 active:scale-90 transition-all ${cat.emoji === e
+                          ? 'bg-primary-100 ring-2 ring-primary-400'
+                          : ''
+                          }`}
                       >
                         {e}
                       </button>

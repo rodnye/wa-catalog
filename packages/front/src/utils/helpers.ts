@@ -41,22 +41,6 @@ export const resolveUrlFrom = (from: string, to: string) => {
 export const clearUrlBase = (path: string) =>
   path.replace(new RegExp('^' + BASE_URL.replace(/\/$/, '')), '');
 
-export function formatPrice(
-  price: number,
-  currency: 'CUP' | 'USD' = 'CUP',
-): string {
-  if (currency === 'USD') {
-    return (
-      '$' +
-      price.toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      })
-    );
-  }
-  return price.toLocaleString('es-CU') + ' CUP';
-}
-
 export function buildWhatsAppMessage(
   items: { name: string; price: number; quantity: number }[],
 ): string {

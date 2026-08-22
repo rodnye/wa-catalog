@@ -8,7 +8,7 @@ import { loadEnvFile } from 'node:process';
 
 try {
   loadEnvFile('./.env');
-} catch {}
+} catch { }
 
 const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL || '/';
 const PUBLIC_SITE = process.env.PUBLIC_SITE;
@@ -16,6 +16,7 @@ const PUBLIC_SITE = process.env.PUBLIC_SITE;
 const customCollections: Options['customCollections'] = {
   assets: FileSystemIconLoader('./src/assets'),
 };
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -32,7 +33,7 @@ export default defineConfig({
         compiler: 'jsx',
         jsx: 'preact',
         customCollections,
-      }),
+      }) as any,
     ],
     resolve: {
       alias: {

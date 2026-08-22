@@ -1,6 +1,6 @@
 import { userStore } from '@/stores/authStore';
 import { DecapGateway, type FileEntry } from '@rodny/decap-gateway';
-import logger from '@/utils/logger';
+import { logger } from '@catalog/shared/src/logger';
 
 const IDENTITY_URL = import.meta.env.PUBLIC_DECAPBRIDGE_ID
   ? `https://auth.decapbridge.com/sites/${import.meta.env.PUBLIC_DECAPBRIDGE_ID}`

@@ -1,6 +1,6 @@
 import { getFileContent, updateFile } from '@/lib/gateway';
-import logger from '@/utils/logger';
-import type { ICategory } from '@catalog/shared';
+import { logger } from '@catalog/shared/src/logger';
+import type { ICategory } from '@catalog/shared/src/types';
 import { queryOptions, useMutation, useQuery } from '@tanstack/preact-query';
 
 export const categoriesOptions = () =>

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
-import { getCategories } from '@/lib/categories';
 import ImageUploader from './ImageUploader';
 import IconClose from '~icons/mdi/close';
 import IconSparkles from '~icons/mdi/sparkles';
@@ -7,21 +6,20 @@ import IconPencil from '~icons/mdi/pencil';
 import IconStar from '~icons/mdi/star';
 import IconCrown from '~icons/mdi/crown';
 import IconLoading from '~icons/mdi/loading';
-import logger from '@/utils/logger';
-import { useUpdateProductMutation } from '@/hooks/preact/useProduct';
-import type { IProduct } from '@catalog/shared';
+import { logger } from '@catalog/shared/src/logger';
+import { useUpdateProductMutation } from '@/hooks/useProduct';
+import type { ICategory, IProduct } from '@catalog/shared/src/types';
 
 interface Props {
   product: IProduct | null;
+  categories: ICategory[] | null;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export default function ProductForm({ product, onClose, onSuccess }: Props) {
-  const categories = getCategories();
+export default function ProductForm({ product, categories, onClose, onSuccess }: Props) {
   const updateProductMtt = useUpdateProductMutation();
   const isNew = !product;
-
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(0);
@@ -264,18 +262,17 @@ export default function ProductForm({ product, onClose, onSuccess }: Props) {
               </span>
             </label>
             <div class="flex flex-wrap gap-2">
-              {categories.map((cat) => {
+              {categories && categories.map((cat) => {
                 const active = selectedCats.includes(cat.key);
                 return (
                   <button
                     key={cat.key}
                     type="button"
                     onClick={() => toggleCat(cat.key)}
-                    class={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border transition-all active:scale-95 ${
-                      active
-                        ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
-                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-primary-300 hover:bg-primary-50'
-                    }`}
+                    class={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium border transition-all active:scale-95 ${active
+                      ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
+                      : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-primary-300 hover:bg-primary-50'
+                      }`}
                   >
                     <span>{cat.emoji}</span>
                     <span>{cat.label}</span>

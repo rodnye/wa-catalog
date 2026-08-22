@@ -1,6 +1,6 @@
 import { userStore } from '@/stores/authStore';
 import { gatewayLogin, gatewayLogout, gatewayRestore } from './gateway';
-import logger from '@/utils/logger';
+import { logger } from '@catalog/shared/src/logger';
 
 export interface User {
   id: string;

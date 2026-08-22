@@ -1,2 +1,4 @@
 packages:
-  - 'packages/*'
+  - packages/types
+  - packages/core
+  - packages/*

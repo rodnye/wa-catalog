@@ -1,4 +1,4 @@
-import logger from '@/utils/logger';
+import { logger } from '@catalog/shared/src/logger';
 import { useRef, useState, useEffect, useCallback } from 'preact/hooks';
 
 interface Props {
