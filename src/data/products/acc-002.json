@@ -1,10 +1,18 @@
 {
   "id": "acc-002",
-  "name": "Pulsera de Cuero Artesanal",
+  "name": "PPulsera de Cuero Artesanal",
   "description": "Pulsera tejida a mano con cuero genuino y detalles metálicos. Diseño bohemio que combina con cualquier estilo. Ajustable a diferentes tamaños de muñeca. Resistente al agua.",
   "price": 800,
-  "images": ["/images/placeholder.jpg"],
-  "categories": ["Accesorios", "Artesanía"],
+  "currency": "CUP",
+  "images": [
+    "/images/placeholder.jpg",
+    "/images/acc-002-1787601173866-0.png"
+  ],
+  "categories": [
+    "Accesorios",
+    "Artesanía"
+  ],
   "featured": false,
+  "vip": false,
   "available": true
 }
