@@ -31,7 +31,7 @@ jobs:
           echo "Archivo .env creado exitosamente"
 
       - name: Build web app
-        run: pnpm build
+        run: pnpm build:front
         env:
           PUBLIC_SITE: ${{ vars.PUBLIC_SITE }}
           PUBLIC_BASE_URL: ${{ vars.PUBLIC_BASE_URL }}
