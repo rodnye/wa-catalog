@@ -1,8 +1,5 @@
-const { loadEnvFile } = require('node:process');
-
-try {
-  loadEnvFile('./.env');
-} catch {}
+const dotenv = require('dotenv');
+dotenv.config({ path: ['../../.env', '.env'] });
 
 module.exports = {
   repo:
