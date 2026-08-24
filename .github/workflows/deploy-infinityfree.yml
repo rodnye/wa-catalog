@@ -43,5 +43,5 @@ jobs:
           username: ${{ secrets.INFINITY_USERNAME }}
           password: ${{ secrets.INFINITY_PASSWORD }}
           port: 21
-          local-dir: dist/
+          local-dir: packages/front/dist/
           server-dir: htdocs/
